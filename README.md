@@ -11,6 +11,35 @@ Clone code from github and make sure all pip requirement are met:
 git clone 
 pip install -r requirements-pip.txt
 ```
+## Quick start
+Several examples of the obstacle avoidance algorithm have been ipmlemented.
+![Obstacles](blob/wheelchairObstacles.png?raw=true "Real world situation")
+![Obstacles](blob/wheelchairSimulation.pdf?raw=true "Vectorfield of Obstacle Avoidance")
+
+### Vector fields
+Different examples of the vector field simulation can be launched by running the script
+```
+examples_vectorField.py
+```
+The simulation number can be specified to run each specific simulation. The resolution indicates the number of grid points along each axis. Further more figures can be saved automatically into the <<fig>> folder.
+
+Custom vector fields can be created using by calling the class
+'''
+Simulation_vectorFields() in lib_visalization/vectorField_visualization.py
+'''
+
+### Animated visualization
+Different animated examples with static and non-static obstacles can be found in:
+'''
+examples_animation.py
+'''
+The simulation number can be specified to choose between the animations. Further it can be saved directly to a MP4 video.
+
+Custom vector animation can be created by running the function
+'''
+run_animation() in lib_visalization/animated_simulation.py
+'''
+
 
 ## Obstacle Class
 For each obstacle of an ellipsoid form, a class instanse of "lib_obstacleAvoidance/obstacle_class.py" has to be defined. This desires several paramters such as center position x0, axis length a, surface curvature p, orientation th_r.
@@ -19,12 +48,12 @@ Moving obstacles additionally have a linear velocity xd and an angular velocity 
 For the modulation towards a general obstacle needs a reference point within the obstacle, the distance to the obstacle and the tangent hyperplane. 
 
 ## Modulation
-An initial (linear) dynamical system Any obstacle of this form can be directly used with the "lib_obstacleAvoidance/lib_modulation.py" library. Beware, currently there exists sever modulation function, where the most recent one is "obs_modulation_interpolation_velocity()".
+An initial (linear) dynamical system is modulated around obstacles. The modulation works in real-time and dynamically around any number of obstacles. Convergence towards an attractor can be ensured, as long as intersecting obstacles can be described with a star shape.
+The main modulation is happening in the file: "lib_obstacleAvoidance/linear_modulations.py" 
+It contains the main functions 
+
+Any obstacle of this form can be directly used with the "lib_obstacleAvoidance/lib_modulation.py" library. Beware, currently there exists sever modulation function, where the most recent one is "obs_modulation_interpolation_velocity()".
 Furhtemore, there exist the choice of RK4 integration to evaluate the velocity. (Currently the expected movement is not included in this higher order integration.)
-The modulation is of the form
-$$
-\dot \xi = M (\xi) f (\xi)
-$$
 
 ### Reference Point
 At the heart of the present obstacle avoidance algorithm lies the correct placement of the reference point, which defines the splitting of the DS.

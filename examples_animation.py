@@ -24,13 +24,13 @@ from lib_visualization.animated_simulation import run_animation, samplePointsAtB
 print(' ----- Script <<dynamic simulation>> started. ----- ')
 #############################################################
 # Choose a simulation between 0 and 12
-simuCase = 4
+simulationNumber = 4
 
 saveFigures = False
 #############################################################
 
-def main(simuCase=0, saveFigures=False):
-    if simuCase==0:
+def main(simulationNumber=0, saveFigures=False):
+    if simulationNumber==0:
         N = 10
         x_init = np.vstack((np.ones(N)*20,
                             np.linspace(-10,10,num=N) ))
@@ -109,7 +109,7 @@ def main(simuCase=0, saveFigures=False):
         run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.05, N_simuMax=1040, convergenceMargin=0.3, sleepPeriod=0.01,attractorPos=attractorPos, animationName=animationName, saveFigure=saveFigures )
 
 
-    if simuCase == 1:
+    if simulationNumber == 1:
         # Parallel ellipses; flow going through
         xAttractor = np.array([0,0])
 
@@ -143,7 +143,7 @@ def main(simuCase=0, saveFigures=False):
         run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.02, N_simuMax=1000, convergenceMargin=0.3, sleepPeriod=0.001, RK4_int=True, animationName=animationName, saveFigure=False)
 
 
-    elif simuCase ==2:
+    elif simulationNumber ==2:
         xRange = [-0.7,0.3]
         yRange = [2.3,3.0]
 
@@ -173,7 +173,7 @@ def main(simuCase=0, saveFigures=False):
         run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.003, N_simuMax=1040, convergenceMargin=0.3, sleepPeriod=0.01)
 
 
-    elif simuCase==3:
+    elif simulationNumber==3:
         xRange = [-0.7,0.3]
         yRange = [2.3,3.0]
 
@@ -212,7 +212,7 @@ def main(simuCase=0, saveFigures=False):
 
         run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.02, N_simuMax=1040, convergenceMargin=0.3, sleepPeriod=0.01, RK4_int=True)
 
-    elif simuCase==4:
+    elif simulationNumber==4:
         # Moving in LAB
         xRange = [0,16]
         yRange = [0,9]
@@ -312,7 +312,7 @@ def main(simuCase=0, saveFigures=False):
             anim.ani.save('ani/animation_multipleObstacles_conv.mp4', dpi=100, fps=25)
             print('Saving finished.')
 
-    elif simuCase==5:
+    elif simulationNumber==5:
         xRange = [-4,4]
         yRange = [-0.1,6.0]
 
@@ -362,7 +362,7 @@ def main(simuCase=0, saveFigures=False):
         # anim.ani.save('ani/basic_animation.mp4', writer = FFwriter, fps=20)
 
 
-    if simuCase==6:
+    if simulationNumber==6:
         xRange = [-0.1,12]
         yRange = [-5,5]
 
@@ -393,7 +393,7 @@ def main(simuCase=0, saveFigures=False):
         run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.02, N_simuMax=1000, convergenceMargin=0.3, sleepPeriod=0.001, RK4_int=True)
 
 
-    if simuCase==7:
+    if simulationNumber==7:
         xAttractor = np.array([0,0])
         centr = [2, 2.5]
 
@@ -427,7 +427,7 @@ def main(simuCase=0, saveFigures=False):
         # animationName = 'ani/animation_ring_noConvergence.mp4'
         animationName = 'ani/animation_ring_convergence.mp4'
 
-    if simuCase==8:
+    if simulationNumber==8:
         xAttractor = np.array([0,0])
         centr = [2, 2.5]
 
@@ -454,7 +454,7 @@ def main(simuCase=0, saveFigures=False):
 
 
 
-    if simuCase ==9:
+    if simulationNumber ==9:
         xAttractor = np.array([0,0])
         centr = [2, 2.5]
 
@@ -481,7 +481,7 @@ def main(simuCase=0, saveFigures=False):
             anim.ani.save('ani/animation_rotatingEllipse.mp4', dpi=100, fps=25)
             print('Saving finished.')
 
-    elif simuCase ==10:
+    elif simulationNumber ==10:
         xAttractor = np.array([0,0])
         centr = [1.5, 3.0]
 
@@ -521,7 +521,7 @@ def main(simuCase=0, saveFigures=False):
             anim.ani.save('ani/animation_multipleObstacles_noConv.mp4', dpi=100, fps=25)
             print('Saving finished.')
 
-    if simuCase ==11:
+    if simulationNumber ==11:
         dy =2.5
 
         xAttractor = np.array([0,0])
@@ -561,7 +561,7 @@ def main(simuCase=0, saveFigures=False):
 
         run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.005, N_simuMax=600, convergenceMargin=0.3, sleepPeriod=0.01)
 
-    elif simuCase==13:
+    elif simulationNumber==13:
         N = 10
         x_init = np.vstack((np.ones(N)*1,
                             np.linspace(-1,1,num=N),
@@ -605,5 +605,5 @@ def main(simuCase=0, saveFigures=False):
 
     print('\n\n---- Script finished ---- \n\n')    
 
-main(simuCase=simuCase, saveFigures=saveFigures)
+main(simulationNumber=simulationNumber, saveFigures=saveFigures)
     
