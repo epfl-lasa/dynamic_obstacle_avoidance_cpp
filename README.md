@@ -13,8 +13,9 @@ pip install -r requirements-pip.txt
 ```
 ## Quick start
 Several examples of the obstacle avoidance algorithm have been ipmlemented.
-![Obstacles](blob/wheelchairObstacles.png?raw=true "Real world situation")
-![Obstacles](blob/wheelchairSimulation.pdf?raw=true "Vectorfield of Obstacle Avoidance")
+<p align="center">
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/wheelchairObstacles.png"  width="350"></>
+  <img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/wheelchairSimulation.png"  width="350"></>
 
 ### Vector fields
 Different examples of the vector field simulation can be launched by running the script
