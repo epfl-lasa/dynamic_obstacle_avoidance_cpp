@@ -24,7 +24,7 @@ from lib_visualization.animated_simulation import run_animation, samplePointsAtB
 print(' ----- Script <<dynamic simulation>> started. ----- ')
 #############################################################
 # Choose a simulation between 0 and 12
-simulationNumber = 7
+simulationNumber = 9
 
 saveFigures = True
 #############################################################
@@ -421,7 +421,7 @@ def main(simulationNumber=0, saveFigures=False):
 
         x_init = samplePointsAtBorder(N, xRange, yRange)
 
-        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.02, N_simuMax=190, convergenceMargin=0.3, sleepPeriod=0.001, RK4_int=True, saveFigure=saveFigures)
+        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.01, N_simuMax=400, convergenceMargin=0.3, sleepPeriod=0.001, RK4_int=True, saveFigure=saveFigures)
 
     if simulationNumber==8:
         xAttractor = np.array([0,0])
@@ -469,11 +469,7 @@ def main(simulationNumber=0, saveFigures=False):
 
         x_init = samplePointsAtBorder(N, xRange, yRange)
 
-        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.005, N_simuMax=800, convergenceMargin=0.3, sleepPeriod=0.01)
-
-        if True: #save animation
-            anim.ani.save('ani/animation_rotatingEllipse.mp4', dpi=100, fps=25)
-            print('Saving finished.')
+        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.005, N_simuMax=620, convergenceMargin=0.3, sleepPeriod=0.01, saveFigure=saveFigures, animationName="rotatingEllipse")
 
     elif simulationNumber ==10:
         xAttractor = np.array([0,0])
