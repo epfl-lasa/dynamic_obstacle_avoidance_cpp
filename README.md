@@ -44,7 +44,7 @@ run_animation() [$ lib_visalization/animated_simulation.py]
 ```
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/rotatingEllipse.gif"  height="450"></>
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/rotatingEllipse.gif"  height="500"></>
 
 ## Obstacle Class
 For each obstacle of an ellipsoid form, a class instanse of "lib_obstacleAvoidance/obstacle_class.py" has to be defined. This desires several paramters such as center position x0, axis length a, surface curvature p, orientation th_r.
@@ -57,7 +57,7 @@ An ellipsoid obstacle can be created using the class
 class_obstacle() [$ lib_obstacleAvoidance/class_obstacle.py]
 ```
 <p align="center">
-<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/animation_ring.gif"  height="450"></>
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/animation_ring.gif"  height="500"></>
 
 
 ## Modulation
