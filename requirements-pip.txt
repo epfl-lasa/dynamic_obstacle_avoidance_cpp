@@ -1,8 +1,8 @@
 ####### requirements-pip.txt #######
 ###### Requirements without Version Specifiers ######
 numpy
-math
 matplotlib
-mpl_toolkits
 warnings
 time
+math
+mpl_toolkits

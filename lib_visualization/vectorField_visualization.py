@@ -102,8 +102,6 @@ def Simulation_vectorFields(x_range=[0,10],y_range=[0,10], point_grid=10, obs=[]
         if colorCode:
             velMag = np.linalg.norm(np.dstack((dx1_noColl, dx2_noColl)), axis=2 )/6*100
 
-            import pdb; pdb.set_trace() ## DEBUG ##
-            
             strm = res_ifd = ax_ifd.streamplot(XX, YY,dx1_noColl, dx2_noColl, color=velMag, cmap='winter', norm=matplotlib.colors.Normalize(vmin=0, vmax=10.) )
         else:
             # Normalize

@@ -6,12 +6,12 @@ This module requires python 3 including certain libraries which can be found in 
 
 To install, clone the code from github and make sure all pip requirement are met:
 ```
-git clone 
+git clone https://github.com/epfl-lasa/dynamic_obstacle_avoidance_linear
 pip install -r requirements-pip.txt
 ```
 
 ## Quick start
-Several examples of the obstacle avoidance algorithm have been ipmlemented.
+Several examples of the obstacle avoidance algorithm have been ipmlemented. The highly reactive nature of the algorithm allows it to be used to avoid crowded environment with fastly chaning movement of humans. 
 <p align="center">
 <img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/wheelchairObstacles.png"  width="350"></>
   <img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/wheelchairSimulation.png"  width="350"></>
@@ -79,7 +79,7 @@ At the heart of the present obstacle avoidance algorithm lies the correct placem
 <p align="center">
 <img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipse_localMinima_colMap.png"  height="200"></>
 <img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipseCenterMiddle_centerLine_pres_colMap.png"  height="200"></>
-<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipseCenterNotMiddle_centerLine_pres_colMap.png"  height="200"></>
+n<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipseCenterNotMiddle_centerLine_pres_colMap.png"  height="200"></>
 
 Automatic placemnt functions of the dynamic center are applied with "lib_obstacleAvoidance/obs_common_section.py" and "lib_obstacleAvoidance/obs_dynamic_center_3d.py"
 
@@ -89,6 +89,12 @@ Note, more complex obstacles can be formed with an analytical description of the
 
 **References**     
 > [1] Huber, Lukas, Aude Billard, and Jean-Jacques E. Slotine. "Avoidance of Convex and Concave Obstacles with Convergence ensured through Contraction." IEEE Robotics and Automation Letters (2019).
+
 > [2] Khansari-Zadeh, Seyed Mohammad, and Aude Billard. "A dynamical system approach to realtime obstacle avoidance." Autonomous Robots 32.4 (2012): 433-454.
+
+**Contact**: [Lukas Huber] (http://lasa.epfl.ch/people/member.php?SCIPER=274454) (lukas.huber AT epfl dot ch)
+
+**Acknowledgments**
+This work was funded in part by the EU project Crowdbots.
 
 
