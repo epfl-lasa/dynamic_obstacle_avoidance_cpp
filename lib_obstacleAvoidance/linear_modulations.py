@@ -16,7 +16,7 @@ import warnings
 
 import sys
 
-def obs_avoidance_interpolation_moving(x, xd, obs, attractor='none', weightPow = 2):
+def obs_avoidance_interpolation_moving(x, xd, obs=[], attractor='none', weightPow = 2):
     
     # This function modulates the dynamical system at position x and dynamics xd such that it avoids all obstacles obs. It can furthermore be forced to converge to the attractor. 
     # 
@@ -264,7 +264,7 @@ def compute_modulation_matrix(x_t, obs, R):
 
 def obs_avoidance_rk4(dt, x, obs, obs_avoidance=obs_avoidance_interpolation_moving, ds=linearAttractor, x0=False):
     # Fourth order integration of obstacle avoidance differential equation
-    # NOTE: The movement of the obstacle is considered as small, hence position and movement changed are not considered.
+    # NOTE: The movement of the obstacle is considered as small, hence position and movement changed are not considered. This will be fixed in future iterations.
 
     if type(x0)==bool:
         x0 = np.zeros(np.array(x).shape[0])

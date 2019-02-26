@@ -63,7 +63,7 @@ def samplePointsAtBorder(N, xRange, yRange):
 ##### Anmation Function #####
 class Animated():
     """An animated scatter plot using matplotlib.animations.FuncAnimation."""
-    def __init__(self, x0, obs=[], N_simuMax = 600, dt=0.01, attractorPos='default', convergenceMargin=0.01, xRange=[-10,10], yRange=[-10,10], zRange=[-10,10], sleepPeriod=0.03, RK4_int = False, dynamicalSystem=linearAttractor):
+    def __init__(self, x0, obs=[], N_simuMax = 600, dt=0.01, attractorPos='default', convergenceMargin=0.01, xRange=[-10,10], yRange=[-10,10], zRange=[-10,10], sleepPeriod=0.03, RK4_int = False, dynamicalSystem=linearAttractor, hide_ticks=True):
 
         self.dim = x0.shape[0]
 
@@ -77,6 +77,8 @@ class Animated():
             self.attractorPos = attractorPos
             
         self.sleepPeriod=sleepPeriod
+
+        self.hide_ticks = hide_ticks
 
         # last three values are observed for convergence
         self.convergenceMargin = convergenceMargin
@@ -200,6 +202,9 @@ class Animated():
             plt.plot(self.attractorPos[0], self.attractorPos[1], 'k*', linewidth=7.0, markeredgewidth=4, markersize=13)
         else:
             plt.plot([self.attractorPos[0]], [self.attractorPos[1]], [self.attractorPos[2]], 'k*', linewidth=7.0)
+
+        if self.hide_ticks:
+            plt.tick_params(axis='both', which='major',bottom=False, top=False, left=False, right=False, labelbottom=False, labelleft=False)
 
         self.fig.canvas.mpl_connect('button_press_event', self.onClick)  # Button click enabled
 

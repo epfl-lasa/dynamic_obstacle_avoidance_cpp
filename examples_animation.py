@@ -24,9 +24,9 @@ from lib_visualization.animated_simulation import run_animation, samplePointsAtB
 print(' ----- Script <<dynamic simulation>> started. ----- ')
 #############################################################
 # Choose a simulation between 0 and 12
-simulationNumber = 4
+simulationNumber = 7
 
-saveFigures = False
+saveFigures = True
 #############################################################
 
 def main(simulationNumber=0, saveFigures=False):
@@ -421,7 +421,7 @@ def main(simulationNumber=0, saveFigures=False):
 
         x_init = samplePointsAtBorder(N, xRange, yRange)
 
-        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.02, N_simuMax=1000, convergenceMargin=0.3, sleepPeriod=0.001, RK4_int=True)
+        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.02, N_simuMax=1000, convergenceMargin=0.3, sleepPeriod=0.001, RK4_int=True, saveFigure=saveFigures)
 
 
         # animationName = 'ani/animation_ring_noConvergence.mp4'
