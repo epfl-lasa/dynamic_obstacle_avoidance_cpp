@@ -44,9 +44,7 @@ run_animation() [$ lib_visalization/animated_simulation.py]
 ```
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/rotatingEllipse.gif"  height="300"></>
-<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/animation_ring.gif"  height="300"></>
-
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/rotatingEllipse.gif"  height="450"></>
 
 ## Obstacle Class
 For each obstacle of an ellipsoid form, a class instanse of "lib_obstacleAvoidance/obstacle_class.py" has to be defined. This desires several paramters such as center position x0, axis length a, surface curvature p, orientation th_r.
@@ -58,6 +56,8 @@ An ellipsoid obstacle can be created using the class
 ```
 class_obstacle() [$ lib_obstacleAvoidance/class_obstacle.py]
 ```
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/animation_ring.gif"  height="450"></>
+
 
 ## Modulation
 An initial (linear) dynamical system is modulated around obstacles. The modulation works in real-time and dynamically around any number of obstacles. Convergence towards an attractor can be ensured, as long as intersecting obstacles can be described with a star shape. Detailled information can be found in [1].
