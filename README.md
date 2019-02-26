@@ -28,8 +28,8 @@ Custom vector fields can be created using by calling the class
 Simulation_vectorFields() [$ lib_visalization/vectorField_visualization.py]
 ```
 <p align="center">
-<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/linearCombination_obstaclesBoth.png"  width="350"></>
-<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/three_obstacles_touching.png"  width="350"></>
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/linearCombination_obstaclesBoth.png"  height="200"></>
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/three_obstacles_touching.png"  height="200"></>
 
 ### Animated visualization
 Different animated examples with static and non-static obstacles can be found in:
@@ -71,9 +71,9 @@ Helping functions are defined in the "lib_obstacleAvoidance/linear_modulations.p
 ### Reference Point
 At the heart of the present obstacle avoidance algorithm lies the correct placement of the reference point within the obstacle. It ensures convergence towards the attractor and defines the split of the DS.
 <p align="center">
-<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipse_localMinima_colMap.png"  width="350"></>
-<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipseCenterMiddle_centerLine_pres_colMap.png"  width="350"></>
-<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipseCenterNotMiddle_centerLine_pres_colMap.png"  width="350"></>
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipse_localMinima_colMap.png"  height="200"></>
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipseCenterMiddle_centerLine_pres_colMap.png"  height="200"></>
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipseCenterNotMiddle_centerLine_pres_colMap.png"  height="200"></>
 
 Automatic placemnt functions of the dynamic center are applied with "lib_obstacleAvoidance/obs_common_section.py" and "lib_obstacleAvoidance/obs_dynamic_center_3d.py"
 

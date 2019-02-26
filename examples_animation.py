@@ -421,11 +421,7 @@ def main(simulationNumber=0, saveFigures=False):
 
         x_init = samplePointsAtBorder(N, xRange, yRange)
 
-        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.02, N_simuMax=1000, convergenceMargin=0.3, sleepPeriod=0.001, RK4_int=True, saveFigure=saveFigures)
-
-
-        # animationName = 'ani/animation_ring_noConvergence.mp4'
-        animationName = 'ani/animation_ring_convergence.mp4'
+        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.02, N_simuMax=190, convergenceMargin=0.3, sleepPeriod=0.001, RK4_int=True, saveFigure=saveFigures)
 
     if simulationNumber==8:
         xAttractor = np.array([0,0])
@@ -448,9 +444,7 @@ def main(simulationNumber=0, saveFigures=False):
 
         x_init = samplePointsAtBorder(N, xRange, yRange)
 
-
-
-        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.01, N_simuMax=800, convergenceMargin=0.3, sleepPeriod=0.01, RK4_int=True)
+        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.01, N_simuMax=800, convergenceMargin=0.3, sleepPeriod=0.01, RK4_int=True, animationName="animation_ring_convergence")
 
 
 

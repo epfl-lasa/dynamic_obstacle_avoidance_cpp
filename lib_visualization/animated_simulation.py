@@ -300,8 +300,10 @@ class Animated():
             
             if (self.iSim>=self.N_simuMax-1):
                 print('Maximum number of {} iterations reached without convergence.'.format(self.N_simuMax))
+                self.ani.event_source.stop()
             else:
                 print('Convergence with tolerance of {} reached after {} iterations.'.format(sum(self.lastConvergences), self.iSim+1) )
+                self.ani.event_source.stop()
 
     
     def show(self):
