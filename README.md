@@ -56,6 +56,7 @@ An ellipsoid obstacle can be created using the class
 ```
 class_obstacle() [$ lib_obstacleAvoidance/class_obstacle.py]
 ```
+<p align="center">
 <img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/animation_ring.gif"  height="450"></>
 
 
