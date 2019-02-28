@@ -16,7 +16,7 @@ from lib_visualization.vectorField_visualization import *  #
 
 ########################################################################
 # Chose the option you want to run as a number in the option list (integer from -2 to 10)
-options = [10]
+options = [4]
 
 N_resol = 100
 saveFigures=False

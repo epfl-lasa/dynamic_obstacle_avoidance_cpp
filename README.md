@@ -77,11 +77,12 @@ Helping functions are defined in the "lib_obstacleAvoidance/linear_modulations.p
 ### Reference Point
 At the heart of the present obstacle avoidance algorithm lies the correct placement of the reference point within the obstacle. It ensures convergence towards the attractor and defines the split of the DS.
 <p align="center">
-<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipse_localMinima_colMap.png"  height="200"></>
-<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipseCenterMiddle_centerLine_pres_colMap.png"  height="200"></>
-n<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipseCenterNotMiddle_centerLine_pres_colMap.png"  height="200"></>
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipse_localMinima_colMap.png"  height="200">
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipseCenterMiddle_centerLine_pres_colMap.png"  height="200">
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/ellipseCenterNotMiddle_centerLine_pres_colMap.png"  height="200"></>
 
-Automatic placemnt functions of the dynamic center are applied with "lib_obstacleAvoidance/obs_common_section.py" and "lib_obstacleAvoidance/obs_dynamic_center_3d.py"
+Automatic and dynamic placement of the reference point is done with the functions of the dynamic center are applied with "lib_obstacleAvoidance/obs_common_section.py" and "lib_obstacleAvoidance/obs_dynamic_center_3d.py".
+<img src="https://raw.githubusercontent.com/epfl-lasa/dynamic_obstacle_avoidance_linear/master/blob/replication_humans.gif"  height="500"></>
 
 ### Concave obstacles
 Complexer obstacles can either be formed using several ellipses, which already allows to form many star shaped obstacles.

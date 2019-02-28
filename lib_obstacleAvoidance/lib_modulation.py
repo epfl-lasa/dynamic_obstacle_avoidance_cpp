@@ -146,48 +146,33 @@ def compute_eigenvalueMatrix(Gamma, rho=1, dim=2, radialContuinity=True):
          
 
 
-def compute_weights(distMeas, N=0, distMeas_min=1, weightType='inverseGamma'):
+def compute_weights(distMeas, N=0, distMeas_min=1, weightType='inverseGamma', weightPow=2):
     # UNTITLED5 Summary of this function goes here
     #   Detailed explanation goes here
 
     distMeas = np.array(distMeas)
-    if N==0:
-        N = len(distMeas)
-    distMeas = np.array([np.max([distMeas[i]-distMeas_min,0]) for i in range(N)])
-
-    w = np.zeros((1,N))
-
-    if weightType == 'inverseGamma':
-        zeroInd = distMeas==0
-        if np.sum(zeroInd): # one element equal to zero -- avoid null division
-            if np.sum(zeroInd) > 1:
-                warnings.warn('DS on two boundaries. Collision might not be avoided. \n')
-            
-            w = zeroInd*1
+    n_points = distMeas.shape[0]
+    
+    critical_points = distMeas < distMeas_min
+    
+    if np.sum(critical_points): # at least one
+        if np.sum(critical_points)==1:
+            w = critical_points*1.0
+            return w
         else:
-            w = 1/distMeas
-
-            w = w/np.sum(w) # Normalization
-
-    elif weightType == 'khansari':
-       for i in range(N):
-            ind = np.arange(N)
-            ind[i] = []
-            w[i] = np.prod(distMeas(ind)/(distMeas(i)+distMeas(ind)))
-
-
-    elif weightType == 'khansari_normalized':
-       for i in range(N):
-           ind = np.arange(N)
-           ind[i] = []
-           w[i] = np.prod(distMeas(ind)/(distMeas(i)+distMeas(ind)))
-
-       # Add normalization -- not in original
-       w = w/np.sum[w]
+            # TODO: continuous weighting function
+            warnings.warn('Implement continuity of weighting function.')
+            w = critical_points*1./np.sum(critical_points)
+            return w
+        
+    if weightType == 'inverseGamma':
+        distMeas = np.max(np.vstack((distMeas-distMeas_min, np.zeros(distMeas.shape))) , axis=0)
+        w = 1/distMeas**weightPow
+        w = w/np.sum(w) # Normalization
 
     else:
         warnings.warn("Unkown weighting method.")
-        
+
     return w
 
 

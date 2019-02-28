@@ -1,8 +1,3 @@
-def test(a=1):
-    print('succaaass.')
-    b = a+1
-    return
-    
 #!/usr/bin/python3
 '''
 Dynamic Simulation - Obstacle Avoidance Algorithm
@@ -24,9 +19,9 @@ from lib_visualization.animated_simulation import run_animation, samplePointsAtB
 print(' ----- Script <<dynamic simulation>> started. ----- ')
 #############################################################
 # Choose a simulation between 0 and 12
-simulationNumber = 9
+simulationNumber = 4
 
-saveFigures = True
+saveFigures = False
 #############################################################
 
 def main(simulationNumber=0, saveFigures=False):
@@ -217,7 +212,7 @@ def main(simulationNumber=0, saveFigures=False):
         xRange = [0,16]
         yRange = [0,9]
 
-        t_fact = 0.09 # Speed up / slow down simulation
+        t_fact = 0.17 # Speed up / slow down simulation
 
         #x_init = np.vstack((np.ones(N)*16,
         #                    np.linspace(0,9,num=N) ))b
@@ -299,18 +294,13 @@ def main(simulationNumber=0, saveFigures=False):
         obs[1].func_xd = func_xd2
 
         N = 20
-
         x_init = samplePointsAtBorder(N, xRange, yRange)
         collisions = obs_check_collision(x_init, obs)
         x_init = x_init[:,collisions[0]]
 
         attractorPos = [4,8]
 
-        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.005, N_simuMax=1040, convergenceMargin=0.3, sleepPeriod=0.01,attractorPos=attractorPos )
-
-        if False: #save animation
-            anim.ani.save('ani/animation_multipleObstacles_conv.mp4', dpi=100, fps=25)
-            print('Saving finished.')
+        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.002, N_simuMax=750, convergenceMargin=0.3, sleepPeriod=0.01, attractorPos=attractorPos, hide_ticks=False, saveFigure=saveFigures, animationName='replication_humans')
 
     elif simulationNumber==5:
         xRange = [-4,4]
@@ -350,7 +340,7 @@ def main(simulationNumber=0, saveFigures=False):
 
         N = 10
 
-        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.002, N_simuMax=1040, convergenceMargin=0.3, sleepPeriod=0.01)
+        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.001, N_simuMax=1040, convergenceMargin=0.3, sleepPeriod=0.01)
 
         if True: #save animation
             anim.ani.save('ani/animation_peopleWalking.mp4', dpi=100, fps=25)
@@ -434,9 +424,18 @@ def main(simulationNumber=0, saveFigures=False):
             x0 = [10,-7],
             th_r = 0,
             sf = 1.0,
-            xd = [-5,5],
+            xd = [-6,7],
             x_start=0,
             x_end=10))
+
+        ob = Obstacle(
+            a = [0.3,0.4],
+            p = [1,1],
+            x0 = [9,4],
+            th_r = 0,
+            sf = 1.0
+            )
+        obs.append(ob)
 
         xRange = [-1,10]
         yRange = [-5,5]
@@ -471,45 +470,40 @@ def main(simulationNumber=0, saveFigures=False):
 
         run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.005, N_simuMax=620, convergenceMargin=0.3, sleepPeriod=0.01, saveFigure=saveFigures, animationName="rotatingEllipse")
 
-    elif simulationNumber ==10:
+
+    if simulationNumber ==10:
         xAttractor = np.array([0,0])
-        centr = [1.5, 3.0]
+        centr = [2, 2.5]
 
-        ### Three obstacles touching -- no common center, no convergence
         obs = []
-        a = [0.6,0.6]
-        p = [1,1]
-        x0 = [1.5, .7]
-        th_r = -60/180*pi
-        sf = 1.2
-        obs.append(Obstacle(a=a, p=p, x0=x0,th_r=th_r, sf=sf))
+        obs.append(Obstacle(
+            a = [0.4,3],
+            p = [1,1],
+            x0 = [2,0],
+            th_r = 0,
+            sf = 1.0,
+            w = 3,
+            x_start=0,
+            x_end=10))
 
-        a = [1,0.4]
-        p = [1,4]
-        x0 = [3, -00.8]
-        th_r= +60/180*pi
-        sf = 1.2
-        obs.append(Obstacle(a=a, p=p, x0=x0,th_r=th_r, sf=sf))
+        obs.append(Obstacle(
+            a = [0.4,0.3],
+            p = [1,1],
+            x0 = [4,3],
+            th_r = 0,
+            sf = 1.0
+        
+        ))
 
-        a = [1.2,0.2]
-        p = [2,2]
-        x0 = [2.3,.1]
-        th_r = 20/180*pi
-        sf = 1.2
-        obs.append(Obstacle(a=a, p=p, x0=x0,th_r=th_r, sf=sf))
-
+        xRange = [-3,7]
+        yRange = [-5,5]
+        
         N = 20
-
-        xRange = [-0.5,5.5]
-        yRange = [-2.5,2.5]
 
         x_init = samplePointsAtBorder(N, xRange, yRange)
 
-        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.005, N_simuMax=int(800/3), convergenceMargin=0.3, sleepPeriod=0.01)
+        run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.005, N_simuMax=620, convergenceMargin=0.3, sleepPeriod=0.01, saveFigure=saveFigures, animationName="rotatingEllipseWithStaticp")
 
-        if True: #save animation
-            anim.ani.save('ani/animation_multipleObstacles_noConv.mp4', dpi=100, fps=25)
-            print('Saving finished.')
 
     if simulationNumber ==11:
         dy =2.5
@@ -552,7 +546,7 @@ def main(simulationNumber=0, saveFigures=False):
         run_animation(x_init, obs, xRange=xRange, yRange=yRange, dt=0.005, N_simuMax=600, convergenceMargin=0.3, sleepPeriod=0.01)
 
     elif simulationNumber==13:
-        N = 10
+        N = 15
         x_init = np.vstack((np.ones(N)*1,
                             np.linspace(-1,1,num=N),
                             np.linspace(-1,1,num=N) ))

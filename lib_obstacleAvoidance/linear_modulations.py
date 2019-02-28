@@ -60,8 +60,7 @@ def obs_avoidance_interpolation_moving(x, xd, obs=[], attractor='none', weightPo
 
     # Rotation matrix
     R = np.zeros((d,d,N_obs))
-    
-    xd_obs = np.zeros((d))
+
 
     for n in range(N_obs):
         # Move the position into the obstacle frame of reference
@@ -72,10 +71,18 @@ def obs_avoidance_interpolation_moving(x, xd, obs=[], attractor='none', weightPo
 
         # Move to obstacle centered frame
         x_t = R[:,:,n].T @ (x-obs[n].x0)
-        
         E[:,:,n], D[:,:,n], Gamma[n], E_orth[:,:,n] = compute_modulation_matrix(x_t,obs[n], R[:,:,n])
         
-        
+    if N_attr:
+        d_a = LA.norm(x - np.array(attractor)) # Distance to attractor
+        weight = compute_weights(np.hstack((Gamma, [d_a])), N_obs+N_attr)
+
+    else:
+        weight = compute_weights(Gamma, N_obs)
+    xd_obs = np.zeros((d))
+
+    
+    for n in range(N_obs):
         if d==2:
             xd_w = np.cross(np.hstack(([0,0], obs[n].w)),
                             np.hstack((x-np.array(obs[n].x0),0)))
@@ -86,14 +93,14 @@ def obs_avoidance_interpolation_moving(x, xd, obs=[], attractor='none', weightPo
             warnings.warn('NOT implemented for d={}'.format(d))
 
         #the exponential term is very helpful as it help to avoid the crazy rotation of the robot due to the rotation of the object
-        xd_obs_n = np.exp(-1/obs[n].sigma*(max([Gamma[n],1])-1))*(np.array(obs[n].xd) + xd_w)
+        exp_weight = np.exp(-1/obs[n].sigma*(np.max([Gamma[n],1])-1))
+        xd_obs_n = exp_weight*(np.array(obs[n].xd) + xd_w)
 
         xd_obs_n = E_orth[:,:,n].T @ xd_obs_n
         xd_obs_n[0] = np.max(xd_obs_n[0], 0) # Onl use orthogonal part 
-        
         xd_obs_n = E_orth[:,:,n] @ xd_obs_n
-
-        xd_obs = xd_obs + xd_obs_n
+        
+        xd_obs = xd_obs + xd_obs_n*weight[n]
 
     xd = xd-xd_obs #computing the relative velocity with respect to the obstacle
 
@@ -145,16 +152,11 @@ def obs_avoidance_interpolation_moving(x, xd, obs=[], attractor='none', weightPo
     xd_hat_magnitude = np.sqrt(np.sum(xd_hat**2, axis=0) )
     
     if N_attr: #nonzero
-        # Enforce convergence in the region of the attractor
-        d_a = LA.norm(x - np.array(attractor)) # Distance to attractor
-        
-        weight = compute_weights(np.hstack((Gamma, [d_a])), N_obs+N_attr)
 
         k_ds = np.hstack((k_ds, np.zeros((d-1, N_attr)) )) # points at the origin
 
         xd_hat_magnitude = np.hstack((xd_hat_magnitude, LA.norm((xd))*np.ones(N_attr) ))
-    else:
-        weight = compute_weights(Gamma, N_obs)
+
         
     # Weighted interpolation for several obstacles
     weight = weight**weightPow
@@ -176,8 +178,6 @@ def obs_avoidance_interpolation_moving(x, xd, obs=[], attractor='none', weightPo
 
     # transforming back from object frame of reference to inertial frame of reference
     xd = xd + xd_obs
-
-    
 
     return xd
 
@@ -238,7 +238,8 @@ def compute_modulation_matrix(x_t, obs, R):
             if dim ==2:
                 E_orth[0, 1] = E_orth[1, 0]
                 E_orth[1, 1] = - E_orth[0, 0]
-
+                
+            # TODO higher dimensions
             # E[:dim-(ii), ii] = normal_vector[:dim-(ii)]*normal_vector[dim-(ii)]
             # E[dim-(ii), ii] = -np.dot(normal_vector[:dim-(ii)], normal_vector[:dim-(ii)])
 
@@ -268,29 +269,30 @@ def obs_avoidance_rk4(dt, x, obs, obs_avoidance=obs_avoidance_interpolation_movi
 
     if type(x0)==bool:
         x0 = np.zeros(np.array(x).shape[0])
-    
+
     # k1
     xd = ds(x, x0)
-    xd = obs_avoidance(x, xd, obs)
     xd = velConst_attr(x, xd, x0)
+    xd = obs_avoidance(x, xd, obs)
     k1 = dt*xd
 
     # k2
     xd = ds(x+0.5*k1, x0)
-    xd = obs_avoidance(x+0.5*k1, xd, obs)
     xd = velConst_attr(x, xd, x0)
+    xd = obs_avoidance(x+0.5*k1, xd, obs)
     k2 = dt*xd
 
     # k3
     xd = ds(x+0.5*k2, x0)
-    xd = obs_avoidance(x+0.5*k2, xd, obs)
     xd = velConst_attr(x, xd, x0)
+    xd = obs_avoidance(x+0.5*k2, xd, obs)
+    
     k3 = dt*xd
 
     # k4
     xd = ds(x+k3, x0)
-    xd = obs_avoidance(x+k3, xd, obs)
     xd = velConst_attr(x, xd, x0)
+    xd = obs_avoidance(x+k3, xd, obs)
     k4 = dt*xd
 
     # x final
