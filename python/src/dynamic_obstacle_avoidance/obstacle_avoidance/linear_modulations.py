@@ -9,8 +9,8 @@ Copyright (c) 2019 under GPU license.
 import numpy as np
 import numpy.linalg as LA
 
-from lib_ds.dynamicalSystem_lib import *
-from lib_obstacleAvoidance.lib_modulation import *
+from dynamic_obstacle_avoidance.dynamical_system.dynamical_system_representation import *
+from dynamic_obstacle_avoidance.obstacle_avoidance.modulation import *
 
 import warnings
 

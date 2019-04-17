@@ -12,16 +12,12 @@ import matplotlib
 
 import time
 
-# Custom libraries
-from lib_ds.dynamicalSystem_lib import *
-
-from lib_obstacleAvoidance.class_obstacle import *
-from lib_obstacleAvoidance.lib_modulation import *
-
-from lib_obstacleAvoidance.obs_common_section import *
-from lib_obstacleAvoidance.obs_dynamic_center_3d import *
-
-from lib_obstacleAvoidance.linear_modulations import *
+from dynamic_obstacle_avoidance.dynamical_system.dynamical_system_representation import *
+from dynamic_obstacle_avoidance.obstacle_avoidance.obstacle import *
+from dynamic_obstacle_avoidance.obstacle_avoidance.modulation import *
+from dynamic_obstacle_avoidance.obstacle_avoidance.obs_common_section import *
+from dynamic_obstacle_avoidance.obstacle_avoidance.obs_dynamic_center_3d import *
+from dynamic_obstacle_avoidance.obstacle_avoidance.linear_modulations import *
 
 def pltLines(pos0, pos1, xlim=[-100,100], ylim=[-100,100]):
     if pos1[0]-pos0[0]: # m < infty

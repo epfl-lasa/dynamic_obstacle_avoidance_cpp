@@ -5,7 +5,7 @@ from math import pi, floor
 import matplotlib.pyplot as plt # only for debugging
 import warnings
 
-from lib_obstacleAvoidance.lib_modulation import compute_weights
+from dynamic_obstacle_avoidance.obstacle_avoidance.modulation import compute_weights
 
 def dynamic_center_3d(obs, intersection_obs, marg_dynCenter=1.3, N_distStep=3, resol_max=1000, N_resol = 16, numbFactor_closest=2 ):
     # TODO -- extend to 3 or more obstacles

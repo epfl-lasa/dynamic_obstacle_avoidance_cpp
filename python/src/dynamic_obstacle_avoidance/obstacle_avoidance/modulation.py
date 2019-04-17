@@ -13,7 +13,7 @@ from math import cos, sin
 
 import warnings
 
-from lib_ds.dynamicalSystem_lib import *
+from dynamic_obstacle_avoidance.dynamical_system.dynamical_system_representation import *
 
 
 def getGammmaValue_ellipsoid(ob, x_t, relativeDistance=True):

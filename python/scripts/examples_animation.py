@@ -11,10 +11,9 @@ from numpy import pi
 
 import time
 
-from lib_obstacleAvoidance.class_obstacle import *
-from lib_obstacleAvoidance.lib_modulation import *
-
-from lib_visualization.animated_simulation import run_animation, samplePointsAtBorder
+from dynamic_obstacle_avoidance.obstacle_avoidance.obstacle import *
+from dynamic_obstacle_avoidance.obstacle_avoidance.modulation import *
+from dynamic_obstacle_avoidance.visualization.animated_simulation import run_animation, samplePointsAtBorder
 
 print(' ----- Script <<dynamic simulation>> started. ----- ')
 #############################################################
