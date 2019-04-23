@@ -30,7 +30,7 @@ include_directories(
 
 set(CORE_SOURCES
  	src/Obstacle/Obstacle.cpp
- 	src/Obstacle/Ellipsoid.cpp
+ 	src/Obstacle/Ellipsoid2D.cpp
 	src/Modulation.cpp
   	src/Agent.cpp
 )
@@ -66,7 +66,7 @@ if (runtests)
 		${PROJECT_NAME}
 	)
 
-	add_executable(runTestObstacle tests/testObstacle.cpp)
+	add_executable(runTestObstacle tests/testEllipsoid2DObstacle.cpp)
 	target_link_libraries(runTestObstacle
 		gtest 
 		gtest_main
