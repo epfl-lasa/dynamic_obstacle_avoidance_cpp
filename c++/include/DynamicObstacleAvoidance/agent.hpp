@@ -13,25 +13,25 @@
 class Agent
 {
 private:
-	Eigen::VectorXf position;
-	Eigen::VectorXf orientation;
-	Eigen::VectorXf velocity;
+	Eigen::Vector3f position;
+	Eigen::Vector4f orientation;
+	Eigen::Vector3f velocity;
 	double safety_margin;
 
 public:
-	explicit Agent(Eigen::VectorXf& position, Eigen::VectorXf& orientation, double safety_margin=0.0);
+	explicit Agent(Eigen::Vector3f& position, Eigen::Vector4f& orientation, double safety_margin=0.0);
 
-	inline const Eigen::VectorXf get_position() const 
+	inline const Eigen::Vector3f get_position() const 
 	{ 
 		return this->position;
 	}
 
-	inline const Eigen::VectorXf get_orientation() const 
+	inline const Eigen::Vector4f get_orientation() const 
 	{ 
 		return this->orientation;
 	}
 
-	inline const Eigen::VectorXf get_velocity() const
+	inline const Eigen::Vector3f get_velocity() const
 	{
 		return this->velocity;
 	}

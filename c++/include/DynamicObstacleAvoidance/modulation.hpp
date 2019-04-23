@@ -15,11 +15,11 @@
 
 namespace Modulation
 {
-     Eigen::VectorXf compute_direction_to_obstacle(const Obstacle& obstacle, const Eigen::VectorXf& agent_position);
-     Eigen::VectorXf compute_normal_to_obstacle(const Obstacle& obstacle, const Eigen::VectorXf& agent_position);
-     double compute_distance_to_obstacle(const Obstacle& obstacle, const Eigen::VectorXf& agent_position);
+     Eigen::Vector3f compute_direction_to_obstacle(const Obstacle& obstacle, const Eigen::Vector3f& agent_position);
+     Eigen::Vector3f compute_normal_to_obstacle(const Obstacle& obstacle, const Eigen::Vector3f& agent_position);
+     double compute_distance_to_obstacle(const Obstacle& obstacle, const Eigen::Vector3f& agent_position);
      Eigen::MatrixXf compute_eigenvalues();
-     Eigen::VectorXf weight_obstacles(Eigen::VectorXf& distances, double critical_distance, double weight_power);
+     Eigen::ArrayXf weight_obstacles(Eigen::ArrayXf& distances, double critical_distance, double weight_power);
 
 
      /**
@@ -33,7 +33,7 @@ namespace Modulation
      * @param[out] eigenValues Eigenvalue matrix which is responsible for the modulation
       */
      double compute_modulation_matrix(const Agent& agent, const Obstacle& obstacle, Eigen::MatrixXf& basis, Eigen::MatrixXf& orthogonal_basis, Eigen::MatrixXf& eigenvalues);
-	Eigen::VectorXf modulate_velocity(Eigen::VectorXf& agent_pose, Eigen::VectorXf& agent_velocity, const std::list<Obstacle>& obstacles, const std::list<Eigen::VectorXf>& attractors_position);
+	Eigen::Vector3f modulate_velocity(Eigen::Vector3f& agent_position, Eigen::Vector3f& agent_velocity, const std::list<Obstacle>& obstacles, const std::list<Eigen::Vector3f>& attractors_position);
 }
 
 #endif
