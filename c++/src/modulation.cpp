@@ -29,6 +29,31 @@ namespace Modulation
 		return distance_to_obstacle;
 	}
 
+	Eigen::VectorXf weight_obstacles(Eigen::VectorXf& distances, double critical_distance, double weight_power)
+	{
+		Eigen::VectorXf weights(distances.size());
+		Eigen::VectorXf critical_obstacles(distances.size());
+
+		int sum_critical_obstacles = 0;
+		for(int i=0; i<distances.size(); ++i) 
+		{
+			int tmp_value = (distances(i) <= critical_distance) ? 1 : 0;
+			critical_obstacles(i) = tmp_value;
+			sum_critical_obstacles += tmp_value;
+		}
+
+		if(sum_critical_obstacles > 0)
+		{
+			weights = critical_obstacles / sum_critical_obstacles;
+		}
+		else
+		{
+			weights = Eigen::pow(distances.array() - critical_distance, -weight_power);
+			weights /= weights.sum();
+		}
+		return weights;
+	}
+
 	Eigen::VectorXf modulate_velocity(const Agent& agent, const std::list<Obstacle>& obstacles, const std::list<Eigen::VectorXf>& attractor_positions)
 	{
 		if(obstacles.empty()) return agent.get_velocity();
@@ -38,8 +63,9 @@ namespace Modulation
 		std::list<Eigen::MatrixXf> basis_list;
 		std::list<Eigen::MatrixXf> orthogonal_basis_list;
 		std::list<Eigen::MatrixXf> eigenvalues_list;
-		std::list<double> distances_list;
+		Eigen::VectorXf distances(obstacles.size());
 
+		int k = 0;
 		for(const Obstacle& obs:obstacles)
 		{
 			Eigen::MatrixXf basis(dim, dim);
@@ -50,7 +76,9 @@ namespace Modulation
 			basis_list.push_back(basis);
 			orthogonal_basis_list.push_back(orthogonal_basis);
 			eigenvalues_list.push_back(eigenvalues);
-			distances_list.push_back(distance);
+			
+			distances(k) = distance;
+			++k;
 		}
 	}
 }

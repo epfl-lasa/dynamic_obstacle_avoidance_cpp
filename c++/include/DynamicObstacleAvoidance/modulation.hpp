@@ -15,11 +15,11 @@
 
 namespace Modulation
 {
-     Eigen::VectorXf direction_to_obstacle(const Obstacle& obstacle, const Eigen::VectorXf& agent_position);
-     Eigen::VectorXf normal_to_obstacle(const Obstacle& obstacle, const Eigen::VectorXf& agent_position);
-     double distance_to_obstacle(const Obstacle& obstacle, const Eigen::VectorXf& agent_position);
-     Eigen::VectorXf weight_obstacle(const Obstacle& obstacle, double distance);
+     Eigen::VectorXf compute_direction_to_obstacle(const Obstacle& obstacle, const Eigen::VectorXf& agent_position);
+     Eigen::VectorXf compute_normal_to_obstacle(const Obstacle& obstacle, const Eigen::VectorXf& agent_position);
+     double compute_distance_to_obstacle(const Obstacle& obstacle, const Eigen::VectorXf& agent_position);
      Eigen::MatrixXf compute_eigenvalues();
+     Eigen::VectorXf weight_obstacles(Eigen::VectorXf& distances, double critical_distance, double weight_power);
 
 
      /**
