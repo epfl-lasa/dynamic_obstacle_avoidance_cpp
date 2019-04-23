@@ -15,7 +15,8 @@ class Agent
 private:
 	Eigen::Vector3f position;
 	Eigen::Vector4f orientation;
-	Eigen::Vector3f velocity;
+	Eigen::Vector3f linear_velocity;
+	Eigen::Vector3f angular_velocity;
 	double safety_margin;
 
 public:
@@ -31,9 +32,14 @@ public:
 		return this->orientation;
 	}
 
-	inline const Eigen::Vector3f get_velocity() const
+	inline const Eigen::Vector3f get_linear_velocity() const
 	{
-		return this->velocity;
+		return this->linear_velocity;
+	}
+
+	inline const Eigen::Vector3f get_angular_velocity() const
+	{
+		return this->angular_velocity;
 	}
 
 	inline double get_safety_margin() const

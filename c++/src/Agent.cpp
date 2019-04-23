@@ -1,4 +1,4 @@
-#include "DynamicObstacleAvoidance/agent.hpp"
+#include "DynamicObstacleAvoidance/Agent.hpp"
 
 Agent::Agent(Eigen::Vector3f& position, Eigen::Vector4f& orientation, double safety_margin):
 position(position), orientation(orientation), safety_margin(safety_margin)

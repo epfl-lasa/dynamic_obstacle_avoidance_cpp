@@ -5,8 +5,8 @@
  * @date 2019/04/16
  */
 
-#ifndef DYNAMIC_OBSTACLE_AVOIDANCE_OBSTACLE_H_
-#define DYNAMIC_OBSTACLE_AVOIDANCE_OBSTACLE_H_
+#ifndef DYNAMIC_OBSTACLE_AVOIDANCE_OBSTACLE_OBSTACLE_H_
+#define DYNAMIC_OBSTACLE_AVOIDANCE_OBSTACLE_OBSTACLE_H_
 
 #include <eigen3/Eigen/Core>
 
@@ -16,6 +16,8 @@ private:
 	Eigen::Vector3f center_position;
 	Eigen::Vector4f center_orientation;
 	Eigen::Vector3f reference_position;
+
+	Eigen::Vector3f linear_velocity;
 	Eigen::Vector3f angular_velocity;
 	double safety_margin;
 
@@ -39,6 +41,11 @@ public:
 		return this->reference_position;
 	}
 
+	inline const Eigen::Vector3f get_linear_velocity() const 
+	{ 
+		return this->linear_velocity;
+	}
+
 	inline const Eigen::Vector3f get_angular_velocity() const 
 	{ 
 		return this->angular_velocity;
@@ -49,8 +56,8 @@ public:
 		return this->safety_margin;
 	}
 
-	Eigen::VectorXf compute_normal_to_external_point(const Eigen::Vector3f& external_point) const;
-	double compute_distance_to_external_point(const Eigen::Vector3f& external_point) const;
+	virtual Eigen::VectorXf compute_normal_to_external_point(const Eigen::Vector3f& external_point) const;
+	virtual double compute_distance_to_external_point(const Eigen::Vector3f& external_point) const;
 };
 
 #endif

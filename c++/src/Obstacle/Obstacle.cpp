@@ -1,4 +1,4 @@
-#include "DynamicObstacleAvoidance/obstacle.hpp"
+#include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
 
 Obstacle::Obstacle(Eigen::Vector3f& center_position, Eigen::Vector4f& center_orientation, Eigen::Vector3f& reference_position, double safety_margin): 
 center_position(center_position), center_orientation(center_orientation), reference_position(reference_position), safety_margin(safety_margin)

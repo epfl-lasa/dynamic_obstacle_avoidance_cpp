@@ -1,4 +1,4 @@
-#include "DynamicObstacleAvoidance/modulation.hpp"
+#include "DynamicObstacleAvoidance/Modulation.hpp"
 
 namespace Modulation
 {
@@ -29,7 +29,7 @@ namespace Modulation
 		return distance_to_obstacle;
 	}
 
-	Eigen::ArrayXf weight_obstacles(Eigen::ArrayXf& distances, double critical_distance, double weight_power)
+	Eigen::ArrayXf weight_obstacles(const Eigen::ArrayXf& distances, double critical_distance, double weight_power)
 	{
 		Eigen::ArrayXf weights(distances.size());
 		Eigen::ArrayXf critical_obstacles(distances.size());
@@ -54,15 +54,36 @@ namespace Modulation
 		return weights;
 	}
 
-	Eigen::Vector3f modulate_velocity(const Agent& agent, const std::list<Obstacle>& obstacles, const std::list<Eigen::Vector3f>& attractor_positions)
+	Eigen::Vector3f compute_relative_velocity(const Agent& agent, const std::deque<Obstacle>& obstacles, const Eigen::ArrayXf& distances, const Eigen::ArrayXf& weights, const std::deque<Eigen::MatrixXf>& basis_list)
 	{
-		if(obstacles.empty()) return agent.get_velocity();
+		Eigen::Vector3f obs_velocity;
+		for(int i=0; i<obstacles.size(); ++i)
+		{
+			const Obstacle o = obstacles[i];
+			Eigen::Vector3f angular_velocity = o.get_angular_velocity().cross(agent.get_position() - o.get_center_position());
+			double exp_weight = exp(-(1 + std::max<float>(1.0, distances(i))));
+
+			Eigen::Vector3f obs_velocity_tmp = exp_weight * (o.get_linear_velocity() + angular_velocity);
+			obs_velocity_tmp = basis_list[i].transpose() * obs_velocity_tmp;
+			// use only the orthogonal part
+			obs_velocity_tmp(0) = std::max<float>(0.0, obs_velocity_tmp(0));
+			obs_velocity_tmp = basis_list[i] * obs_velocity_tmp;
+
+			// sum to get the velocity of all obstackes
+			obs_velocity += obs_velocity_tmp * weights(i);
+		}
+		return agent.get_linear_velocity() - obs_velocity;
+	}
+
+	Eigen::Vector3f modulate_velocity(const Agent& agent, const std::deque<Obstacle>& obstacles, const std::deque<Eigen::Vector3f>& attractor_positions)
+	{
+		if(obstacles.empty()) return agent.get_linear_velocity();
 		int dim = agent.get_position().size();
 
 		// initialize the list of matrices for calculation
-		std::list<Eigen::MatrixXf> basis_list;
-		std::list<Eigen::MatrixXf> orthogonal_basis_list;
-		std::list<Eigen::MatrixXf> eigenvalues_list;
+		std::deque<Eigen::MatrixXf> basis_list;
+		std::deque<Eigen::MatrixXf> orthogonal_basis_list;
+		std::deque<Eigen::MatrixXf> eigenvalues_list;
 		Eigen::ArrayXf distances(obstacles.size());
 
 		// compute all necessary elements to calculation the modulation matrix
@@ -82,6 +103,8 @@ namespace Modulation
 			++k;
 		}
 		Eigen::ArrayXf weights = Modulation::weight_obstacles(distances, 1.0, 2.0);
+
+		
 
 	}
 }
