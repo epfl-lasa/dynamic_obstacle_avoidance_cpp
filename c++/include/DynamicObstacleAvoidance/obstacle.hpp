@@ -10,45 +10,41 @@
 
 #include <eigen3/Eigen/Core>
 
-using namespace Eigen;
-
 class Obstacle 
 {
 private:
-	VectorXf position;
-	VectorXf orientation;
-	VectorXf axis;
-	VectorXf curvature;
+	Eigen::VectorXf center_position;
+	Eigen::VectorXf center_orientation;
+	Eigen::VectorXf reference_position;
 	double safety_margin;
 
 public:
-	explicit Obstacle(VectorXf& position, VectorXf& orientation, VectorXf& axis, VectorXf& curvature, double safety_margin);
+	explicit Obstacle(Eigen::VectorXf& center_position, Eigen::VectorXf& center_orientation, Eigen::VectorXf& reference_position, double safety_margin=0);
+	explicit Obstacle(Eigen::VectorXf& center_position, Eigen::VectorXf& center_orientation, double safety_margin=0);
 	~Obstacle();
 
-	inline const VectorXf get_axis() const 
+	inline const Eigen::VectorXf get_center_position() const 
 	{ 
-		return this->axis;
+		return this->center_position;
 	}
 
-	inline const VectorXf get_curvature() const 
+	inline const Eigen::VectorXf get_center_orientation() const 
 	{ 
-		return this->curvature;
+		return this->center_orientation;
 	}
 
-	inline const VectorXf get_position() const 
+	inline const Eigen::VectorXf get_reference_position() const 
 	{ 
-		return this->position;
-	}
-
-	inline const VectorXf get_orientation() const
-	{
-		return this->orientation;
+		return this->reference_position;
 	}
 
 	inline double get_safety_margin() const
 	{ 
 		return this->safety_margin;
 	}
+
+	Eigen::VectorXf compute_normal_to_external_point(const Eigen::VectorXf& external_point) const;
+	double compute_distance_to_external_point(const Eigen::VectorXf& external_point) const;
 };
 
 #endif

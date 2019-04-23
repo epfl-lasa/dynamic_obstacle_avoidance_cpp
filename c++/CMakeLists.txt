@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
-# Options. Turn on with 'cmake -Dmyvarname=ON'.
-option(test "Build all tests." OFF) # Makes boolean 'test' available.
+# Options. Turn on with 'cmake -Druntests=ON'.
+option(runtests "Build all tests." OFF) # Makes boolean 'test' available.
 
 project(dynamic_obstacle_avoidance)
 
@@ -31,6 +31,7 @@ include_directories(
 set(CORE_SOURCES
 	src/obstacle.cpp
 	src/modulation.cpp
+  src/agent.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${CORE_SOURCES})
@@ -43,7 +44,7 @@ install(TARGETS ${PROJECT_NAME}
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
 
-if (test)
+if (runtests)
 	if (APPLE)
     	add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
     	add_definitions(-D__GLIBCXX__)
