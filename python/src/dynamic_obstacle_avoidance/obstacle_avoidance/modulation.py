@@ -153,7 +153,7 @@ def compute_weights(distMeas, N=0, distMeas_min=1, weightType='inverseGamma', we
     distMeas = np.array(distMeas)
     n_points = distMeas.shape[0]
     
-    critical_points = distMeas < distMeas_min
+    critical_points = distMeas <= distMeas_min
     
     if np.sum(critical_points): # at least one
         if np.sum(critical_points)==1:
@@ -166,7 +166,7 @@ def compute_weights(distMeas, N=0, distMeas_min=1, weightType='inverseGamma', we
             return w
         
     if weightType == 'inverseGamma':
-        distMeas = np.max(np.vstack((distMeas-distMeas_min, np.zeros(distMeas.shape))) , axis=0)
+        distMeas = distMeas - distMeas_min
         w = 1/distMeas**weightPow
         w = w/np.sum(w) # Normalization
 
