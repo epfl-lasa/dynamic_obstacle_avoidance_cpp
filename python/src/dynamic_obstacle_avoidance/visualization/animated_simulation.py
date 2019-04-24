@@ -9,8 +9,6 @@ Dynamic Simulation - Obstacle Avoidance Algorithm
 import numpy as np
 from numpy import pi
 
-from math import ceil
-
 import time
 
 # Visualization libraries
@@ -37,8 +35,8 @@ def samplePointsAtBorder(N, xRange, yRange):
     dx = xRange[1]-xRange[0]
     dy = yRange[1]-yRange[0]
 
-    N_x = ceil(dx/(2*(dx+dy))*(N))+2
-    N_y = ceil(dx/(2*(dx+dy))*(N))-0
+    N_x = np.ceil(dx/(2*(dx+dy))*(N))+2
+    N_y = np.ceil(dx/(2*(dx+dy))*(N))-0
 
     x_init = np.vstack((np.linspace(xRange[0],xRange[1], num=N_x), np.ones(N_x)*yRange[0]) )
 

@@ -1,0 +1,10 @@
+name: dynamic_obstacle_avoidance
+dependencies:
+  - python=3.7
+  - numpy
+  - matplotlib
+  # - mpl_toolkits
+  - time
+j  # - math
+  - warnings
+  - sys
