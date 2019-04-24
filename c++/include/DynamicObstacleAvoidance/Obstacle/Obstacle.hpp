@@ -56,7 +56,7 @@ public:
 		return this->safety_margin;
 	}
 
-	virtual Eigen::VectorXf compute_normal_to_external_point(const Eigen::Vector3f& external_point) const;
+	virtual Eigen::Vector3f compute_normal_to_external_point(const Eigen::Vector3f& external_point) const;
 	virtual double compute_distance_to_external_point(const Eigen::Vector3f& external_point) const;
 };
 

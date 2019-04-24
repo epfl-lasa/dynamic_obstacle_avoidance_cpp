@@ -10,7 +10,7 @@ Obstacle(center_position, center_orientation, center_position, safety_margin)
 
 Obstacle::~Obstacle() {}
 
-Eigen::VectorXf Obstacle::compute_normal_to_external_point(const Eigen::Vector3f& external_point) const
+Eigen::Vector3f Obstacle::compute_normal_to_external_point(const Eigen::Vector3f& external_point) const
 {}
 
 double Obstacle::compute_distance_to_external_point(const Eigen::Vector3f& external_point) const
