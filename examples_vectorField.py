@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 # Custom libraries
 from lib_ds.dynamicalSystem_lib import *
-from lib_visualization.vectorField_visualization import *  #
+from lib_visualization.vectorField_visualization import * 
 
 ########################################################################
 # Chose the option you want to run as a number in the option list (integer from -2 to 10)
