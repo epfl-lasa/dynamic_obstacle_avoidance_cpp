@@ -1,8 +1,9 @@
 #include "DynamicObstacleAvoidance/Modulation.hpp"
+#include "DynamicObstacleAvoidance/Obstacle/Ellipsoid2D.hpp"
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
 
-TEST(WeightObstacleTestUnderCriticalDistance, PositiveNos)
+TEST(WeightObstacleUnderCriticalDistance, PositiveNos)
 {
 	Eigen::ArrayXf distances(5);
 	distances << 0, 1, 2, 3, 4;
@@ -20,7 +21,7 @@ TEST(WeightObstacleTestUnderCriticalDistance, PositiveNos)
 	for(int i=0; i<weights.size(); ++i) ASSERT_NEAR(weights(i), true_values(i), 0.00001);
 }
 
-TEST(WeightObstacleTestFirstEqualCriticalDistance, PositiveNos)
+TEST(WeightObstacleFirstEqualCriticalDistance, PositiveNos)
 {
 	Eigen::ArrayXf distances(5);
 	distances << 1, 2, 3, 4, 5;
@@ -38,7 +39,7 @@ TEST(WeightObstacleTestFirstEqualCriticalDistance, PositiveNos)
 	for(int i=0; i<weights.size(); ++i) ASSERT_NEAR(weights(i), true_values(i), 0.00001);
 }
 
-TEST(WeightObstacleTestAboveCriticalDistance, PositiveNos)
+TEST(WeightObstacleAboveCriticalDistance, PositiveNos)
 {
 	Eigen::ArrayXf distances(5);
 	distances << 2, 3, 4, 5, 6;
@@ -55,6 +56,53 @@ TEST(WeightObstacleTestAboveCriticalDistance, PositiveNos)
 
 	for(int i=0; i<weights.size(); ++i) ASSERT_NEAR(weights(i), true_values(i), 0.00001);
 }
+
+TEST(ComputeBasisMatrices, PositiveNos)
+{
+	Eigen::Vector3f position;
+	position << 2, 1, 0;
+
+	Eigen::Vector4f orientation;
+	orientation << 0, 0, 0, 1;
+
+	Ellipsoid2D e(position, orientation);
+
+	Eigen::Vector3f agent_position;
+	agent_position << 1, 0, 0;
+
+	Eigen::Vector3f normal = e.compute_normal_to_external_point(agent_position);
+	auto basis_matrices = Modulation::compute_basis_matrices(normal, agent_position, e.get_reference_position());
+
+	Eigen::Matrix3f reference_basis = std::get<0>(basis_matrices);
+	Eigen::Matrix3f orthogonal_basis = std::get<1>(basis_matrices);
+
+	Eigen::Matrix3f reference_basis_truth;
+	reference_basis_truth << -0.70710678, -0.70710678, 0,
+							 -0.70710678, 0.70710678, 0,
+							 0, 0, 1;
+	Eigen::Matrix3f orthogonal_basis_truth;
+	orthogonal_basis_truth << -0.70710678, -0.70710678, 0,
+							  -0.70710678, 0.70710678, 0,
+							  0, 0, 1;
+
+	std::cerr << "reference_basis: " << std::endl;
+	std::cerr << reference_basis << std::endl;
+	std::cerr << "--------------" << std::endl;
+	std::cerr << "reference_basis_truth: " << std::endl;
+	std::cerr << reference_basis_truth << std::endl;
+
+	std::cerr << "orthogonal_basis: " << std::endl;
+	std::cerr << orthogonal_basis << std::endl;
+	std::cerr << "--------------" << std::endl;
+	std::cerr << "orthogonal_basis_truth: " << std::endl;
+	std::cerr << orthogonal_basis_truth << std::endl;
+
+	for(int i=0; i<reference_basis.rows(); ++i)
+	{
+		for(int j=0; i<reference_basis.cols(); ++i) ASSERT_NEAR(reference_basis(i, j), reference_basis_truth(i, j), 0.00001);
+	} 
+}
+
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

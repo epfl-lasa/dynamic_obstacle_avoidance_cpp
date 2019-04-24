@@ -19,8 +19,8 @@ Eigen::Vector3f Ellipsoid2D::compute_normal_to_external_point(const Eigen::Vecto
 	Eigen::Vector3f normal_vector;
 	Eigen::Array2f tmp_values = (2 * this->curvature_factor * point_in_frame.head(2)) / (this->axis_lengths * this->axis_lengths);
 	tmp_values = tmp_values.pow(2 * this->curvature_factor - 1);
-	tmp_values /= tmp_values.matrix().norm();
 	normal_vector << tmp_values(0), tmp_values(1), 0;
+	normal_vector.normalize();
 	return normal_vector;
 }
 

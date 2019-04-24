@@ -9,6 +9,9 @@
 #define DYNAMIC_OBSTACLE_AVOIDANCE_MODULATION_H_
 
 #include <deque>
+#include <tuple>
+#include <utility>
+#include <functional>
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
 #include <math.h>
@@ -23,7 +26,7 @@ namespace Modulation
     double compute_distance_to_obstacle(const Obstacle& obstacle, const Eigen::Vector3f& agent_position);
     Eigen::MatrixXf compute_eigenvalues();
     Eigen::ArrayXf weight_obstacles(const Eigen::ArrayXf& distances, double critical_distance, double weight_power);
-
+    std::pair<Eigen::Matrix3f, Eigen::Matrix3f> compute_basis_matrices(const Eigen::Vector3f& normal_vector, const Eigen::Vector3f& agent_position, const Eigen::Vector3f& obstacle_reference_position);
 
     /**
     * @brief The function evaluates the gamma function and all necessary components needed to construct the modulation function, to ensure safe avoidance of the obstacles.
@@ -35,7 +38,7 @@ namespace Modulation
     * @param[out] basisOrthogonal Orthogonal basis matrix with rows the normal and tangent
     * @param[out] eigenValues Eigenvalue matrix which is responsible for the modulation
     */
-    double compute_modulation_matrix(const Agent& agent, const Obstacle& obstacle, Eigen::MatrixXf& basis, Eigen::MatrixXf& orthogonal_basis, Eigen::MatrixXf& eigenvalues);
+    std::tuple<Eigen::Matrix3f, Eigen::Matrix3f, Eigen::Matrix3f, double> compute_modulation_matrix(const Agent& agent, const Obstacle& obstacle);
     Eigen::Vector3f modulate_velocity(const Agent& agent, const std::deque<Obstacle>& obstacles, const std::deque<Eigen::Vector3f>& attractor_positions);
 }
 

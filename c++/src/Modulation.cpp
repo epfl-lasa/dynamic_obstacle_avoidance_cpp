@@ -18,7 +18,7 @@ namespace Modulation
 		return obstacle.compute_distance_to_external_point(agent_position);
 	}
 
-	double compute_modulation_matrix(const Agent& agent, const Obstacle& obstacle, Eigen::MatrixXf& basis, Eigen::MatrixXf& orthogonal_basis, Eigen::MatrixXf& eigenvalues)
+	std::tuple<Eigen::Matrix3f, Eigen::Matrix3f, Eigen::Matrix3f, double> compute_modulation_matrix(const Agent& agent, const Obstacle& obstacle)
 	{
 		Eigen::Vector3f agent_position = agent.get_position();
 		// compute all necessary vectors
@@ -26,7 +26,10 @@ namespace Modulation
 		Eigen::Vector3f direction_to_obstacle = compute_direction_to_obstacle(obstacle, agent_position);
 		double distance_to_obstacle = compute_distance_to_obstacle(obstacle, agent_position);
 
-		return distance_to_obstacle;
+		Eigen::Matrix3f basis_matrix;
+		Eigen::Matrix3f orthogonal_basis_matrix;
+		Eigen::Matrix3f eigenvalues;
+		return std::make_tuple(basis_matrix, orthogonal_basis_matrix, eigenvalues, distance_to_obstacle);
 	}
 
 	Eigen::ArrayXf weight_obstacles(const Eigen::ArrayXf& distances, double critical_distance, double weight_power)
@@ -52,6 +55,29 @@ namespace Modulation
 			weights /= weights.sum();
 		}
 		return weights;
+	}
+
+	std::pair<Eigen::Matrix3f, Eigen::Matrix3f> compute_basis_matrices(const Eigen::Vector3f& normal_vector, const Eigen::Vector3f& agent_position, const Eigen::Vector3f& obstacle_reference_position)
+	{
+		Eigen::Vector3f unit_vector;
+		unit_vector << 0, 0, 1;
+		Eigen::Vector3f tangent_vector = normal_vector.cross(unit_vector);
+		
+		if(tangent_vector.norm() == 0) 
+		{
+			unit_vector << 1, 0, 0;
+			tangent_vector = normal_vector.cross(unit_vector);
+		}
+
+		Eigen::Vector3f cross_product = normal_vector.cross(tangent_vector);
+		Eigen::Matrix3f orthogonal_basis;
+		orthogonal_basis << normal_vector, tangent_vector, cross_product;
+
+		Eigen::Vector3f reference_direction = agent_position - obstacle_reference_position;
+		reference_direction.normalize();
+		Eigen::Matrix3f reference_basis;
+		reference_basis << reference_direction, tangent_vector, cross_product;
+		return std::make_pair(reference_basis, orthogonal_basis);
 	}
 
 	Eigen::Vector3f compute_relative_velocity(const Agent& agent, const std::deque<Obstacle>& obstacles, const Eigen::ArrayXf& distances, const Eigen::ArrayXf& weights, const std::deque<Eigen::MatrixXf>& basis_list)
@@ -90,16 +116,12 @@ namespace Modulation
 		int k = 0;
 		for(const Obstacle& obs:obstacles)
 		{
-			Eigen::MatrixXf basis(dim, dim);
-			Eigen::MatrixXf orthogonal_basis(dim, dim);
-			Eigen::MatrixXf eigenvalues(dim, dim);
-
-			double distance = compute_modulation_matrix(agent, obs, basis, orthogonal_basis, eigenvalues);
-			basis_list.push_back(basis);
-			orthogonal_basis_list.push_back(orthogonal_basis);
-			eigenvalues_list.push_back(eigenvalues);
+			auto parameters = compute_modulation_matrix(agent, obs);
+			basis_list.push_back(std::get<0>(parameters));
+			orthogonal_basis_list.push_back(std::get<1>(parameters));
+			eigenvalues_list.push_back(std::get<2>(parameters));
 			
-			distances(k) = distance;
+			distances(k) = std::get<3>(parameters);
 			++k;
 		}
 		Eigen::ArrayXf weights = Modulation::weight_obstacles(distances, 1.0, 2.0);
