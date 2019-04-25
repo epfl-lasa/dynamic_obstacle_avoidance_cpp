@@ -7,8 +7,8 @@ TEST(WeightObstacleUnderCriticalDistance, PositiveNos)
 {
 	Eigen::ArrayXf distances(5);
 	distances << 0, 1, 2, 3, 4;
-	double critical_distance = 1.0;
-	double weight_power = 2;
+	float critical_distance = 1.0;
+	float weight_power = 2;
 	Eigen::ArrayXf weights = Modulation::weight_obstacles(distances, critical_distance, weight_power);
 
 	Eigen::ArrayXf true_values(5);
@@ -25,8 +25,8 @@ TEST(WeightObstacleFirstEqualCriticalDistance, PositiveNos)
 {
 	Eigen::ArrayXf distances(5);
 	distances << 1, 2, 3, 4, 5;
-	double critical_distance = 1.0;
-	double weight_power = 2;
+	float critical_distance = 1.0;
+	float weight_power = 2;
 	Eigen::ArrayXf weights = Modulation::weight_obstacles(distances, critical_distance, weight_power);
 
 	Eigen::ArrayXf true_values(5);
@@ -43,8 +43,8 @@ TEST(WeightObstacleAboveCriticalDistance, PositiveNos)
 {
 	Eigen::ArrayXf distances(5);
 	distances << 2, 3, 4, 5, 6;
-	double critical_distance = 1.0;
-	double weight_power = 2;
+	float critical_distance = 1.0;
+	float weight_power = 2;
 	Eigen::ArrayXf weights = Modulation::weight_obstacles(distances, critical_distance, weight_power);
 
 	Eigen::ArrayXf true_values(5);
@@ -101,6 +101,22 @@ TEST(ComputeBasisMatrices, PositiveNos)
 	{
 		for(int j=0; i<reference_basis.cols(); ++i) ASSERT_NEAR(reference_basis(i, j), reference_basis_truth(i, j), 0.00001);
 	} 
+}
+
+TEST(ComputeRelativeVelocity, PositiveNos)
+{
+	Eigen::Vector3f position_o1;
+	position_o1 << 2, 1, 0;
+	Eigen::Vector3f position_o2;
+	position_o2 << 0, 0, 0;
+	Eigen::Vector3f position_o3;
+	position_o3 << 0.9, 0, 0;
+	Eigen::Vector4f orientation;
+	orientation << 0, 0, 0, 1;
+
+	Ellipsoid2D e1(position_o1, orientation);
+	Ellipsoid2D e2(position_o2, orientation);
+	Ellipsoid2D e3(position_o3, orientation);
 }
 
 

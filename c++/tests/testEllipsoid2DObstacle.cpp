@@ -16,8 +16,8 @@ TEST(ComputeDistanceToExternalPointNonNullPosition, PositiveNos)
 	agent_position << 1, 0, 0;
 
 	std::cerr << "Computing ditance" << std::endl;
-	double distance = e.compute_distance_to_external_point(agent_position);
-	double truth = 2.0;
+	float distance = e.compute_distance_to_external_point(agent_position);
+	float truth = 2.0;
 	std::cerr << "distance = " << distance << ", truth = " << truth << std::endl;
 
 	ASSERT_NEAR(distance, truth, 0.01);
@@ -37,8 +37,8 @@ TEST(ComputeDistanceToExternalPointNullPosition, PositiveNos)
 	agent_position << 1, 0, 0;
 
 	std::cerr << "Computing ditance" << std::endl;
-	double distance = e.compute_distance_to_external_point(agent_position);
-	double truth = 1.0;
+	float distance = e.compute_distance_to_external_point(agent_position);
+	float truth = 1.0;
 	std::cerr << "distance = " << distance << ", truth = " << truth << std::endl;
 
 	ASSERT_NEAR(distance, truth, 0.01);
@@ -58,8 +58,8 @@ TEST(ComputeDistanceToExternalPointCloseToObstacle, PositiveNos)
 	agent_position << 1, 0, 0;
 
 	std::cerr << "Computing ditance" << std::endl;
-	double distance = e.compute_distance_to_external_point(agent_position);
-	double truth = 0.01;
+	float distance = e.compute_distance_to_external_point(agent_position);
+	float truth = 0.01;
 	std::cerr << "distance = " << distance << ", truth = " << truth << std::endl;
 
 	ASSERT_NEAR(distance, truth, 0.01);

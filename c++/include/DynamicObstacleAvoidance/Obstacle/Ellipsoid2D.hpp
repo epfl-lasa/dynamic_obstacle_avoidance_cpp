@@ -20,12 +20,12 @@ private:
 	Eigen::Array2f curvature_factor;
 
 public:
-	explicit Ellipsoid2D(Eigen::Vector3f& center_position, Eigen::Vector4f& center_orientation, Eigen::Vector3f& reference_position, double safety_margin=0);
-	explicit Ellipsoid2D(Eigen::Vector3f& center_position, Eigen::Vector4f& center_orientation, double safety_margin=0);
+	explicit Ellipsoid2D(Eigen::Vector3f& center_position, Eigen::Vector4f& center_orientation, Eigen::Vector3f& reference_position, float safety_margin=0);
+	explicit Ellipsoid2D(Eigen::Vector3f& center_position, Eigen::Vector4f& center_orientation, float safety_margin=0);
 	~Ellipsoid2D();
 
 	Eigen::Vector3f compute_normal_to_external_point(const Eigen::Vector3f& external_point) const;
-	double compute_distance_to_external_point(const Eigen::Vector3f& external_point) const;	
+	float compute_distance_to_external_point(const Eigen::Vector3f& external_point) const;	
 };
 
 #endif
