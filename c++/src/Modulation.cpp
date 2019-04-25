@@ -59,16 +59,16 @@ namespace Modulation
 
 	std::pair<Eigen::Matrix3f, Eigen::Matrix3f> compute_basis_matrices(const Eigen::Vector3f& normal_vector, const Eigen::Vector3f& agent_position, const Eigen::Vector3f& obstacle_reference_position)
 	{
-		Eigen::Vector3f unit_vector(0, 0, 1);
+		Eigen::Vector3f unit_vector = Eigen::Vector3f::UnitZ();
 		Eigen::Vector3f tangent_vector = normal_vector.cross(unit_vector);
 		
 		if(tangent_vector.norm() == 0) 
 		{
-			unit_vector << 1, 0, 0;
+			unit_vector = Eigen::Vector3f::UnitY();
 			tangent_vector = normal_vector.cross(unit_vector);
 		}
 
-		Eigen::Vector3f cross_product = normal_vector.cross(tangent_vector);
+		Eigen::Vector3f cross_product = tangent_vector.cross(normal_vector);
 		Eigen::Matrix3f orthogonal_basis;
 		orthogonal_basis << normal_vector, tangent_vector, cross_product;
 
