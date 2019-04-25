@@ -9,47 +9,55 @@
 #define DYNAMIC_OBSTACLE_AVOIDANCE_OBSTACLE_OBSTACLE_H_
 
 #include <eigen3/Eigen/Core>
+#include "DynamicObstacleAvoidance/State/State.hpp"
+#include "DynamicObstacleAvoidance/State/Pose.hpp"
 
 class Obstacle 
 {
 private:
-	Eigen::Vector3f center_position;
-	Eigen::Vector4f center_orientation;
+	State state;
 	Eigen::Vector3f reference_position;
 
-	Eigen::Vector3f linear_velocity;
-	Eigen::Vector3f angular_velocity;
-	
 	float safety_margin;
 
 public:
-	explicit Obstacle(Eigen::Vector3f& center_position, Eigen::Vector4f& center_orientation, Eigen::Vector3f& reference_position, float safety_margin=0);
-	explicit Obstacle(Eigen::Vector3f& center_position, Eigen::Vector4f& center_orientation, float safety_margin=0);
+	explicit Obstacle(const State& state, const float& safety_margin=0);
+	explicit Obstacle(const State& state, const Eigen::Vector3f& reference_position, const float& safety_margin=0);
 	~Obstacle();
 
-	inline const Eigen::Vector3f get_center_position() const 
+	inline const State get_state() const 
 	{ 
-		return this->center_position;
+		return this->state;
 	}
 
-	inline const Eigen::Vector4f get_center_orientation() const 
+	inline const Pose get_pose() const 
 	{ 
-		return this->center_orientation;
+		return this->state.get_pose();
 	}
 
-	inline const Eigen::Vector3f get_reference_position() const 
+	inline const Eigen::Vector3f get_position() const 
 	{ 
+		return this->state.get_position();
+	}
+
+	inline const Eigen::Quaternionf get_orientation() const 
+	{ 
+		return this->state.get_orientation();
+	}
+
+	inline const Eigen::Vector3f get_linear_velocity() const
+	{
+		return this->state.get_linear_velocity();
+	}
+
+	inline const Eigen::Vector3f get_angular_velocity() const
+	{
+		return this->state.get_angular_velocity();
+	}
+
+	inline const Eigen::Vector3f get_reference_position() const
+	{
 		return this->reference_position;
-	}
-
-	inline const Eigen::Vector3f get_linear_velocity() const 
-	{ 
-		return this->linear_velocity;
-	}
-
-	inline const Eigen::Vector3f get_angular_velocity() const 
-	{ 
-		return this->angular_velocity;
 	}
 
 	inline float get_safety_margin() const

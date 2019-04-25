@@ -59,16 +59,11 @@ TEST(WeightObstacleAboveCriticalDistance, PositiveNos)
 
 TEST(ComputeBasisMatrices, PositiveNos)
 {
-	Eigen::Vector3f position;
-	position << 2, 1, 0;
+	Eigen::Vector3f position(2, 1, 0);
+	Eigen::Quaternionf orientation(1, 0, 0, 0);
+	Ellipsoid2D e(State(position, orientation));
 
-	Eigen::Vector4f orientation;
-	orientation << 0, 0, 0, 1;
-
-	Ellipsoid2D e(position, orientation);
-
-	Eigen::Vector3f agent_position;
-	agent_position << 1, 0, 0;
+	Eigen::Vector3f agent_position(1, 0, 0);
 
 	Eigen::Vector3f normal = e.compute_normal_to_external_point(agent_position);
 	auto basis_matrices = Modulation::compute_basis_matrices(normal, agent_position, e.get_reference_position());
@@ -99,24 +94,20 @@ TEST(ComputeBasisMatrices, PositiveNos)
 
 	for(int i=0; i<reference_basis.rows(); ++i)
 	{
-		for(int j=0; i<reference_basis.cols(); ++i) ASSERT_NEAR(reference_basis(i, j), reference_basis_truth(i, j), 0.00001);
+		for(int j=0; i<reference_basis.cols(); ++i) ASSERT_NEAR(reference_basis(i, j), reference_basis_truth(i, j), 0.0001);
 	} 
 }
 
 TEST(ComputeRelativeVelocity, PositiveNos)
 {
-	Eigen::Vector3f position_o1;
-	position_o1 << 2, 1, 0;
-	Eigen::Vector3f position_o2;
-	position_o2 << 0, 0, 0;
-	Eigen::Vector3f position_o3;
-	position_o3 << 0.9, 0, 0;
-	Eigen::Vector4f orientation;
-	orientation << 0, 0, 0, 1;
+	Eigen::Vector3f position_o1(2, 1, 0);
+	Eigen::Vector3f position_o2(0, 0, 0);
+	Eigen::Vector3f position_o3(0.9, 0, 0);
+	Eigen::Quaternionf orientation(1, 0, 0, 0);
 
-	Ellipsoid2D e1(position_o1, orientation);
-	Ellipsoid2D e2(position_o2, orientation);
-	Ellipsoid2D e3(position_o3, orientation);
+	Ellipsoid2D e1(State(position_o1, orientation));
+	Ellipsoid2D e2(State(position_o2, orientation));
+	Ellipsoid2D e3(State(position_o3, orientation));
 }
 
 

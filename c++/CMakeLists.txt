@@ -31,6 +31,8 @@ include_directories(
 set(CORE_SOURCES
  	src/Obstacle/Obstacle.cpp
  	src/Obstacle/Ellipsoid2D.cpp
+ 	src/State/Pose.cpp
+ 	src/State/State.cpp
 	src/Modulation.cpp
   	src/Agent.cpp
 )
@@ -73,6 +75,14 @@ if (runtests)
 		${PROJECT_NAME}
 	)
 
+	add_executable(runTestState tests/testState.cpp)
+	target_link_libraries(runTestState
+		gtest 
+		gtest_main
+		${PROJECT_NAME}
+	)
+
 	add_test(NAME runTestModulation COMMAND runTestModulation)
 	add_test(NAME runTestObstacle COMMAND runTestObstacle)
+	add_test(NAME runTestState COMMAND runTestState)
 endif()

@@ -22,7 +22,7 @@ namespace Modulation
 		return std::make_tuple(reference_basis, orthogonal_basis, diagonal_eigenvalues, distance_to_obstacle);
 	}
 
-	Eigen::ArrayXf weight_obstacles(const Eigen::ArrayXf& distances, float critical_distance, float weight_power)
+	Eigen::ArrayXf weight_obstacles(const Eigen::ArrayXf& distances, const float& critical_distance, const float& weight_power)
 	{
 		Eigen::ArrayXf weights(distances.size());
 		Eigen::ArrayXf critical_obstacles(distances.size());
@@ -47,7 +47,7 @@ namespace Modulation
 		return weights;
 	}
 
-	Eigen::DiagonalMatrix<float, 3> compute_diagonal_eigenvalues(const Obstacle& obstacle, float distance_to_obstacle, float reactivity_factor)
+	Eigen::DiagonalMatrix<float, 3> compute_diagonal_eigenvalues(const Obstacle& obstacle, const float& distance_to_obstacle, const float& reactivity_factor)
 	{
 		// check if the point is inside the obstacle
 		float delta_eigenvalue = (distance_to_obstacle <= 1) ? 1.0 : 1.0 / std::pow(distance_to_obstacle, 1.0 / reactivity_factor);
@@ -59,8 +59,7 @@ namespace Modulation
 
 	std::pair<Eigen::Matrix3f, Eigen::Matrix3f> compute_basis_matrices(const Eigen::Vector3f& normal_vector, const Eigen::Vector3f& agent_position, const Eigen::Vector3f& obstacle_reference_position)
 	{
-		Eigen::Vector3f unit_vector;
-		unit_vector << 0, 0, 1;
+		Eigen::Vector3f unit_vector(0, 0, 1);
 		Eigen::Vector3f tangent_vector = normal_vector.cross(unit_vector);
 		
 		if(tangent_vector.norm() == 0) 
@@ -86,7 +85,7 @@ namespace Modulation
 		for(int i=0; i<obstacles.size(); ++i)
 		{
 			const Obstacle o = obstacles[i];
-			Eigen::Vector3f angular_velocity = o.get_angular_velocity().cross(agent.get_position() - o.get_center_position());
+			Eigen::Vector3f angular_velocity = o.get_angular_velocity().cross(agent.get_position() - o.get_position());
 			float exp_weight = exp(-(1 + std::max<float>(1.0, distances(i))));
 
 			Eigen::Vector3f obs_velocity_tmp = exp_weight * (o.get_linear_velocity() + angular_velocity);

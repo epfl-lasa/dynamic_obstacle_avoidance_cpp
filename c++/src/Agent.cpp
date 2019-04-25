@@ -1,5 +1,5 @@
 #include "DynamicObstacleAvoidance/Agent.hpp"
 
-Agent::Agent(Eigen::Vector3f& position, Eigen::Vector4f& orientation, double safety_margin):
-position(position), orientation(orientation), safety_margin(safety_margin)
+Agent::Agent(const State& state, const double& safety_margin):
+state(state), safety_margin(safety_margin)
 {}

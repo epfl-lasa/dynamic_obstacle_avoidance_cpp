@@ -9,37 +9,46 @@
 #define DYNAMIC_OBSTACLE_AVOIDANCE_AGENT_H_
 
 #include <eigen3/Eigen/Core>
+#include "DynamicObstacleAvoidance/State/State.hpp"
+#include "DynamicObstacleAvoidance/State/Pose.hpp"
 
 class Agent
 {
 private:
-	Eigen::Vector3f position;
-	Eigen::Vector4f orientation;
-	Eigen::Vector3f linear_velocity;
-	Eigen::Vector3f angular_velocity;
+	State state;
 	double safety_margin;
 
 public:
-	explicit Agent(Eigen::Vector3f& position, Eigen::Vector4f& orientation, double safety_margin=0.0);
+	explicit Agent(const State& state, const double& safety_margin=0.0);
+
+	inline const State get_state() const 
+	{ 
+		return this->state;
+	}
+
+	inline const Pose get_pose() const 
+	{ 
+		return this->state.get_pose();
+	}
 
 	inline const Eigen::Vector3f get_position() const 
 	{ 
-		return this->position;
+		return this->state.get_position();
 	}
 
-	inline const Eigen::Vector4f get_orientation() const 
+	inline const Eigen::Quaternionf get_orientation() const 
 	{ 
-		return this->orientation;
+		return this->state.get_orientation();
 	}
 
 	inline const Eigen::Vector3f get_linear_velocity() const
 	{
-		return this->linear_velocity;
+		return this->state.get_linear_velocity();
 	}
 
 	inline const Eigen::Vector3f get_angular_velocity() const
 	{
-		return this->angular_velocity;
+		return this->state.get_angular_velocity();
 	}
 
 	inline double get_safety_margin() const

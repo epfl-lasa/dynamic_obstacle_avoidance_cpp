@@ -18,12 +18,13 @@
 #include <algorithm>
 #include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
 #include "DynamicObstacleAvoidance/Agent.hpp"
+#include "DynamicObstacleAvoidance/State/State.hpp"
 
 namespace Modulation
 {
-    Eigen::ArrayXf weight_obstacles(const Eigen::ArrayXf& distances, float critical_distance, float weight_power);
+    Eigen::ArrayXf weight_obstacles(const Eigen::ArrayXf& distances, const float& critical_distance, const float& weight_power);
     std::pair<Eigen::Matrix3f, Eigen::Matrix3f> compute_basis_matrices(const Eigen::Vector3f& normal_vector, const Eigen::Vector3f& agent_position, const Eigen::Vector3f& obstacle_reference_position);
-    Eigen::DiagonalMatrix<float, 3> compute_diagonal_eigenvalues(const Obstacle& obstacle, float distance_to_obstacle, float reactivity_factor=1.0);
+    Eigen::DiagonalMatrix<float, 3> compute_diagonal_eigenvalues(const Obstacle& obstacle, const float& distance_to_obstacle, const float& reactivity_factor=1.0);
     /**
     * @brief The function evaluates the gamma function and all necessary components needed to construct the modulation function, to ensure safe avoidance of the obstacles.
     * Beware that this function is constructed for ellipsoid only, but the algorithm is applicable to star shapes.
