@@ -94,8 +94,61 @@ TEST(ComputeBasisMatrices, PositiveNos)
 
 	for(int i=0; i<reference_basis.rows(); ++i)
 	{
-		for(int j=0; i<reference_basis.cols(); ++i) ASSERT_NEAR(reference_basis(i, j), reference_basis_truth(i, j), 0.0001);
+		for(int j=0; j<reference_basis.cols(); ++j) ASSERT_NEAR(reference_basis(i, j), reference_basis_truth(i, j), 0.0001);
 	} 
+}
+
+TEST(ComputeBasisMatricesWithRotation, PositiveNos)
+{
+	Eigen::Vector3f position(2, 1, 0);
+	Eigen::Quaternionf orientation(Eigen::AngleAxisf(0.3*M_PI, Eigen::Vector3f::UnitZ()));
+	Ellipsoid2D e(State(position, orientation));
+
+	Eigen::Vector3f agent_position(1, 0, 0);
+
+	Eigen::Vector3f normal = e.compute_normal_to_external_point(agent_position);
+	auto basis_matrices = Modulation::compute_basis_matrices(normal, agent_position, e.get_reference_position());
+
+	Eigen::Matrix3f reference_basis = std::get<0>(basis_matrices);
+	Eigen::Matrix3f orthogonal_basis = std::get<1>(basis_matrices);
+
+	Eigen::Matrix3f orthogonal_basis_truth;
+	orthogonal_basis_truth << -0.98768834, 0.15643447, 0,
+       						  0.15643447, 0.98768834, 0,
+							  0, 0, 1;
+
+	std::cerr << "orthogonal_basis: " << std::endl;
+	std::cerr << orthogonal_basis << std::endl;
+	std::cerr << "--------------" << std::endl;
+	std::cerr << "orthogonal_basis_truth: " << std::endl;
+	std::cerr << orthogonal_basis_truth << std::endl;
+
+	for(int i=0; i<reference_basis.rows(); ++i)
+	{
+		for(int j=0; j<reference_basis.cols(); ++j) ASSERT_NEAR(orthogonal_basis(i, j), orthogonal_basis_truth(i, j), 0.0001);
+	} 
+}
+
+TEST(ComputeDiagonalEigenvalues, PositiveNos)
+{
+	Eigen::Vector3f position(2, 1, 0);
+	Eigen::Quaternionf orientation(1, 0, 0, 0);
+	Ellipsoid2D e(State(position, orientation));
+
+	Eigen::Vector3f agent_position(1, 0, 0);
+
+	float distance = e.compute_distance_to_external_point(agent_position);
+	Eigen::DiagonalMatrix<float, 3> eigenvalues = Modulation::compute_diagonal_eigenvalues(e, distance);
+
+	Eigen::DiagonalMatrix<float, 3> eigenvalues_truth(0.5, 1.5, 1.5);
+
+	std::cerr << "eigenvalues: " << std::endl;
+	std::cerr << eigenvalues.diagonal() << std::endl;
+	std::cerr << "--------------" << std::endl;
+	std::cerr << "eigenvalues truth: " << std::endl;
+	std::cerr << eigenvalues_truth.diagonal() << std::endl;
+
+	for(int i=0; i<eigenvalues.diagonal().size(); ++i) ASSERT_NEAR(eigenvalues.diagonal()(i), eigenvalues_truth.diagonal()(i), 0.0001);
 }
 
 TEST(ComputeRelativeVelocity, PositiveNos)
