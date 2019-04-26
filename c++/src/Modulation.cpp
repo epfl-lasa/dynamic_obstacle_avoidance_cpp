@@ -17,7 +17,7 @@ namespace Modulation
 
 		// compute the diagonal eigenvalues
 		Eigen::DiagonalMatrix<float, 3> diagonal_eigenvalues = compute_diagonal_eigenvalues(obstacle, distance_to_obstacle);
-		
+
 		// return all computed elements
 		return std::make_tuple(reference_basis, orthogonal_basis, diagonal_eigenvalues, distance_to_obstacle);
 	}
@@ -79,23 +79,22 @@ namespace Modulation
 		return std::make_pair(reference_basis, orthogonal_basis);
 	}
 
-	Eigen::Vector3f compute_relative_velocity(const Agent& agent, const std::deque<Obstacle>& obstacles, const Eigen::ArrayXf& distances, const Eigen::ArrayXf& weights, const std::deque<Eigen::MatrixXf>& basis_list)
+	Eigen::Vector3f compute_relative_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const Eigen::ArrayXf& distances, const Eigen::ArrayXf& weights, const std::deque<Eigen::Matrix3f>& orthogonal_basis_list)
 	{
-		Eigen::Vector3f obs_velocity;
-		for(int i=0; i<obstacles.size(); ++i)
+		Eigen::Vector3f obs_velocity(0,0,0);
+		int i = 0;
+		for(auto &obs:obstacles)
 		{
-			const Obstacle o = obstacles[i];
-			Eigen::Vector3f angular_velocity = o.get_angular_velocity().cross(agent.get_position() - o.get_position());
-			float exp_weight = exp(-(1 + std::max<float>(1.0, distances(i))));
-
-			Eigen::Vector3f obs_velocity_tmp = exp_weight * (o.get_linear_velocity() + angular_velocity);
-			obs_velocity_tmp = basis_list[i].transpose() * obs_velocity_tmp;
-			// use only the orthogonal part
+			Eigen::Vector3f angular_velocity = obs->get_angular_velocity().cross(agent.get_position() - obs->get_position());
+			float exp_weight = exp(-(std::max<float>(1.0, distances(i))-1));
+			Eigen::Vector3f obs_velocity_tmp = exp_weight * (obs->get_linear_velocity() + angular_velocity);
+			obs_velocity_tmp = orthogonal_basis_list[i].transpose() * obs_velocity_tmp;
+			// remove negative values in the orthogonal part
 			obs_velocity_tmp(0) = std::max<float>(0.0, obs_velocity_tmp(0));
-			obs_velocity_tmp = basis_list[i] * obs_velocity_tmp;
-
+			obs_velocity_tmp = orthogonal_basis_list[i] * obs_velocity_tmp;
 			// sum to get the velocity of all obstackes
 			obs_velocity += obs_velocity_tmp * weights(i);
+			++i;
 		}
 		return agent.get_linear_velocity() - obs_velocity;
 	}
@@ -103,7 +102,6 @@ namespace Modulation
 	Eigen::Vector3f modulate_velocity(const Agent& agent, const std::deque<Obstacle>& obstacles, const std::deque<Eigen::Vector3f>& attractor_positions)
 	{
 		if(obstacles.empty()) return agent.get_linear_velocity();
-		int dim = agent.get_position().size();
 
 		// initialize the list of matrices for calculation
 		std::deque<Eigen::MatrixXf> reference_basis_list;

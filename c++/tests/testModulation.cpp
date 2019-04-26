@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
 
+
 TEST(WeightObstacleUnderCriticalDistance, PositiveNos)
 {
 	Eigen::ArrayXf distances(5);
@@ -60,8 +61,8 @@ TEST(WeightObstacleAboveCriticalDistance, PositiveNos)
 TEST(ComputeBasisMatrices, PositiveNos)
 {
 	Eigen::Vector3f position(2, 1, 0);
-	Eigen::Quaternionf orientation(1, 0, 0, 0);
-	Ellipsoid2D e(State(position, orientation));
+	State s(position);
+	Ellipsoid2D e(s);
 
 	Eigen::Vector3f agent_position(1, 0, 0);
 
@@ -123,17 +124,17 @@ TEST(ComputeBasisMatricesWithRotation, PositiveNos)
 	std::cerr << "orthogonal_basis_truth: " << std::endl;
 	std::cerr << orthogonal_basis_truth << std::endl;
 
-	for(int i=0; i<reference_basis.rows(); ++i)
+	for(int i=0; i<orthogonal_basis.rows(); ++i)
 	{
-		for(int j=0; j<reference_basis.cols(); ++j) ASSERT_NEAR(orthogonal_basis(i, j), orthogonal_basis_truth(i, j), 0.0001);
+		for(int j=0; j<orthogonal_basis.cols(); ++j) ASSERT_NEAR(orthogonal_basis(i, j), orthogonal_basis_truth(i, j), 0.0001);
 	} 
 }
 
 TEST(ComputeDiagonalEigenvalues, PositiveNos)
 {
 	Eigen::Vector3f position(2, 1, 0);
-	Eigen::Quaternionf orientation(1, 0, 0, 0);
-	Ellipsoid2D e(State(position, orientation));
+	State s(position);
+	Ellipsoid2D e(s);
 
 	Eigen::Vector3f agent_position(1, 0, 0);
 
@@ -151,16 +152,107 @@ TEST(ComputeDiagonalEigenvalues, PositiveNos)
 	for(int i=0; i<eigenvalues.diagonal().size(); ++i) ASSERT_NEAR(eigenvalues.diagonal()(i), eigenvalues_truth.diagonal()(i), 0.0001);
 }
 
+TEST(ComputeModulationMatrix, PositiveNos)
+{
+	Eigen::Vector3f position(2, 1, 0);
+	State s(position);
+	Ellipsoid2D e(s);
+
+	Eigen::Vector3f agent_position(1,0,0);
+	State agent_state(agent_position);
+	Agent agent(agent_state);
+
+	auto matrices = Modulation::compute_modulation_matrix(agent, e);
+	Eigen::Matrix3f reference_basis = std::get<0>(matrices);
+	Eigen::Matrix3f	orthogonal_basis = std::get<1>(matrices);
+	Eigen::DiagonalMatrix<float, 3> eigenvalues = std::get<2>(matrices);
+	float distance = std::get<3>(matrices);
+
+	std::cerr << reference_basis << std::endl;
+	std::cerr << orthogonal_basis << std::endl;
+	std::cerr << eigenvalues.diagonal() << std::endl;
+	std::cerr << distance << std::endl;
+	std::cerr << "-----------" << std::endl;
+
+	Eigen::Matrix3f reference_basis_truth;
+	reference_basis_truth << -0.70710678, -0.70710678, 0,
+							 -0.70710678, 0.70710678, 0,
+							 0, 0, 1;
+	Eigen::Matrix3f orthogonal_basis_truth;
+	orthogonal_basis_truth << -0.70710678, -0.70710678, 0,
+							  -0.70710678, 0.70710678, 0,
+							  0, 0, 1;
+	Eigen::DiagonalMatrix<float, 3> eigenvalues_truth(0.5, 1.5, 1.5);
+	float distance_truth = 2.0;
+
+	for(int i=0; i<reference_basis.rows(); ++i)
+	{
+		for(int j=0; j<reference_basis.cols(); ++j) ASSERT_NEAR(reference_basis(i, j), reference_basis_truth(i, j), 0.0001);
+	}
+	for(int i=0; i<orthogonal_basis.rows(); ++i)
+	{
+		for(int j=0; j<orthogonal_basis.cols(); ++j) ASSERT_NEAR(orthogonal_basis(i, j), orthogonal_basis_truth(i, j), 0.0001);
+	}
+	for(int i=0; i<eigenvalues.diagonal().size(); ++i) ASSERT_NEAR(eigenvalues.diagonal()(i), eigenvalues_truth.diagonal()(i), 0.0001);
+	ASSERT_NEAR(distance, distance_truth, 0.0001);
+}
+
 TEST(ComputeRelativeVelocity, PositiveNos)
 {
 	Eigen::Vector3f position_o1(2, 1, 0);
 	Eigen::Vector3f position_o2(0, 0, 0);
 	Eigen::Vector3f position_o3(0.9, 0, 0);
-	Eigen::Quaternionf orientation(1, 0, 0, 0);
+	Eigen::Quaternionf orientation(1,0,0,0);
 
-	Ellipsoid2D e1(State(position_o1, orientation));
-	Ellipsoid2D e2(State(position_o2, orientation));
-	Ellipsoid2D e3(State(position_o3, orientation));
+	auto ptrE1 = std::make_unique<Ellipsoid2D>(State(position_o1, orientation));
+	auto ptrE2 = std::make_unique<Ellipsoid2D>(State(position_o2, orientation));
+	ptrE2->set_linear_velocity(Eigen::Vector3f(-0.5,-0.5,0));
+	auto ptrE3 = std::make_unique<Ellipsoid2D>(State(position_o3, orientation));
+
+	std::deque<std::unique_ptr<Obstacle> > obstacle_list;
+	obstacle_list.push_back(std::move(ptrE1));
+	obstacle_list.push_back(std::move(ptrE2));
+	obstacle_list.push_back(std::move(ptrE3));
+
+	Eigen::Vector3f agent_position(1,0,0);
+	State agent_state(agent_position);
+	Agent agent(agent_state);
+	agent.set_linear_velocity(Eigen::Vector3f(0.5,0.5,0));
+
+	std::deque<Eigen::Matrix3f> reference_basis_list;
+	std::deque<Eigen::Matrix3f> orthogonal_basis_list;
+	std::deque<Eigen::DiagonalMatrix<float, 3> > eigenvalues_list;
+	Eigen::ArrayXf distances(obstacle_list.size());
+
+	// compute all necessary elements to calculation the modulation matrix
+	int k = 0;
+	for(auto &obs_it : obstacle_list)
+	{
+		auto matrices = Modulation::compute_modulation_matrix(agent, *obs_it);
+		reference_basis_list.push_back(std::get<0>(matrices));
+		orthogonal_basis_list.push_back(std::get<1>(matrices));
+		eigenvalues_list.push_back(std::get<2>(matrices));		
+		distances(k) = std::get<3>(matrices);
+
+		Eigen::Matrix3f reference_basis = std::get<0>(matrices);
+		Eigen::Matrix3f	orthogonal_basis = std::get<1>(matrices);
+		Eigen::DiagonalMatrix<float, 3> eigenvalues = std::get<2>(matrices);
+		float distance = std::get<3>(matrices);
+		++k;
+	}
+
+	Eigen::ArrayXf weights = Modulation::weight_obstacles(distances, 1.0, 2.0);
+	Eigen::Vector3f rel_velocity = Modulation::compute_relative_velocity(agent, obstacle_list, distances, weights, orthogonal_basis_list);
+
+	Eigen::Vector3f rel_velocity_truth(0.5, 0.75, 0);
+
+	std::cerr << "relative velocity: " << std::endl;
+	std::cerr << rel_velocity << std::endl;
+	std::cerr << "--------------" << std::endl;
+	std::cerr << "rel_velocity truth: " << std::endl;
+	std::cerr << rel_velocity_truth << std::endl;
+
+	for(int i=0; i<rel_velocity.size(); ++i) ASSERT_NEAR(rel_velocity(i), rel_velocity_truth(i), 0.0001);
 }
 
 
