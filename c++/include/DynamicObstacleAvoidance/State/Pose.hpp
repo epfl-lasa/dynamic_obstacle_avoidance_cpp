@@ -51,9 +51,7 @@ public:
 
 	inline const Eigen::Vector3f operator*(const Eigen::Vector3f& v) const
 	{
-		Pose result(*this);
-		result.position += result.orientation * v;
-		return result.position;
+		return this->orientation * v + this->position;
 	}
 
 	inline const Pose inverse() const
