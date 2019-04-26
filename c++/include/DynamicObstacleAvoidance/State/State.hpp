@@ -47,6 +47,11 @@ public:
 	{
 		return this->angular_velocity;
 	}
+
+	inline void set_linear_velocity(const Eigen::Vector3f& linear_velocity)
+	{
+		this->linear_velocity = linear_velocity;
+	}
 };
 
 #endif

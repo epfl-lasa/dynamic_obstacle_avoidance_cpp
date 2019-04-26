@@ -65,6 +65,11 @@ public:
 		return this->safety_margin;
 	}
 
+	inline void set_linear_velocity(const Eigen::Vector3f& linear_velocity)
+	{
+		this->state.set_linear_velocity(linear_velocity);
+	}
+
 	virtual Eigen::Vector3f compute_normal_to_external_point(const Eigen::Vector3f& external_point) const;
 	
 	virtual float compute_distance_to_external_point(const Eigen::Vector3f& external_point) const;

@@ -56,6 +56,10 @@ public:
 		return this->safety_margin;
 	}
 
+	inline void set_linear_velocity(const Eigen::Vector3f& linear_velocity)
+	{
+		this->state.set_linear_velocity(linear_velocity);
+	}
 };
 
 #endif
