@@ -97,7 +97,7 @@ def obs_avoidance_interpolation_moving(x, xd, obs=[], attractor='none', weightPo
         xd_obs_n = exp_weight*(np.array(obs[n].xd) + xd_w)
 
         xd_obs_n = E_orth[:,:,n].T @ xd_obs_n
-        xd_obs_n[0] = np.max(xd_obs_n[0], 0) # Onl use orthogonal part 
+        xd_obs_n[0] = np.max([xd_obs_n[0], 0]) # Onl use orthogonal part 
         xd_obs_n = E_orth[:,:,n] @ xd_obs_n
         
         xd_obs = xd_obs + xd_obs_n*weight[n]
