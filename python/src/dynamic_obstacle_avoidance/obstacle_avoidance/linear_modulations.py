@@ -96,9 +96,9 @@ def obs_avoidance_interpolation_moving(x, xd, obs=[], attractor='none', weightPo
         exp_weight = np.exp(-1/obs[n].sigma*(np.max([Gamma[n],1])-1))
         xd_obs_n = exp_weight*(np.array(obs[n].xd) + xd_w)
 
-        xd_obs_n = E_orth[:,:,n].T @ xd_obs_n
-        xd_obs_n[0] = np.max([xd_obs_n[0], 0]) # Onl use orthogonal part 
-        xd_obs_n = E_orth[:,:,n] @ xd_obs_n
+        # xd_obs_n = E_orth[:,:,n].T @ xd_obs_n
+        # xd_obs_n[0] = np.max([xd_obs_n[0], 0]) # Onl use orthogonal part 
+        # xd_obs_n = E_orth[:,:,n] @ xd_obs_n
         
         xd_obs = xd_obs + xd_obs_n*weight[n]
 
@@ -123,8 +123,14 @@ def obs_avoidance_interpolation_moving(x, xd, obs=[], attractor='none', weightPo
         
     for n in range(N_obs):
         M[:,:,n] = R[:,:,n] @ E[:,:,n] @ D[:,:,n] @ LA.pinv(E[:,:,n]) @ R[:,:,n].T
-        
         xd_hat[:,n] = M[:,:,n] @ xd # velocity modulation
+        
+        # if False:
+        if Gamma[n] < 1: # Safety (Remove for pure algorithm)
+            repulsive_velocity =  ((1/Gamma[n])**5-1)*5 # hyperparemeters arleady in formula
+            # print("\n\n Add repulsive vel: {} \n\n".format(repulsive_velocity))
+            xd_hat[:,n] += R[:,:,n] @ E[:,0,n] * repulsive_velocity
+
         xd_hat_magnitude[n] = np.sqrt(np.sum(xd_hat[:,n]**2)) 
         if xd_hat_magnitude[n]: # Nonzero hat_magnitude
             xd_hat_normalized = xd_hat[:,n]/xd_hat_magnitude[n] # normalized direction
@@ -149,14 +155,11 @@ def obs_avoidance_interpolation_moving(x, xd, obs=[], attractor='none', weightPo
             
         k_ds[:,n] = np.arccos(sumHat)*k_fn.squeeze()
 
-    xd_hat_magnitude = np.sqrt(np.sum(xd_hat**2, axis=0) )
-    
+    # xd_hat_magnitude = np.sqrt(np.sum(xd_hat**2, axis=0) ) # TODO - remove as already caclulated
     if N_attr: #nonzero
 
         k_ds = np.hstack((k_ds, np.zeros((d-1, N_attr)) )) # points at the origin
-
         xd_hat_magnitude = np.hstack((xd_hat_magnitude, LA.norm((xd))*np.ones(N_attr) ))
-
         
     # Weighted interpolation for several obstacles
     # weight = weight**weightPow
