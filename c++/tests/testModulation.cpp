@@ -217,9 +217,7 @@ TEST(ComputeRelativeVelocity, PositiveNos)
 	Agent agent(agent_state);
 	agent.set_linear_velocity(Eigen::Vector3f(0.5,0.5,0));
 
-	std::deque<Eigen::Matrix3f> reference_basis_list;
 	std::deque<Eigen::Matrix3f> orthogonal_basis_list;
-	std::deque<Eigen::DiagonalMatrix<float, 3> > eigenvalues_list;
 	Eigen::ArrayXf distances(obstacle_list.size());
 
 	// compute all necessary elements to calculation the modulation matrix
@@ -227,9 +225,7 @@ TEST(ComputeRelativeVelocity, PositiveNos)
 	for(auto &obs_it : obstacle_list)
 	{
 		auto matrices = Modulation::compute_modulation_matrix(agent, *obs_it);
-		reference_basis_list.push_back(std::get<0>(matrices));
-		orthogonal_basis_list.push_back(std::get<1>(matrices));
-		eigenvalues_list.push_back(std::get<2>(matrices));		
+		orthogonal_basis_list.push_back(std::get<1>(matrices));	
 		distances(k) = std::get<3>(matrices);
 		++k;
 	}
