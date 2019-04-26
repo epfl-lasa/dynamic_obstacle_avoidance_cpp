@@ -159,10 +159,10 @@ def obs_avoidance_interpolation_moving(x, xd, obs=[], attractor='none', weightPo
 
         
     # Weighted interpolation for several obstacles
-    weight = weight**weightPow
-    if not LA.norm(weight,2):
-        warnings.warn('trivial weight.')
-    weight = weight/LA.norm(weight,2)
+    # weight = weight**weightPow
+    # if not LA.norm(weight,2):
+        # warnings.warn('trivial weight.')
+    # weight = weight/LA.norm(weight,2)
     
     xd_magnitude = np.sum(xd_hat_magnitude*weight)
     k_d = np.sum(k_ds*np.tile(weight, (d-1, 1)), axis=1)
