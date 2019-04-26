@@ -35,10 +35,10 @@ def samplePointsAtBorder(N, xRange, yRange):
     dx = xRange[1]-xRange[0]
     dy = yRange[1]-yRange[0]
 
-    N_x = np.ceil(dx/(2*(dx+dy))*(N))+2
-    N_y = np.ceil(dx/(2*(dx+dy))*(N))-0
+    N_x = int(np.ceil(dx/(2*(dx+dy))*(N))+2)
+    N_y = int(np.ceil(dx/(2*(dx+dy))*(N))-0)
 
-    x_init = np.vstack((np.linspace(xRange[0],xRange[1], num=N_x), np.ones(N_x)*yRange[0]) )
+    x_init = np.vstack((np.linspace(xRange[0],xRange[1], num=N_x), np.ones(N_x)*yRange[0]))
 
     x_init = np.hstack((x_init, 
                         np.vstack((np.linspace(xRange[0],xRange[1], num=N_x),
