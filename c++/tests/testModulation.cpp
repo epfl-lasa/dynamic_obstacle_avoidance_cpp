@@ -161,37 +161,38 @@ TEST(ComputeModulationMatrix, PositiveNos)
 	Agent agent(agent_state);
 
 	auto matrices = Modulation::compute_modulation_matrix(agent, e);
-	Eigen::Matrix3f reference_basis = std::get<0>(matrices);
+	Eigen::Matrix3f modulation_matrix = std::get<0>(matrices);
 	Eigen::Matrix3f	orthogonal_basis = std::get<1>(matrices);
-	Eigen::DiagonalMatrix<float, 3> eigenvalues = std::get<2>(matrices);
-	float distance = std::get<3>(matrices);
+	float distance = std::get<2>(matrices);
 
-	std::cerr << reference_basis << std::endl;
+	std::cerr << "modulation matrix" << std::endl;
+	std::cerr << modulation_matrix << std::endl;
+	std::cerr << "orthogonal basis" << std::endl;
 	std::cerr << orthogonal_basis << std::endl;
-	std::cerr << eigenvalues.diagonal() << std::endl;
+	std::cerr << "distance" << std::endl;
 	std::cerr << distance << std::endl;
 	std::cerr << "-----------" << std::endl;
 
-	Eigen::Matrix3f reference_basis_truth;
-	reference_basis_truth << -0.70710678, -0.70710678, 0,
-							 -0.70710678, 0.70710678, 0,
-							 0, 0, 1;
+	Eigen::Matrix3f modulation_matrix_truth;
+	modulation_matrix_truth << 1, -0.5, 0,
+							   -0.5, 1, 0,
+							   0, 0, 1.5;
+
+	
 	Eigen::Matrix3f orthogonal_basis_truth;
 	orthogonal_basis_truth << -0.70710678, -0.70710678, 0,
 							  -0.70710678, 0.70710678, 0,
 							  0, 0, 1;
-	Eigen::DiagonalMatrix<float, 3> eigenvalues_truth(0.5, 1.5, 1.5);
 	float distance_truth = 2.0;
 
-	for(int i=0; i<reference_basis.rows(); ++i)
+	for(int i=0; i<modulation_matrix.rows(); ++i)
 	{
-		for(int j=0; j<reference_basis.cols(); ++j) ASSERT_NEAR(reference_basis(i, j), reference_basis_truth(i, j), 0.0001);
+		for(int j=0; j<modulation_matrix.cols(); ++j) ASSERT_NEAR(modulation_matrix(i, j), modulation_matrix_truth(i, j), 0.0001);
 	}
 	for(int i=0; i<orthogonal_basis.rows(); ++i)
 	{
 		for(int j=0; j<orthogonal_basis.cols(); ++j) ASSERT_NEAR(orthogonal_basis(i, j), orthogonal_basis_truth(i, j), 0.0001);
 	}
-	for(int i=0; i<eigenvalues.diagonal().size(); ++i) ASSERT_NEAR(eigenvalues.diagonal()(i), eigenvalues_truth.diagonal()(i), 0.0001);
 	ASSERT_NEAR(distance, distance_truth, 0.0001);
 }
 
@@ -226,7 +227,7 @@ TEST(ComputeRelativeVelocity, PositiveNos)
 	{
 		auto matrices = Modulation::compute_modulation_matrix(agent, *obs_it);
 		orthogonal_basis_list.push_back(std::get<1>(matrices));	
-		distances(k) = std::get<3>(matrices);
+		distances(k) = std::get<2>(matrices);
 		++k;
 	}
 

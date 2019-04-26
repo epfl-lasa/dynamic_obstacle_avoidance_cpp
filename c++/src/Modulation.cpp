@@ -2,7 +2,7 @@
 
 namespace Modulation
 {
-	std::tuple<Eigen::Matrix3f, Eigen::Matrix3f, Eigen::DiagonalMatrix<float, 3>, float> compute_modulation_matrix(const Agent& agent, const Obstacle& obstacle)
+	std::tuple<Eigen::Matrix3f, Eigen::Matrix3f, float> compute_modulation_matrix(const Agent& agent, const Obstacle& obstacle)
 	{
 		Eigen::Vector3f agent_position = agent.get_position();
 
@@ -18,8 +18,10 @@ namespace Modulation
 		// compute the diagonal eigenvalues
 		Eigen::DiagonalMatrix<float, 3> diagonal_eigenvalues = compute_diagonal_eigenvalues(obstacle, distance_to_obstacle);
 
+		// compute the modulation matrix
+		Eigen::Matrix3f modulation_matrix = obstacle.get_orientation() * reference_basis * diagonal_eigenvalues * reference_basis.inverse();
 		// return all computed elements
-		return std::make_tuple(reference_basis, orthogonal_basis, diagonal_eigenvalues, distance_to_obstacle);
+		return std::make_tuple(modulation_matrix, orthogonal_basis, distance_to_obstacle);
 	}
 
 	Eigen::ArrayXf weight_obstacles(const Eigen::ArrayXf& distances, const float& critical_distance, const float& weight_power)
@@ -99,31 +101,31 @@ namespace Modulation
 		return agent.get_linear_velocity() - obs_velocity;
 	}
 
-	Eigen::Vector3f modulate_velocity(const Agent& agent, const std::deque<Obstacle>& obstacles, const std::deque<Eigen::Vector3f>& attractor_positions)
+
+
+	Eigen::Vector3f modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const std::deque<Eigen::Vector3f>& attractor_positions)
 	{
 		if(obstacles.empty()) return agent.get_linear_velocity();
 
 		// initialize the list of matrices for calculation
-		std::deque<Eigen::MatrixXf> reference_basis_list;
-		std::deque<Eigen::MatrixXf> orthogonal_basis_list;
-		std::deque<Eigen::MatrixXf> eigenvalues_list;
+		std::deque<Eigen::Matrix3f> modulation_matrix_list;
+		std::deque<Eigen::Matrix3f> orthogonal_basis_list;
 		Eigen::ArrayXf distances(obstacles.size());
 
 		// compute all necessary elements to calculation the modulation matrix
 		int k = 0;
-		for(const Obstacle& obs:obstacles)
+		for(auto &obs_it : obstacles)
 		{
-			auto parameters = compute_modulation_matrix(agent, obs);
-			reference_basis_list.push_back(std::get<0>(parameters));
-			orthogonal_basis_list.push_back(std::get<1>(parameters));
-			eigenvalues_list.push_back(std::get<2>(parameters));
-			
-			distances(k) = std::get<3>(parameters);
+			auto matrices = Modulation::compute_modulation_matrix(agent, *obs_it);
+			// store matrices used later
+			modulation_matrix_list.push_back(std::get<0>(matrices));
+			orthogonal_basis_list.push_back(std::get<1>(matrices));		
+			distances(k) = std::get<2>(matrices);
 			++k;
 		}
-		Eigen::ArrayXf weights = Modulation::weight_obstacles(distances, 1.0, 2.0);
 
-		
+		Eigen::ArrayXf weights = Modulation::weight_obstacles(distances, 1.0, 2.0);
+		Eigen::Vector3f rel_velocity = Modulation::compute_relative_velocity(agent, obstacles, distances, weights, orthogonal_basis_list);
 
 	}
 }

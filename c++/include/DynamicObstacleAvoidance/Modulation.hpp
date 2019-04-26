@@ -37,8 +37,8 @@ namespace Modulation
     * @param[out] basisOrthogonal Orthogonal basis matrix with rows the normal and tangent
     * @param[out] eigenValues Eigenvalue matrix which is responsible for the modulation
     */
-    std::tuple<Eigen::Matrix3f, Eigen::Matrix3f, Eigen::DiagonalMatrix<float, 3>, float> compute_modulation_matrix(const Agent& agent, const Obstacle& obstacle);
-    Eigen::Vector3f modulate_velocity(const Agent& agent, const std::deque<Obstacle>& obstacles, const std::deque<Eigen::Vector3f>& attractor_positions);
+    std::tuple<Eigen::Matrix3f, Eigen::Matrix3f, float> compute_modulation_matrix(const Agent& agent, const Obstacle& obstacle);
+    Eigen::Vector3f modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const std::deque<Eigen::Vector3f>& attractor_positions);
 }
 
 #endif
