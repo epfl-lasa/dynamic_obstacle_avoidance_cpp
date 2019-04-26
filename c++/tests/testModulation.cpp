@@ -109,8 +109,6 @@ TEST(ComputeBasisMatricesWithRotation, PositiveNos)
 
 	Eigen::Vector3f normal = e.compute_normal_to_external_point(agent_position);
 	auto basis_matrices = Modulation::compute_basis_matrices(normal, agent_position, e.get_reference_position());
-
-	Eigen::Matrix3f reference_basis = std::get<0>(basis_matrices);
 	Eigen::Matrix3f orthogonal_basis = std::get<1>(basis_matrices);
 
 	Eigen::Matrix3f orthogonal_basis_truth;
@@ -233,11 +231,6 @@ TEST(ComputeRelativeVelocity, PositiveNos)
 		orthogonal_basis_list.push_back(std::get<1>(matrices));
 		eigenvalues_list.push_back(std::get<2>(matrices));		
 		distances(k) = std::get<3>(matrices);
-
-		Eigen::Matrix3f reference_basis = std::get<0>(matrices);
-		Eigen::Matrix3f	orthogonal_basis = std::get<1>(matrices);
-		Eigen::DiagonalMatrix<float, 3> eigenvalues = std::get<2>(matrices);
-		float distance = std::get<3>(matrices);
 		++k;
 	}
 
