@@ -5,8 +5,8 @@
 TEST(ComputeDistanceToExternalPointNonNullPosition, PositiveNos)
 {
 	Eigen::Vector3f position(2, 1, 0);
-	Eigen::Quaternionf orientation(1, 0, 0, 0);
-	Ellipsoid2D e(State(position, orientation));
+	State s(position);
+	Ellipsoid2D e(s);
 
 	Eigen::Vector3f agent_position(1, 0, 0);
 
@@ -21,8 +21,8 @@ TEST(ComputeDistanceToExternalPointNonNullPosition, PositiveNos)
 TEST(ComputeDistanceToExternalPointNullPosition, PositiveNos)
 {
 	Eigen::Vector3f position(0, 0, 0);
-	Eigen::Quaternionf orientation(1, 0, 0, 0);
-	Ellipsoid2D e(State(position, orientation));
+	State s(position);
+	Ellipsoid2D e(s);
 
 	Eigen::Vector3f agent_position(1, 0, 0);
 
@@ -37,8 +37,8 @@ TEST(ComputeDistanceToExternalPointNullPosition, PositiveNos)
 TEST(ComputeDistanceToExternalPointCloseToObstacle, PositiveNos)
 {
 	Eigen::Vector3f position(0.9, 0, 0);
-	Eigen::Quaternionf orientation(1, 0, 0, 0);
-	Ellipsoid2D e(State(position, orientation));
+	State s(position);
+	Ellipsoid2D e(s);
 
 	Eigen::Vector3f agent_position(1, 0, 0);
 
@@ -53,8 +53,8 @@ TEST(ComputeDistanceToExternalPointCloseToObstacle, PositiveNos)
 TEST(ComputeNormalToExternalPointNonNullPosition, PositiveNos)
 {
 	Eigen::Vector3f position(2, 1, 0);
-	Eigen::Quaternionf orientation(1, 0, 0, 0);
-	Ellipsoid2D e(State(position, orientation));
+	State s(position);
+	Ellipsoid2D e(s);
 
 	Eigen::Vector3f agent_position(1, 0, 0);
 
@@ -69,8 +69,8 @@ TEST(ComputeNormalToExternalPointNonNullPosition, PositiveNos)
 TEST(ComputeNormalToExternalPointNullPosition, PositiveNos)
 {
 	Eigen::Vector3f position(0, 0, 0);
-	Eigen::Quaternionf orientation(1, 0, 0, 0);
-	Ellipsoid2D e(State(position, orientation));
+	State s(position);
+	Ellipsoid2D e(s);
 
 	Eigen::Vector3f agent_position(1, 0, 0);
 
@@ -85,8 +85,8 @@ TEST(ComputeNormalToExternalPointNullPosition, PositiveNos)
 TEST(ComputeNormalToExternalPointCloseToObstacle, PositiveNos)
 {
 	Eigen::Vector3f position(0.9, 0, 0);
-	Eigen::Quaternionf orientation(1, 0, 0, 0);
-	Ellipsoid2D e(State(position, orientation));
+	State s(position);
+	Ellipsoid2D e(s);
 
 	Eigen::Vector3f agent_position(1, 0, 0);
 
