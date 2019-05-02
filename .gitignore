@@ -1,0 +1,6 @@
+/python/src/dynamic_obstacle_avoidance.egg-info/*
+/python/src/dynamic_obstacle_avoidance/__pycache__/*
+/python/src/dynamic_obstacle_avoidance/dynamical_system/__pycache__/*
+/python/src/dynamic_obstacle_avoidance/obstacle_avoidance/__pycache__/*
+/python/src/dynamic_obstacle_avoidance/visualization/__pycache__/*
+/python/notebooks/.ipynb_checkpoints/*
