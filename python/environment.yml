@@ -1,8 +1,0 @@
-name: dynamic_obstacle_avoidance
-channels:
-  - defaults
-  - conda-forge
-dependencies:
-  - python
-  - numpy
-  - matplotlib
