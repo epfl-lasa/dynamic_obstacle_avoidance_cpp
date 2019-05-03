@@ -1,5 +1,8 @@
 #include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
 
+Obstacle::Obstacle():state(Eigen::Vector3f(0,0,0))
+{}
+
 Obstacle::Obstacle(const State& state, const float& safety_margin):
 state(state), reference_position(state.get_position()), safety_margin(safety_margin) 
 {}

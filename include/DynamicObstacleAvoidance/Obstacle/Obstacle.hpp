@@ -21,6 +21,7 @@ private:
 	float safety_margin;
 
 public:
+	explicit Obstacle();
 	explicit Obstacle(const State& state, const float& safety_margin=0);
 	explicit Obstacle(const State& state, const Eigen::Vector3f& reference_position, const float& safety_margin=0);
 	~Obstacle();
@@ -68,6 +69,11 @@ public:
 	inline void set_linear_velocity(const Eigen::Vector3f& linear_velocity)
 	{
 		this->state.set_linear_velocity(linear_velocity);
+	}
+
+	inline void set_reference_position(const Eigen::Vector3f& reference_position)
+	{
+		this->reference_position = reference_position;
 	}
 
 	virtual Eigen::Vector3f compute_normal_to_external_point(const Eigen::Vector3f& external_point) const;

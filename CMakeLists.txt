@@ -29,9 +29,10 @@ include_directories(
 )
 
 set(CORE_SOURCES
+	src/Regression/Polynomial.cpp
  	src/Obstacle/Obstacle.cpp
  	src/Obstacle/Ellipsoid2D.cpp
- 	src/Obstacle/PointCloud.cpp
+ 	src/Obstacle/LaserScan2D.cpp
  	src/State/Pose.cpp
  	src/State/State.cpp
 	src/Modulation.cpp
