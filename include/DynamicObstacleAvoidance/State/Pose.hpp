@@ -35,6 +35,16 @@ public:
 		return this->orientation;
 	}
 
+	inline void set_position(const Eigen::Vector3f& position)
+	{
+		this->position = position;
+	}
+
+	inline void set_orientation(const Eigen::Quaternionf& orientation)
+	{
+		this->orientation = orientation;
+	}
+
 	inline Pose& operator*=(const Pose& p)
 	{
 		this->position += this->orientation * p.position;

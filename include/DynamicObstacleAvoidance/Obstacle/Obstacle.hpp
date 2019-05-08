@@ -11,6 +11,7 @@
 #include <eigen3/Eigen/Core>
 #include "DynamicObstacleAvoidance/State/State.hpp"
 #include "DynamicObstacleAvoidance/State/Pose.hpp"
+#include <iostream>
 
 class Obstacle 
 {
@@ -66,9 +67,29 @@ public:
 		return this->safety_margin;
 	}
 
+	inline void set_pose(const Pose& pose)
+	{
+		this->state.set_pose(pose);
+	}
+
+	inline void set_position(const Eigen::Vector3f& position)
+	{
+		this->state.set_position(position);
+	}
+
+	inline void set_orientation(const Eigen::Quaternionf& orientation)
+	{
+		this->state.set_orientation(orientation);
+	}
+
 	inline void set_linear_velocity(const Eigen::Vector3f& linear_velocity)
 	{
 		this->state.set_linear_velocity(linear_velocity);
+	}
+
+	inline void set_angular_velocity(const Eigen::Vector3f& angular_velocity)
+	{
+		this->state.set_angular_velocity(angular_velocity);
 	}
 
 	inline void set_reference_position(const Eigen::Vector3f& reference_position)

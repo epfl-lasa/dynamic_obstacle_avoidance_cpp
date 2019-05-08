@@ -15,7 +15,11 @@ Obstacle::~Obstacle()
 {}
 
 Eigen::Vector3f Obstacle::compute_normal_to_external_point(const Eigen::Vector3f& external_point) const
-{}
+{
+	std::cerr << "Fonction of abstract class obstacle used" << std::endl;
+}
 
 float Obstacle::compute_distance_to_external_point(const Eigen::Vector3f& external_point) const
-{}
+{
+	std::cerr << "Fonction of abstract class obstacle used" << std::endl;
+}

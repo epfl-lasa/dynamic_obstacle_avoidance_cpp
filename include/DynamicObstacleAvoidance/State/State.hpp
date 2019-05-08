@@ -49,9 +49,29 @@ public:
 		return this->angular_velocity;
 	}
 
+	inline void set_pose(const Pose& pose)
+	{
+		this->pose = pose;
+	}
+
+	inline void set_position(const Eigen::Vector3f& position)
+	{
+		this->pose.set_position(position);
+	}
+
+	inline void set_orientation(const Eigen::Quaternionf& orientation)
+	{
+		this->pose.set_orientation(orientation);
+	}
+
 	inline void set_linear_velocity(const Eigen::Vector3f& linear_velocity)
 	{
 		this->linear_velocity = linear_velocity;
+	}
+
+	inline void set_angular_velocity(const Eigen::Vector3f& angular_velocity)
+	{
+		this->angular_velocity = angular_velocity;
 	}
 };
 

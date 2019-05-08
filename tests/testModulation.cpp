@@ -137,7 +137,7 @@ TEST(ComputeDiagonalEigenvalues, PositiveNos)
 	Eigen::Vector3f agent_position(1, 0, 0);
 
 	float distance = e.compute_distance_to_external_point(agent_position);
-	Eigen::DiagonalMatrix<float, 3> eigenvalues = Modulation::compute_diagonal_eigenvalues(e, distance);
+	Eigen::DiagonalMatrix<float, 3> eigenvalues = Modulation::compute_diagonal_eigenvalues(distance);
 
 	Eigen::DiagonalMatrix<float, 3> eigenvalues_truth(0.5, 1.5, 1.5);
 
@@ -196,7 +196,7 @@ TEST(ComputeModulationMatrix, PositiveNos)
 	ASSERT_NEAR(distance, distance_truth, 0.0001);
 }
 
-TEST(ComputeRelativeVelocity, PositiveNos)
+TEST(ComputeRelativeVelocities, PositiveNos)
 {
 	Eigen::Vector3f position_o1(2, 1, 0);
 	Eigen::Vector3f position_o2(0, 0, 0);
@@ -232,19 +232,62 @@ TEST(ComputeRelativeVelocity, PositiveNos)
 	}
 
 	Eigen::ArrayXf weights = Modulation::weight_obstacles(distances, 1.0, 2.0);
-	Eigen::Vector3f rel_velocity = Modulation::compute_relative_velocity(agent, obstacle_list, distances, weights, orthogonal_basis_list);
+	auto velocities = Modulation::compute_relative_velocities(agent, obstacle_list, distances, weights, orthogonal_basis_list);
+	Eigen::Vector3f agent_relative_velocity = std::get<0>(velocities);
+	Eigen::Vector3f obstacles_relative_velocity = std::get<1>(velocities);
+	
+	Eigen::Vector3f rel_velocity_truth(0.75, 0.75, 0);
+	Eigen::Vector3f obs_velocity_truth(-0.25, -0.25, 0);
 
-	Eigen::Vector3f rel_velocity_truth(0.5, 0.75, 0);
-
-	std::cerr << "relative velocity: " << std::endl;
-	std::cerr << rel_velocity << std::endl;
+	std::cerr << "agent relative velocity: " << std::endl;
+	std::cerr << agent_relative_velocity << std::endl;
 	std::cerr << "--------------" << std::endl;
 	std::cerr << "rel_velocity truth: " << std::endl;
 	std::cerr << rel_velocity_truth << std::endl;
 
-	for(int i=0; i<rel_velocity.size(); ++i) ASSERT_NEAR(rel_velocity(i), rel_velocity_truth(i), 0.0001);
+	std::cerr << "obstacle relative velocity: " << std::endl;
+	std::cerr << obstacles_relative_velocity << std::endl;
+	std::cerr << "--------------" << std::endl;
+	std::cerr << "rel_velocity truth: " << std::endl;
+	std::cerr << obs_velocity_truth << std::endl;
+
+	for(int i=0; i<agent_relative_velocity.size(); ++i) ASSERT_NEAR(agent_relative_velocity(i), rel_velocity_truth(i), 0.0001);
+	for(int i=0; i<obstacles_relative_velocity.size(); ++i) ASSERT_NEAR(obstacles_relative_velocity(i), obs_velocity_truth(i), 0.0001);
 }
 
+TEST(ModulateVelocity, PositiveNos)
+{
+	Eigen::Vector3f position_o1(2, 1, 0);
+	Eigen::Vector3f position_o2(0, 0, 0);
+	Eigen::Vector3f position_o3(0.9, 0, 0);
+	Eigen::Quaternionf orientation(1,0,0,0);
+
+	auto ptrE1 = std::make_unique<Ellipsoid2D>(State(position_o1, orientation));
+	auto ptrE2 = std::make_unique<Ellipsoid2D>(State(position_o2, orientation));
+	ptrE2->set_linear_velocity(Eigen::Vector3f(-0.5,-0.5,0));
+	auto ptrE3 = std::make_unique<Ellipsoid2D>(State(position_o3, orientation));
+
+	std::deque<std::unique_ptr<Obstacle> > obstacle_list;
+	obstacle_list.push_back(std::move(ptrE1));
+	obstacle_list.push_back(std::move(ptrE2));
+	obstacle_list.push_back(std::move(ptrE3));
+
+	Eigen::Vector3f agent_position(1,0,0);
+	State agent_state(agent_position);
+	Agent agent(agent_state);
+	agent.set_linear_velocity(Eigen::Vector3f(0.5,0.5,0));
+
+	Eigen::Vector3f modulated_velocity = Modulation::modulate_velocity(agent, obstacle_list);
+	Eigen::Vector3f modulated_velocity_truth(-0.25,1.25,0.0);
+
+	std::cerr << "modulated velocity: " << std::endl;
+	std::cerr << modulated_velocity << std::endl;
+	std::cerr << "--------------" << std::endl;
+	std::cerr << "modulated_velocity truth: " << std::endl;
+	std::cerr << modulated_velocity_truth << std::endl;
+
+	for(int i=0; i<modulated_velocity.size(); ++i) ASSERT_NEAR(modulated_velocity(i), modulated_velocity_truth(i), 0.0001);
+}
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
