@@ -22,6 +22,7 @@ public:
 	explicit State(const Pose& pose);
 	explicit State(const Eigen::Vector3f& position);
 	explicit State(const Eigen::Vector3f& position, const Eigen::Quaternionf& orientation);
+	explicit State(const Eigen::Vector3f& position, const Eigen::Quaternionf& orientation, const Eigen::Vector3f& linear_velocity, const Eigen::Vector3f& angular_velocity);
 
 	inline const Pose get_pose() const 
 	{ 
