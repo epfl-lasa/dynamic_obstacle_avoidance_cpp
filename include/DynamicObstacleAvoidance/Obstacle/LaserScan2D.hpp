@@ -11,20 +11,18 @@
 #include <eigen3/Eigen/Core>
 #include <deque>
 #include <math.h>
+#include <armadillo>
 
 #include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
 #include "DynamicObstacleAvoidance/State/State.hpp"
 #include "DynamicObstacleAvoidance/State/Pose.hpp"
-#include "DynamicObstacleAvoidance/Regression/Polynomial.hpp"
 
 class LaserScan2D: public Obstacle
 {
 private:
-	Polynomial regression;
+	arma::gmm_full gmm_model;
 
-	Pose compute_reference_frame(const Eigen::ArrayXf& distances, const float& starting_angle, const float& delta_angle, const float& safety_margin, const float& z_coordinate) const;
-
-	Polynomial compute_regression(const Pose& reference_frame, const Eigen::ArrayXf& distances, const float& starting_angle, const float& delta_angle, const float& z_coordinate) const;
+	bool learn_gmm_on_points(const Eigen::MatrixXd& surface_points, const int& nb_gaussians=2);
 
 public:
 	explicit LaserScan2D(const Eigen::ArrayXf& distances, const float& starting_angle, const float& detla_angle, const float& safety_margin=0, const float& z_coordinate=0);

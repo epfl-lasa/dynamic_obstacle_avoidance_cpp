@@ -21,16 +21,17 @@ endif()
 
 find_package(
 	Eigen3 REQUIRED
+	armadillo REQUIRED
 )
 
 include_directories(
   	include
   	${Eigen3_INCLUDE_DIRS}
+  	${armadillo_INCLUDE_DIRS}
 )
 
 set(CORE_SOURCES
-	src/Regression/Polynomial.cpp
- 	src/Obstacle/Obstacle.cpp
+	src/Obstacle/Obstacle.cpp
  	src/Obstacle/Ellipsoid2D.cpp
  	src/Obstacle/LaserScan2D.cpp
  	src/State/Pose.cpp
@@ -40,6 +41,8 @@ set(CORE_SOURCES
 )
 
 add_library(${PROJECT_NAME} SHARED ${CORE_SOURCES})
+
+target_link_libraries(${PROJECT_NAME} armadillo)
 
 install(DIRECTORY include/
   	DESTINATION include)
