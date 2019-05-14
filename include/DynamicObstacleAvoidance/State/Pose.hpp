@@ -14,33 +14,33 @@
 class Pose
 {
 private:
-	Eigen::Vector3f position;
-	Eigen::Quaternionf orientation;
+	Eigen::Vector3d position;
+	Eigen::Quaterniond orientation;
 
 public:
 	explicit Pose();
-	explicit Pose(const Eigen::Vector3f& position);
-	explicit Pose(const Eigen::Vector3f& position, const Eigen::Quaternionf& orientation);
-	explicit Pose(const float& x, const float& y, const float& z);
-	explicit Pose(const float& px, const float& py, const float& pz, const float& qx, const float& qy, const float& qz, const float& qw);
+	explicit Pose(const Eigen::Vector3d& position);
+	explicit Pose(const Eigen::Vector3d& position, const Eigen::Quaterniond& orientation);
+	explicit Pose(const double& x, const double& y, const double& z);
+	explicit Pose(const double& px, const double& py, const double& pz, const double& qx, const double& qy, const double& qz, const double& qw);
 	Pose(const Pose& p);
 
-	inline const Eigen::Vector3f get_position() const 
+	inline const Eigen::Vector3d get_position() const 
 	{ 
 		return this->position;
 	}
 
-	inline const Eigen::Quaternionf get_orientation() const 
+	inline const Eigen::Quaterniond get_orientation() const 
 	{ 
 		return this->orientation;
 	}
 
-	inline void set_position(const Eigen::Vector3f& position)
+	inline void set_position(const Eigen::Vector3d& position)
 	{
 		this->position = position;
 	}
 
-	inline void set_orientation(const Eigen::Quaternionf& orientation)
+	inline void set_orientation(const Eigen::Quaterniond& orientation)
 	{
 		this->orientation = orientation;
 	}
@@ -59,7 +59,7 @@ public:
 		return result;
 	}
 
-	inline const Eigen::Vector3f operator*(const Eigen::Vector3f& v) const
+	inline const Eigen::Vector3d operator*(const Eigen::Vector3d& v) const
 	{
 		return this->orientation * v + this->position;
 	}

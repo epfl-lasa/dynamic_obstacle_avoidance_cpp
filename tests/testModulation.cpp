@@ -1,18 +1,18 @@
 #include "DynamicObstacleAvoidance/Modulation.hpp"
-#include "DynamicObstacleAvoidance/Obstacle/Ellipsoid2D.hpp"
+#include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
 
 
 TEST(WeightObstacleUnderCriticalDistance, PositiveNos)
 {
-	Eigen::ArrayXf distances(5);
+	Eigen::ArrayXd distances(5);
 	distances << 0, 1, 2, 3, 4;
-	float critical_distance = 1.0;
-	float weight_power = 2;
-	Eigen::ArrayXf weights = Modulation::weight_obstacles(distances, critical_distance, weight_power);
+	double critical_distance = 1.0;
+	double weight_power = 2;
+	Eigen::ArrayXd weights = Modulation::weight_obstacles(distances, critical_distance, weight_power);
 
-	Eigen::ArrayXf true_values(5);
+	Eigen::ArrayXd true_values(5);
 	true_values << 0.5, 0.5, 0. , 0. , 0. ;
 
 	std::cerr << "weights: " << weights << std::endl;
@@ -24,13 +24,13 @@ TEST(WeightObstacleUnderCriticalDistance, PositiveNos)
 
 TEST(WeightObstacleFirstEqualCriticalDistance, PositiveNos)
 {
-	Eigen::ArrayXf distances(5);
+	Eigen::ArrayXd distances(5);
 	distances << 1, 2, 3, 4, 5;
-	float critical_distance = 1.0;
-	float weight_power = 2;
-	Eigen::ArrayXf weights = Modulation::weight_obstacles(distances, critical_distance, weight_power);
+	double critical_distance = 1.0;
+	double weight_power = 2;
+	Eigen::ArrayXd weights = Modulation::weight_obstacles(distances, critical_distance, weight_power);
 
-	Eigen::ArrayXf true_values(5);
+	Eigen::ArrayXd true_values(5);
 	true_values << 1., 0., 0., 0., 0.;
 
 	std::cerr << "weights: " << weights << std::endl;
@@ -42,13 +42,13 @@ TEST(WeightObstacleFirstEqualCriticalDistance, PositiveNos)
 
 TEST(WeightObstacleAboveCriticalDistance, PositiveNos)
 {
-	Eigen::ArrayXf distances(5);
+	Eigen::ArrayXd distances(5);
 	distances << 2, 3, 4, 5, 6;
-	float critical_distance = 1.0;
-	float weight_power = 2;
-	Eigen::ArrayXf weights = Modulation::weight_obstacles(distances, critical_distance, weight_power);
+	double critical_distance = 1.0;
+	double weight_power = 2;
+	Eigen::ArrayXd weights = Modulation::weight_obstacles(distances, critical_distance, weight_power);
 
-	Eigen::ArrayXf true_values(5);
+	Eigen::ArrayXd true_values(5);
 	true_values << 0.6832416 , 0.1708104 , 0.07591573, 0.0427026 , 0.02732966;
 
 	std::cerr << "weights: " << weights << std::endl;
@@ -60,23 +60,23 @@ TEST(WeightObstacleAboveCriticalDistance, PositiveNos)
 
 TEST(ComputeBasisMatrices, PositiveNos)
 {
-	Eigen::Vector3f position(2, 1, 0);
-	State s(position);
-	Ellipsoid2D e(s);
+	Eigen::Vector3d position(2, 1, 0);
+	Eigen::Quaterniond orientation(1, 0, 0, 0);
+	State s(position, orientation);
+	Ellipsoid e(s);
+	Eigen::Vector3d agent_position(1, 0, 0);
 
-	Eigen::Vector3f agent_position(1, 0, 0);
-
-	Eigen::Vector3f normal = e.compute_normal_to_external_point(agent_position);
+	Eigen::Vector3d normal = e.compute_normal_to_external_point(agent_position);
 	auto basis_matrices = Modulation::compute_basis_matrices(normal, agent_position, e.get_reference_position());
 
-	Eigen::Matrix3f reference_basis = std::get<0>(basis_matrices);
-	Eigen::Matrix3f orthogonal_basis = std::get<1>(basis_matrices);
+	Eigen::Matrix3d reference_basis = std::get<0>(basis_matrices);
+	Eigen::Matrix3d orthogonal_basis = std::get<1>(basis_matrices);
 
-	Eigen::Matrix3f reference_basis_truth;
+	Eigen::Matrix3d reference_basis_truth;
 	reference_basis_truth << -0.70710678, -0.70710678, 0,
 							 -0.70710678, 0.70710678, 0,
 							 0, 0, 1;
-	Eigen::Matrix3f orthogonal_basis_truth;
+	Eigen::Matrix3d orthogonal_basis_truth;
 	orthogonal_basis_truth << -0.70710678, -0.70710678, 0,
 							  -0.70710678, 0.70710678, 0,
 							  0, 0, 1;
@@ -101,17 +101,17 @@ TEST(ComputeBasisMatrices, PositiveNos)
 
 TEST(ComputeBasisMatricesWithRotation, PositiveNos)
 {
-	Eigen::Vector3f position(2, 1, 0);
-	Eigen::Quaternionf orientation(Eigen::AngleAxisf(0.3*M_PI, Eigen::Vector3f::UnitZ()));
-	Ellipsoid2D e(State(position, orientation));
+	Eigen::Vector3d position(2, 1, 0);
+	Eigen::Quaterniond orientation(Eigen::AngleAxisd(0.3*M_PI, Eigen::Vector3d::UnitZ()));
+	Ellipsoid e(State(position, orientation));
 
-	Eigen::Vector3f agent_position(1, 0, 0);
+	Eigen::Vector3d agent_position(1, 0, 0);
 
-	Eigen::Vector3f normal = e.compute_normal_to_external_point(agent_position);
+	Eigen::Vector3d normal = e.compute_normal_to_external_point(agent_position);
 	auto basis_matrices = Modulation::compute_basis_matrices(normal, agent_position, e.get_reference_position());
-	Eigen::Matrix3f orthogonal_basis = std::get<1>(basis_matrices);
+	Eigen::Matrix3d orthogonal_basis = std::get<1>(basis_matrices);
 
-	Eigen::Matrix3f orthogonal_basis_truth;
+	Eigen::Matrix3d orthogonal_basis_truth;
 	orthogonal_basis_truth << -0.98768834, 0.15643447, 0,
        						  0.15643447, 0.98768834, 0,
 							  0, 0, 1;
@@ -130,16 +130,16 @@ TEST(ComputeBasisMatricesWithRotation, PositiveNos)
 
 TEST(ComputeDiagonalEigenvalues, PositiveNos)
 {
-	Eigen::Vector3f position(2, 1, 0);
+	Eigen::Vector3d position(2, 1, 0);
 	State s(position);
-	Ellipsoid2D e(s);
+	Ellipsoid e(s);
 
-	Eigen::Vector3f agent_position(1, 0, 0);
+	Eigen::Vector3d agent_position(1, 0, 0);
 
-	float distance = e.compute_distance_to_external_point(agent_position);
-	Eigen::DiagonalMatrix<float, 3> eigenvalues = Modulation::compute_diagonal_eigenvalues(distance);
+	double distance = e.compute_distance_to_external_point(agent_position);
+	Eigen::DiagonalMatrix<double, 3> eigenvalues = Modulation::compute_diagonal_eigenvalues(distance);
 
-	Eigen::DiagonalMatrix<float, 3> eigenvalues_truth(0.5, 1.5, 1.5);
+	Eigen::DiagonalMatrix<double, 3> eigenvalues_truth(0.5, 1.5, 1.5);
 
 	std::cerr << "eigenvalues: " << std::endl;
 	std::cerr << eigenvalues.diagonal() << std::endl;
@@ -152,18 +152,18 @@ TEST(ComputeDiagonalEigenvalues, PositiveNos)
 
 TEST(ComputeModulationMatrix, PositiveNos)
 {
-	Eigen::Vector3f position(2, 1, 0);
+	Eigen::Vector3d position(2, 1, 0);
 	State s(position);
-	Ellipsoid2D e(s);
+	Ellipsoid e(s);
 
-	Eigen::Vector3f agent_position(1,0,0);
+	Eigen::Vector3d agent_position(1,0,0);
 	State agent_state(agent_position);
 	Agent agent(agent_state);
 
 	auto matrices = Modulation::compute_modulation_matrix(agent, e);
-	Eigen::Matrix3f modulation_matrix = std::get<0>(matrices);
-	Eigen::Matrix3f	orthogonal_basis = std::get<1>(matrices);
-	float distance = std::get<2>(matrices);
+	Eigen::Matrix3d modulation_matrix = std::get<0>(matrices);
+	Eigen::Matrix3d	orthogonal_basis = std::get<1>(matrices);
+	double distance = std::get<2>(matrices);
 
 	std::cerr << "modulation matrix" << std::endl;
 	std::cerr << modulation_matrix << std::endl;
@@ -173,17 +173,17 @@ TEST(ComputeModulationMatrix, PositiveNos)
 	std::cerr << distance << std::endl;
 	std::cerr << "-----------" << std::endl;
 
-	Eigen::Matrix3f modulation_matrix_truth;
+	Eigen::Matrix3d modulation_matrix_truth;
 	modulation_matrix_truth << 1, -0.5, 0,
 							   -0.5, 1, 0,
 							   0, 0, 1.5;
 
 	
-	Eigen::Matrix3f orthogonal_basis_truth;
+	Eigen::Matrix3d orthogonal_basis_truth;
 	orthogonal_basis_truth << -0.70710678, -0.70710678, 0,
 							  -0.70710678, 0.70710678, 0,
 							  0, 0, 1;
-	float distance_truth = 2.0;
+	double distance_truth = 2.0;
 
 	for(int i=0; i<modulation_matrix.rows(); ++i)
 	{
@@ -198,28 +198,28 @@ TEST(ComputeModulationMatrix, PositiveNos)
 
 TEST(ComputeRelativeVelocities, PositiveNos)
 {
-	Eigen::Vector3f position_o1(2, 1, 0);
-	Eigen::Vector3f position_o2(0, 0, 0);
-	Eigen::Vector3f position_o3(0.9, 0, 0);
-	Eigen::Quaternionf orientation(1,0,0,0);
+	Eigen::Vector3d position_o1(2, 1, 0);
+	Eigen::Vector3d position_o2(0, 0, 0);
+	Eigen::Vector3d position_o3(0.9, 0, 0);
+	Eigen::Quaterniond orientation(1,0,0,0);
 
-	auto ptrE1 = std::make_unique<Ellipsoid2D>(State(position_o1, orientation));
-	auto ptrE2 = std::make_unique<Ellipsoid2D>(State(position_o2, orientation));
-	ptrE2->set_linear_velocity(Eigen::Vector3f(-0.5,-0.5,0));
-	auto ptrE3 = std::make_unique<Ellipsoid2D>(State(position_o3, orientation));
+	auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation));
+	auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation));
+	ptrE2->set_linear_velocity(Eigen::Vector3d(-0.5,-0.5,0));
+	auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3, orientation));
 
 	std::deque<std::unique_ptr<Obstacle> > obstacle_list;
 	obstacle_list.push_back(std::move(ptrE1));
 	obstacle_list.push_back(std::move(ptrE2));
 	obstacle_list.push_back(std::move(ptrE3));
 
-	Eigen::Vector3f agent_position(1,0,0);
+	Eigen::Vector3d agent_position(1,0,0);
 	State agent_state(agent_position);
 	Agent agent(agent_state);
-	agent.set_linear_velocity(Eigen::Vector3f(0.5,0.5,0));
+	agent.set_linear_velocity(Eigen::Vector3d(0.5,0.5,0));
 
-	std::deque<Eigen::Matrix3f> orthogonal_basis_list;
-	Eigen::ArrayXf distances(obstacle_list.size());
+	std::deque<Eigen::Matrix3d> orthogonal_basis_list;
+	Eigen::ArrayXd distances(obstacle_list.size());
 
 	// compute all necessary elements to calculation the modulation matrix
 	int k = 0;
@@ -231,13 +231,13 @@ TEST(ComputeRelativeVelocities, PositiveNos)
 		++k;
 	}
 
-	Eigen::ArrayXf weights = Modulation::weight_obstacles(distances, 1.0, 2.0);
+	Eigen::ArrayXd weights = Modulation::weight_obstacles(distances, 1.0, 2.0);
 	auto velocities = Modulation::compute_relative_velocities(agent, obstacle_list, distances, weights, orthogonal_basis_list);
-	Eigen::Vector3f agent_relative_velocity = std::get<0>(velocities);
-	Eigen::Vector3f obstacles_relative_velocity = std::get<1>(velocities);
+	Eigen::Vector3d agent_relative_velocity = std::get<0>(velocities);
+	Eigen::Vector3d obstacles_relative_velocity = std::get<1>(velocities);
 	
-	Eigen::Vector3f rel_velocity_truth(0.75, 0.75, 0);
-	Eigen::Vector3f obs_velocity_truth(-0.25, -0.25, 0);
+	Eigen::Vector3d rel_velocity_truth(0.75, 0.75, 0);
+	Eigen::Vector3d obs_velocity_truth(-0.25, -0.25, 0);
 
 	std::cerr << "agent relative velocity: " << std::endl;
 	std::cerr << agent_relative_velocity << std::endl;
@@ -257,28 +257,28 @@ TEST(ComputeRelativeVelocities, PositiveNos)
 
 TEST(ModulateVelocity, PositiveNos)
 {
-	Eigen::Vector3f position_o1(2, 1, 0);
-	Eigen::Vector3f position_o2(0, 0, 0);
-	Eigen::Vector3f position_o3(0.9, 0, 0);
-	Eigen::Quaternionf orientation(1,0,0,0);
+	Eigen::Vector3d position_o1(2, 1, 0);
+	Eigen::Vector3d position_o2(0, 0, 0);
+	Eigen::Vector3d position_o3(0.9, 0, 0);
+	Eigen::Quaterniond orientation(1,0,0,0);
 
-	auto ptrE1 = std::make_unique<Ellipsoid2D>(State(position_o1, orientation));
-	auto ptrE2 = std::make_unique<Ellipsoid2D>(State(position_o2, orientation));
-	ptrE2->set_linear_velocity(Eigen::Vector3f(-0.5,-0.5,0));
-	auto ptrE3 = std::make_unique<Ellipsoid2D>(State(position_o3, orientation));
+	auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation));
+	auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation));
+	ptrE2->set_linear_velocity(Eigen::Vector3d(-0.5,-0.5,0));
+	auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3, orientation));
 
 	std::deque<std::unique_ptr<Obstacle> > obstacle_list;
 	obstacle_list.push_back(std::move(ptrE1));
 	obstacle_list.push_back(std::move(ptrE2));
 	obstacle_list.push_back(std::move(ptrE3));
 
-	Eigen::Vector3f agent_position(1,0,0);
+	Eigen::Vector3d agent_position(1,0,0);
 	State agent_state(agent_position);
 	Agent agent(agent_state);
-	agent.set_linear_velocity(Eigen::Vector3f(0.5,0.5,0));
+	agent.set_linear_velocity(Eigen::Vector3d(0.5,0.5,0));
 
-	Eigen::Vector3f modulated_velocity = Modulation::modulate_velocity(agent, obstacle_list);
-	Eigen::Vector3f modulated_velocity_truth(-0.25,1.25,0.0);
+	Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, obstacle_list);
+	Eigen::Vector3d modulated_velocity_truth(-0.25,1.25,0.0);
 
 	std::cerr << "modulated velocity: " << std::endl;
 	std::cerr << modulated_velocity << std::endl;

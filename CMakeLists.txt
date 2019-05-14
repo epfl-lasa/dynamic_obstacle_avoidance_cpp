@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.9)
 
 # Options. Turn on with 'cmake -Druntests=ON'.
 option(runtests "Build all tests." OFF) # Makes boolean 'test' available.
@@ -24,6 +24,8 @@ find_package(
 	armadillo REQUIRED
 )
 
+find_package(OpenMP)
+
 include_directories(
   	include
   	${Eigen3_INCLUDE_DIRS}
@@ -32,8 +34,8 @@ include_directories(
 
 set(CORE_SOURCES
 	src/Obstacle/Obstacle.cpp
- 	src/Obstacle/Ellipsoid2D.cpp
- 	src/Obstacle/LaserScan2D.cpp
+ 	src/Obstacle/Ellipsoid.cpp
+ 	src/Obstacle/PointCloudToObstacle.cpp
  	src/State/Pose.cpp
  	src/State/State.cpp
 	src/Modulation.cpp
@@ -42,7 +44,12 @@ set(CORE_SOURCES
 
 add_library(${PROJECT_NAME} SHARED ${CORE_SOURCES})
 
-target_link_libraries(${PROJECT_NAME} armadillo)
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX armadillo)
+else()
+	target_link_libraries(${PROJECT_NAME} armadillo)
+endif()
+
 
 install(DIRECTORY include/
   	DESTINATION include)
@@ -73,7 +80,7 @@ if (runtests)
 		${PROJECT_NAME}
 	)
 
-	add_executable(runTestObstacle tests/testEllipsoid2DObstacle.cpp)
+	add_executable(runTestObstacle tests/testEllipsoidObstacle.cpp)
 	target_link_libraries(runTestObstacle
 		gtest 
 		gtest_main

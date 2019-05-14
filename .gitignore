@@ -4,3 +4,4 @@
 /python/src/dynamic_obstacle_avoidance/obstacle_avoidance/__pycache__/*
 /python/src/dynamic_obstacle_avoidance/visualization/__pycache__/*
 /python/notebooks/.ipynb_checkpoints/*
+/build/*

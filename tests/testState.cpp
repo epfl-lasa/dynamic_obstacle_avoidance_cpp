@@ -4,12 +4,12 @@
 
 TEST(MultiplyTransformsBothOperators, PositiveNos)
 {
-	Eigen::Vector3f pos1(1,2,3);
-	Eigen::Quaternionf rot1(1,0,0,0);
+	Eigen::Vector3d pos1(1,2,3);
+	Eigen::Quaterniond rot1(1,0,0,0);
 	Pose tf1(pos1, rot1);
 
-	Eigen::Vector3f pos2(4,5,6);
-	Eigen::Quaternionf rot2(1,0,0,0);
+	Eigen::Vector3d pos2(4,5,6);
+	Eigen::Quaterniond rot2(1,0,0,0);
 	Pose tf2(pos2, rot2);
 
 	Pose tf3 = tf1 * tf2;
@@ -21,34 +21,34 @@ TEST(MultiplyTransformsBothOperators, PositiveNos)
 
 TEST(MultiplyTransformsSameOrientation, PositiveNos)
 {
-	Eigen::Vector3f pos1(1,2,3);
-	Eigen::Quaternionf rot1(1,0,0,0);
+	Eigen::Vector3d pos1(1,2,3);
+	Eigen::Quaterniond rot1(1,0,0,0);
 	Pose tf1(pos1, rot1);
 
-	Eigen::Vector3f pos2(4,5,6);
-	Eigen::Quaternionf rot2(1,0,0,0);
+	Eigen::Vector3d pos2(4,5,6);
+	Eigen::Quaterniond rot2(1,0,0,0);
 	Pose tf2(pos2, rot2);
 
 	tf1 *= tf2;
 	
-	Eigen::Vector3f pos_truth(5,7,9);
+	Eigen::Vector3d pos_truth(5,7,9);
 	for(int i=0; i<pos_truth.size(); ++i) ASSERT_NEAR(tf1.get_position()(i), pos_truth(i), 0.00001);
 }
 
 TEST(MultiplyTransformsDifferentOrientation, PositiveNos)
 {
-	Eigen::Vector3f pos1(1,2,3);
-	Eigen::Quaternionf rot1(0.70710678, 0.70710678, 0., 0.);
+	Eigen::Vector3d pos1(1,2,3);
+	Eigen::Quaterniond rot1(0.70710678, 0.70710678, 0., 0.);
 	Pose tf1(pos1, rot1);
 
-	Eigen::Vector3f pos2(4,5,6);
-	Eigen::Quaternionf rot2(0., 0., 0.70710678, 0.70710678);
+	Eigen::Vector3d pos2(4,5,6);
+	Eigen::Quaterniond rot2(0., 0., 0.70710678, 0.70710678);
 	Pose tf2(pos2, rot2);
 
 	tf1 *= tf2;
 	
-	Eigen::Vector3f pos_truth(5,-4,8);
-	Eigen::Quaternionf rot_truth(0.,0.,0.,1.);
+	Eigen::Vector3d pos_truth(5,-4,8);
+	Eigen::Quaterniond rot_truth(0.,0.,0.,1.);
 
 	std::cerr << "position" << std::endl;
 	std::cerr << tf1.get_position() << std::endl;
@@ -61,14 +61,14 @@ TEST(MultiplyTransformsDifferentOrientation, PositiveNos)
 
 TEST(MultiplyInverseNullOrientation, PositiveNos)
 {
-	Eigen::Vector3f pos1(1,2,3);
-	Eigen::Quaternionf rot1(1., 0., 0., 0.);
+	Eigen::Vector3d pos1(1,2,3);
+	Eigen::Quaterniond rot1(1., 0., 0., 0.);
 	Pose tf1(pos1, rot1);
 
 	tf1 = tf1.inverse();
 	
-	Eigen::Vector3f pos_truth(-1,-2,-3);
-	Eigen::Quaternionf rot_truth(1.,0.,0.,0.);
+	Eigen::Vector3d pos_truth(-1,-2,-3);
+	Eigen::Quaterniond rot_truth(1.,0.,0.,0.);
 
 	std::cerr << "position" << std::endl;
 	std::cerr << tf1.get_position() << std::endl;
@@ -81,14 +81,14 @@ TEST(MultiplyInverseNullOrientation, PositiveNos)
 
 TEST(MultiplyInverseNonNullOrientation, PositiveNos)
 {
-	Eigen::Vector3f pos1(1,2,3);
-	Eigen::Quaternionf rot1(0.70710678, 0.70710678, 0., 0.);
+	Eigen::Vector3d pos1(1,2,3);
+	Eigen::Quaterniond rot1(0.70710678, 0.70710678, 0., 0.);
 	Pose tf1(pos1, rot1);
 
 	tf1 = tf1.inverse();
 	
-	Eigen::Vector3f pos_truth(-1,-3,2);
-	Eigen::Quaternionf rot_truth(0.70710678, -0.70710678, 0., 0.);
+	Eigen::Vector3d pos_truth(-1,-3,2);
+	Eigen::Quaterniond rot_truth(0.70710678, -0.70710678, 0., 0.);
 
 	std::cerr << "position" << std::endl;
 	std::cerr << tf1.get_position() << std::endl;

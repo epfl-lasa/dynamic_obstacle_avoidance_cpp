@@ -3,20 +3,20 @@
 Pose::Pose():position(0,0,0), orientation(1,0,0,0)
 {}
 
-Pose::Pose(const Eigen::Vector3f& position):position(position), orientation(1,0,0,0)
+Pose::Pose(const Eigen::Vector3d& position):position(position), orientation(1,0,0,0)
 {}
 
-Pose::Pose(const Eigen::Vector3f& position, const Eigen::Quaternionf& orientation):
+Pose::Pose(const Eigen::Vector3d& position, const Eigen::Quaterniond& orientation):
 position(position), orientation(orientation)
 {
 	if(abs(orientation.norm()) - 1 < 1e-4) this->orientation.normalize();
 }
 
-Pose::Pose(const float& x, const float& y, const float& z):
+Pose::Pose(const double& x, const double& y, const double& z):
 position(x,y,z), orientation(1,0,0,0)
 {}
 
-Pose::Pose(const float& px, const float& py, const float& pz, const float& qw, const float& qx, const float& qy, const float& qz):
+Pose::Pose(const double& px, const double& py, const double& pz, const double& qw, const double& qx, const double& qy, const double& qz):
 position(px,py,pz), orientation(qw,qx,qy,qz)
 {
 	if(abs(orientation.norm()) - 1 < 1e-4) this->orientation.normalize();
