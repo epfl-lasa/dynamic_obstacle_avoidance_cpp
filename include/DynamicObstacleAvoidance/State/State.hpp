@@ -60,6 +60,11 @@ public:
 		this->pose.set_position(position);
 	}
 
+	inline void set_position(const double& x, const double& y, const double& z)
+	{
+		this->pose.set_position(x, y, z);
+	}
+
 	inline void set_orientation(const Eigen::Quaterniond& orientation)
 	{
 		this->pose.set_orientation(orientation);

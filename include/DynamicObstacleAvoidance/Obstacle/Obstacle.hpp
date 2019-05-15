@@ -78,6 +78,11 @@ public:
 		this->state.set_position(position);
 	}
 
+	inline void set_position(const double& x, const double& y, const double& z)
+	{
+		this->state.set_position(x, y, z);
+	}
+
 	inline void set_orientation(const Eigen::Quaterniond& orientation)
 	{
 		this->state.set_orientation(orientation);

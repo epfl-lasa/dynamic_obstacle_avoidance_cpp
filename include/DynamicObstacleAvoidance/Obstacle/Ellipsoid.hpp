@@ -20,6 +20,7 @@ private:
 	Eigen::Array3d curvature_factor;
 
 public:
+	explicit Ellipsoid();
 	explicit Ellipsoid(const double& cx, const double& cy, const double& cz, const double& safety_margin=0);
 	explicit Ellipsoid(State state, const double& safety_margin=0);
 	explicit Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin=0);

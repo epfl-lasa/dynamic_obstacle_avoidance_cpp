@@ -1,5 +1,9 @@
 #include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 
+Ellipsoid::Ellipsoid():
+Obstacle(), axis_lengths(1,1,1), curvature_factor(1,1,1)
+{}
+
 Ellipsoid::Ellipsoid(State state, const double& safety_margin):
 Obstacle(state, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1)
 {}

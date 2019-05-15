@@ -94,7 +94,15 @@ if (runtests)
 		${PROJECT_NAME}
 	)
 
+	add_executable(runTestPointCloudToObstacle tests/testPointCloudToObstacle.cpp)
+	target_link_libraries(runTestPointCloudToObstacle
+		gtest 
+		gtest_main
+		${PROJECT_NAME}
+	)
+
 	add_test(NAME runTestModulation COMMAND runTestModulation)
 	add_test(NAME runTestObstacle COMMAND runTestObstacle)
 	add_test(NAME runTestState COMMAND runTestState)
+	add_test(NAME runTestPointCloudToObstacle COMMAND runTestPointCloudToObstacle)
 endif()

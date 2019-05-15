@@ -40,9 +40,14 @@ public:
 		this->position = position;
 	}
 
+	inline void set_position(const double& x, const double& y, const double& z)
+	{
+		this->position = Eigen::Vector3d(x, y, z);
+	}
+
 	inline void set_orientation(const Eigen::Quaterniond& orientation)
 	{
-		this->orientation = orientation;
+		this->orientation = orientation.normalized();
 	}
 
 	inline Pose& operator*=(const Pose& p)
