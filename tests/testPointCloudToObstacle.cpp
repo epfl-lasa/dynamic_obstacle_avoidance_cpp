@@ -1,7 +1,10 @@
 #include "DynamicObstacleAvoidance/Obstacle/PointCloudToObstacle.hpp"
+#include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
+#include "DynamicObstacleAvoidance/Utils/Plotting/PlottingTools.hpp"
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
 #include <iostream>
+
 
 TEST(TestFitEllipsoid, PositiveNos)
 {
@@ -21,6 +24,8 @@ TEST(TestFitEllipsoid, PositiveNos)
 		std::cerr << "axis: " << e.get_axis_lengths() << std::endl;
 		std::cerr << "--------" << std::endl;
 	}
+	
+	PlottingTools::plot_ellipsoids2D(ellipse_list);
 }
 
 int main(int argc, char **argv) {

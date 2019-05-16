@@ -31,9 +31,19 @@ public:
 		return this->axis_lengths;
 	}
 
+	inline double get_axis_lengths(const int& index) const 
+	{ 
+		return this->axis_lengths(index);
+	}
+
 	inline const Eigen::Array3d get_curvature_factor() const 
 	{ 
 		return this->curvature_factor;
+	}
+
+	inline double get_curvature_factor(const int& index) const 
+	{ 
+		return this->curvature_factor(index);
 	}
 
 	inline void set_axis_lengths(const Eigen::Array3d& axis_lengths)

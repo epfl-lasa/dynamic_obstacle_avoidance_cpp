@@ -24,12 +24,14 @@ find_package(
 	armadillo REQUIRED
 )
 
+find_package(PythonLibs 2.7)
 find_package(OpenMP)
 
 include_directories(
   	include
   	${Eigen3_INCLUDE_DIRS}
   	${armadillo_INCLUDE_DIRS}
+  	${PYTHON_INCLUDE_DIRS}
 )
 
 set(CORE_SOURCES
@@ -40,14 +42,15 @@ set(CORE_SOURCES
  	src/State/State.cpp
 	src/Modulation.cpp
   	src/Agent.cpp
+  	src/Utils/Plotting/PlottingTools.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${CORE_SOURCES})
 
 if(OpenMP_CXX_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX armadillo)
+    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX armadillo ${PYTHON_LIBRARIES})
 else()
-	target_link_libraries(${PROJECT_NAME} armadillo)
+	target_link_libraries(${PROJECT_NAME} armadillo ${PYTHON_LIBRARIES})
 endif()
 
 
