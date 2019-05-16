@@ -46,7 +46,7 @@ TEST(TestClustering, PositiveNos)
 		std::cerr << "------------" << std::endl;
 	}
 
-	PlottingTools::plot_clusters(clusters);
+	//PlottingTools::plot_clusters(clusters);
 }
 
 int main(int argc, char **argv) {
