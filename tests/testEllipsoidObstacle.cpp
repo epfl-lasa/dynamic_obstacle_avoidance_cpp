@@ -9,9 +9,11 @@ TEST(ComputeDistanceToExternalPointNonNullPosition, PositiveNos)
 	Ellipsoid e(s);
 
 	Eigen::Vector3d agent_position(1, 0, 0);
+	State state(agent_position);
+	Agent agent(state);
 
 	std::cerr << "Computing ditance" << std::endl;
-	double distance = e.compute_distance_to_external_point(agent_position);
+	double distance = e.compute_distance_to_agent(agent);
 	double truth = 2.0;
 	std::cerr << "distance = " << distance << ", truth = " << truth << std::endl;
 
@@ -25,9 +27,11 @@ TEST(ComputeDistanceToExternalPointNullPosition, PositiveNos)
 	Ellipsoid e(s);
 
 	Eigen::Vector3d agent_position(1, 0, 0);
+	State state(agent_position);
+	Agent agent(state);
 
 	std::cerr << "Computing ditance" << std::endl;
-	double distance = e.compute_distance_to_external_point(agent_position);
+	double distance = e.compute_distance_to_agent(agent);
 	double truth = 1.0;
 	std::cerr << "distance = " << distance << ", truth = " << truth << std::endl;
 
@@ -41,9 +45,11 @@ TEST(ComputeDistanceToExternalPointCloseToObstacle, PositiveNos)
 	Ellipsoid e(s);
 
 	Eigen::Vector3d agent_position(1, 0, 0);
+	State state(agent_position);
+	Agent agent(state);
 
 	std::cerr << "Computing ditance" << std::endl;
-	double distance = e.compute_distance_to_external_point(agent_position);
+	double distance = e.compute_distance_to_agent(agent);
 	double truth = 0.01;
 	std::cerr << "distance = " << distance << ", truth = " << truth << std::endl;
 
@@ -57,9 +63,11 @@ TEST(ComputeNormalToExternalPointNonNullPosition, PositiveNos)
 	Ellipsoid e(s);
 
 	Eigen::Vector3d agent_position(1, 0, 0);
+	State state(agent_position);
+	Agent agent(state);
 
 	std::cerr << "Computing normal" << std::endl;
-	Eigen::Vector3d normal = e.compute_normal_to_external_point(agent_position);
+	Eigen::Vector3d normal = e.compute_normal_to_agent(agent);
 	Eigen::Vector3d truth(-0.70710678, -0.70710678, 0.0);
 	std::cerr << "normal = " << normal << ", truth = " << truth << std::endl;
 
@@ -73,9 +81,11 @@ TEST(ComputeNormalToExternalPointNullPosition, PositiveNos)
 	Ellipsoid e(s);
 
 	Eigen::Vector3d agent_position(1, 0, 0);
+	State state(agent_position);
+	Agent agent(state);
 
 	std::cerr << "Computing normal" << std::endl;
-	Eigen::Vector3d normal = e.compute_normal_to_external_point(agent_position);
+	Eigen::Vector3d normal = e.compute_normal_to_agent(agent);
 	Eigen::Vector3d truth(1.0, 0.0, 0.0);
 	std::cerr << "normal = " << normal << ", truth = " << truth << std::endl;
 
@@ -89,9 +99,11 @@ TEST(ComputeNormalToExternalPointCloseToObstacle, PositiveNos)
 	Ellipsoid e(s);
 
 	Eigen::Vector3d agent_position(1, 0, 0);
+	State state(agent_position);
+	Agent agent(state);
 
 	std::cerr << "Computing normal" << std::endl;
-	Eigen::Vector3d normal = e.compute_normal_to_external_point(agent_position);
+	Eigen::Vector3d normal = e.compute_normal_to_agent(agent);
 	Eigen::Vector3d truth(1.0, 0.0, 0.0);
 	std::cerr << "normal = " << normal << ", truth = " << truth << std::endl;
 

@@ -24,8 +24,29 @@ TEST(TestFitEllipsoid, PositiveNos)
 		std::cerr << "axis: " << e.get_axis_lengths() << std::endl;
 		std::cerr << "--------" << std::endl;
 	}
-	
-	PlottingTools::plot_ellipsoids2D(ellipse_list);
+
+	//PlottingTools::plot_ellipsoids2D(ellipse_list);
+}
+
+TEST(TestClustering, PositiveNos)
+{
+	Eigen::MatrixXd surface_points(3,10);
+	surface_points << 0.68026725, 3.80951844, -1.6613724, -0.25730725, 0.69801745, -5.8991695, -5.46727359, -5.68929574, -4.95414465, -5.78085261,
+					  -0.01634235, 0.79848348, -0.57766695, -0.15555173, 0.17456129, 4.01799145, 3.08517251, 3.23357203, 2.85638922, 2.40213298,
+					  0,0,0,0,0,0,0,0,0,0;
+
+	PointCloudToObstacle pco;
+	std::deque<Eigen::MatrixXd> clusters = pco.cluster_surface_points(surface_points);
+
+	ASSERT_EQ(clusters.size(), 2);
+
+	for(Eigen::MatrixXd c:clusters) 
+	{
+		std::cerr << c << std::endl;
+		std::cerr << "------------" << std::endl;
+	}
+
+	PlottingTools::plot_clusters(clusters);
 }
 
 int main(int argc, char **argv) {

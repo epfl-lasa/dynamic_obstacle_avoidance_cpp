@@ -18,12 +18,12 @@ state(cx, cy, cz), reference_position(cx, cy, cz), safety_margin(safety_margin)
 Obstacle::~Obstacle() 
 {}
 
-Eigen::Vector3d Obstacle::compute_normal_to_external_point(const Eigen::Vector3d& external_point) const
+Eigen::Vector3d Obstacle::compute_normal_to_agent(const Agent& agent) const
 {
 	std::cerr << "Fonction of abstract class obstacle used" << std::endl;
 }
 
-double Obstacle::compute_distance_to_external_point(const Eigen::Vector3d& external_point) const
+double Obstacle::compute_distance_to_agent(const Agent& agent) const
 {
 	std::cerr << "Fonction of abstract class obstacle used" << std::endl;
 }

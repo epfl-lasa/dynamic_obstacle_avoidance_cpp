@@ -65,8 +65,10 @@ TEST(ComputeBasisMatrices, PositiveNos)
 	State s(position, orientation);
 	Ellipsoid e(s);
 	Eigen::Vector3d agent_position(1, 0, 0);
+	State state(agent_position);
+	Agent agent(state);
 
-	Eigen::Vector3d normal = e.compute_normal_to_external_point(agent_position);
+	Eigen::Vector3d normal = e.compute_normal_to_agent(agent);
 	auto basis_matrices = Modulation::compute_basis_matrices(normal, agent_position, e.get_reference_position());
 
 	Eigen::Matrix3d reference_basis = std::get<0>(basis_matrices);
@@ -106,8 +108,10 @@ TEST(ComputeBasisMatricesWithRotation, PositiveNos)
 	Ellipsoid e(State(position, orientation));
 
 	Eigen::Vector3d agent_position(1, 0, 0);
+	State state(agent_position);
+	Agent agent(state);
 
-	Eigen::Vector3d normal = e.compute_normal_to_external_point(agent_position);
+	Eigen::Vector3d normal = e.compute_normal_to_agent(agent);
 	auto basis_matrices = Modulation::compute_basis_matrices(normal, agent_position, e.get_reference_position());
 	Eigen::Matrix3d orthogonal_basis = std::get<1>(basis_matrices);
 
@@ -135,8 +139,10 @@ TEST(ComputeDiagonalEigenvalues, PositiveNos)
 	Ellipsoid e(s);
 
 	Eigen::Vector3d agent_position(1, 0, 0);
+	State state(agent_position);
+	Agent agent(state);
 
-	double distance = e.compute_distance_to_external_point(agent_position);
+	double distance = e.compute_distance_to_agent(agent);
 	Eigen::DiagonalMatrix<double, 3> eigenvalues = Modulation::compute_diagonal_eigenvalues(distance);
 
 	Eigen::DiagonalMatrix<double, 3> eigenvalues_truth(0.5, 1.5, 1.5);

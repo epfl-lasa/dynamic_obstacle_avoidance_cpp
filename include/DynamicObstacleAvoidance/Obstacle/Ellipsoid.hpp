@@ -56,8 +56,8 @@ public:
 		this->curvature_factor = curvature_factor;
 	}
 
-	Eigen::Vector3d compute_normal_to_external_point(const Eigen::Vector3d& external_point) const;
-	double compute_distance_to_external_point(const Eigen::Vector3d& external_point) const;	
+	Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
+	double compute_distance_to_agent(const Agent& agent) const;	
 };
 
 #endif

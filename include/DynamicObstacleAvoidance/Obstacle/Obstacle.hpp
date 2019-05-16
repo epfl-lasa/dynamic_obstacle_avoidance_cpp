@@ -11,6 +11,7 @@
 #include <eigen3/Eigen/Core>
 #include "DynamicObstacleAvoidance/State/State.hpp"
 #include "DynamicObstacleAvoidance/State/Pose.hpp"
+#include "DynamicObstacleAvoidance/Agent.hpp"
 #include <iostream>
 
 class Obstacle 
@@ -103,9 +104,9 @@ public:
 		this->reference_position = reference_position;
 	}
 
-	virtual Eigen::Vector3d compute_normal_to_external_point(const Eigen::Vector3d& external_point) const;
+	virtual Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
 	
-	virtual double compute_distance_to_external_point(const Eigen::Vector3d& external_point) const;
+	virtual double compute_distance_to_agent(const Agent& agent) const;
 };
 
 #endif

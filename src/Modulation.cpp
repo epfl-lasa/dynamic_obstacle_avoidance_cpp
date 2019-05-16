@@ -7,8 +7,8 @@ namespace Modulation
 		Eigen::Vector3d agent_position = agent.get_position();
 
 		// compute all necessary vectors
-		Eigen::Vector3d normal_vector = obstacle.compute_normal_to_external_point(agent_position);
-		double distance_to_obstacle = obstacle.compute_distance_to_external_point(agent_position);
+		Eigen::Vector3d normal_vector = obstacle.compute_normal_to_agent(agent);
+		double distance_to_obstacle = obstacle.compute_distance_to_agent(agent);
 
 		// compute the basis matrices
 		auto basis_matrices = compute_basis_matrices(normal_vector, agent_position, obstacle.get_reference_position());
