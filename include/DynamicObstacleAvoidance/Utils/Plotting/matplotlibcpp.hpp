@@ -1,8 +1,6 @@
 #ifndef DYNAMIC_OBSTACLE_AVOIDANCE_UTILS_PLOTTING_MATPLOTLIBCPP_H_
 #define DYNAMIC_OBSTACLE_AVOIDANCE_UTILS_PLOTTING_MATPLOTLIBCPP_H_
 
-#pragma once
-
 #include <vector>
 #include <map>
 #include <array>

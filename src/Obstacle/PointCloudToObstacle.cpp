@@ -1,6 +1,7 @@
 #include "DynamicObstacleAvoidance/Obstacle/PointCloudToObstacle.hpp"
 
-PointCloudToObstacle::PointCloudToObstacle(const double& safety_margin)
+PointCloudToObstacle::PointCloudToObstacle(const double& safety_margin):
+cluster_algorithm(0.5, 2)
 {}
 
 PointCloudToObstacle::~PointCloudToObstacle()
@@ -39,35 +40,30 @@ std::pair<arma::gmm_full, double> PointCloudToObstacle::compute_bic(const arma::
 
 std::deque<Eigen::MatrixXd> PointCloudToObstacle::cluster_surface_points(const Eigen::MatrixXd& surface_points)
 {
-	int nb_cluster_max = 10;
-	Eigen::ArrayXd bic_values(nb_cluster_max);
-	std::deque<arma::gmm_full> model_list(nb_cluster_max);
+	// cluster the surface points
+	this->cluster_algorithm.fit(surface_points.transpose());
+	std::vector<int> labels = this->cluster_algorithm.get_labels();
+	int nb_clusters = *std::max_element(labels.begin(), labels.end()) + 1;
 
-	// convert eigen to armadillo matrix using advanced initialization
-	arma::mat data = arma::mat(surface_points.data(), surface_points.rows(), surface_points.cols());
-
-	#pragma omp parallel for
-	for(int i=0; i< nb_cluster_max; ++i)
+	// initialize the list of clusters
+	std::deque<Eigen::MatrixXd> clusters(nb_clusters);
+	for(int i=0; i<nb_clusters; ++i)
 	{
-		auto models_and_bic = compute_bic(data, (i+1));
-		model_list[i] = std::get<0>(models_and_bic);
-		bic_values(i) = std::get<1>(models_and_bic);
+		clusters[i].resize(surface_points.rows(), std::count(labels.begin(), labels.end(), i));
 	}
 
-	// calculate the min of the bic
-	int nb_clusters = bic_values.minCoeff() + 1;
-	arma::gmm_full best_model = model_list[nb_clusters-1];
-
-	// create the list of clusters
-	std::deque<Eigen::MatrixXd> clusters(nb_clusters);
-
+	// fill all the clusters
+	std::vector<int> nb_points_by_cluster(nb_clusters, 0);
 	#pragma omp parallel for
 	for(int i=0; i<surface_points.cols(); ++i)
 	{
-		int cluster_id = best_model.assign(data.col(i), arma::eucl_dist);
+		// get the cluster id assigned to th point
+		int cluster_id = labels[i];
+
+		// put it in the cluster
 		std::unique_lock<std::mutex> lock(this->mutex);
-		clusters[cluster_id].conservativeResize(clusters[cluster_id].rows(), clusters[cluster_id].cols()+1);
-		clusters[cluster_id].col(clusters[cluster_id].cols()-1) = surface_points.col(i);
+		clusters[cluster_id].col(nb_points_by_cluster[cluster_id]) = surface_points.col(i);
+		++nb_points_by_cluster[cluster_id];
 		lock.unlock();
 	}
 	return clusters;

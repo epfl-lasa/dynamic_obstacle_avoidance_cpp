@@ -14,9 +14,11 @@ namespace plt = matplotlibcpp;
 
 namespace PlottingTools 
 {
-	std::vector<double> linespace(double start, double ed, int num);
+	std::vector<double> linespace(const double& start, const double& ed, const int& num);
 
-	void plot_ellipsoids2D(std::deque<Ellipsoid> ellipsoids);
+	void plot_ellipsoids2D(const std::deque<Ellipsoid>& ellipsoids);
+
+	void plot_clusters(const std::deque<Eigen::MatrixXd>& clusters);
 }
 
 #endif
