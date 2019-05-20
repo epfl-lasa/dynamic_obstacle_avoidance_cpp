@@ -16,9 +16,11 @@ namespace PlottingTools
 {
 	std::vector<double> linespace(const double& start, const double& ed, const int& num);
 
-	void plot_ellipsoids2D(const std::deque<Ellipsoid>& ellipsoids);
+	void plot_ellipsoids2D(const std::deque<Ellipsoid>& ellipsoids, bool is_show=true);
 
-	void plot_clusters(const std::deque<Eigen::MatrixXd>& clusters);
+	void plot_clusters(const std::deque<Eigen::MatrixXd>& clusters, bool is_show=true);
+
+	void plot_fitted_clusters(const std::deque<Eigen::MatrixXd>& clusters, const std::deque<Ellipsoid>& ellipsoids, bool is_show=true);
 }
 
 #endif

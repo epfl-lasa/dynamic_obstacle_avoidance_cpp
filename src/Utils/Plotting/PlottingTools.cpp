@@ -19,7 +19,7 @@ std::vector<double> PlottingTools::linespace(const double& start, const double& 
     return pts;
 }
 
-void PlottingTools::plot_ellipsoids2D(const std::deque<Ellipsoid>& ellipsoids)
+void PlottingTools::plot_ellipsoids2D(const std::deque<Ellipsoid>& ellipsoids, bool is_show)
 {
 	for(Ellipsoid e:ellipsoids)
 	{
@@ -42,12 +42,16 @@ void PlottingTools::plot_ellipsoids2D(const std::deque<Ellipsoid>& ellipsoids)
 		}
 		plt::plot(x, y);
 	}
-	plt::xlim(-9, 5);
-	plt::ylim(-3, 6);
-	plt::show();
+
+	if(is_show)
+	{
+		plt::xlim(-20, 20);
+		plt::ylim(-20, 20);
+		plt::show();
+	}
 }
 
-void PlottingTools::plot_clusters(const std::deque<Eigen::MatrixXd>& clusters)
+void PlottingTools::plot_clusters(const std::deque<Eigen::MatrixXd>& clusters, bool is_show)
 {
 	for(Eigen::MatrixXd points:clusters)
 	{
@@ -60,7 +64,22 @@ void PlottingTools::plot_clusters(const std::deque<Eigen::MatrixXd>& clusters)
 		}
 		plt::plot(x, y, "o");
 	}
-	plt::xlim(-9, 5);
-	plt::ylim(-3, 6);
-	plt::show();
+	if(is_show)
+	{
+		plt::xlim(-20, 20);
+		plt::ylim(-20, 20);
+		plt::show();
+	}
+}
+
+void PlottingTools::plot_fitted_clusters(const std::deque<Eigen::MatrixXd>& clusters, const std::deque<Ellipsoid>& ellipsoids, bool is_show)
+{
+	PlottingTools::plot_clusters(clusters, false);
+	PlottingTools::plot_ellipsoids2D(ellipsoids, false);
+	if(is_show)
+	{
+		plt::xlim(-20, 20);
+		plt::ylim(-20, 20);
+		plt::show();
+	}
 }

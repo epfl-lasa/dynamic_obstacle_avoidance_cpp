@@ -22,6 +22,7 @@ endif()
 find_package(
 	Eigen3 REQUIRED
 	armadillo REQUIRED
+	mlpack REQUIRED
 )
 
 find_package(PythonLibs 2.7)
@@ -31,6 +32,7 @@ include_directories(
   	include
   	${Eigen3_INCLUDE_DIRS}
   	${armadillo_INCLUDE_DIRS}
+  	${mlpack_INCLUDE_DIRS}
   	${PYTHON_INCLUDE_DIRS}
 )
 
@@ -48,9 +50,9 @@ set(CORE_SOURCES
 add_library(${PROJECT_NAME} SHARED ${CORE_SOURCES})
 
 if(OpenMP_CXX_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX armadillo ${PYTHON_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX armadillo mlpack ${PYTHON_LIBRARIES})
 else()
-	target_link_libraries(${PROJECT_NAME} armadillo ${PYTHON_LIBRARIES})
+	target_link_libraries(${PROJECT_NAME} armadillo mlpack ${PYTHON_LIBRARIES})
 endif()
 
 
