@@ -37,3 +37,8 @@ double Ellipsoid::compute_distance_to_agent(const Agent& agent) const
 	tmp_values = tmp_values.pow(2 * this->curvature_factor);
 	return tmp_values.sum();
 }
+
+std::pair<bool, Eigen::Vector3d> Ellipsoid::find_intersection_center(const Ellipsoid& other_obstacle) const
+{
+	std::cerr << "Fonction of ellipsoid class obstacle used" << std::endl;
+}

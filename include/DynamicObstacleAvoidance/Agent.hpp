@@ -56,6 +56,11 @@ public:
 		return this->safety_margin;
 	}
 
+	inline void set_safety_margin(const double& safety_margin)
+	{ 
+		this->safety_margin = safety_margin;
+	}
+
 	inline void set_pose(const Pose& pose)
 	{
 		this->state.set_pose(pose);

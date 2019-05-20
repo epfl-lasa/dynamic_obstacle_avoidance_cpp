@@ -6,7 +6,9 @@
 #define _USE_MATH_DEFINES 
 #include <cmath>
 #include <eigen3/Eigen/Core>
+#include <memory>
 
+#include "DynamicObstacleAvoidance/Agent.hpp"
 #include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 #include "DynamicObstacleAvoidance/Utils/Plotting/matplotlibcpp.hpp"
 
@@ -21,6 +23,8 @@ namespace PlottingTools
 	void plot_clusters(const std::deque<Eigen::MatrixXd>& clusters, bool is_show=true);
 
 	void plot_fitted_clusters(const std::deque<Eigen::MatrixXd>& clusters, const std::deque<Ellipsoid>& ellipsoids, bool is_show=true);
+
+	void plot_configuration(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history);
 }
 
 #endif

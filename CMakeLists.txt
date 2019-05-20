@@ -111,3 +111,8 @@ if (runtests)
 	add_test(NAME runTestState COMMAND runTestState)
 	add_test(NAME runTestPointCloudToObstacle COMMAND runTestPointCloudToObstacle)
 endif()
+
+add_executable(runTestConfiguration tests/testConfiguration.cpp)
+target_link_libraries(runTestConfiguration
+	${PROJECT_NAME}
+)

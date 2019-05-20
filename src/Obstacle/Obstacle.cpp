@@ -27,3 +27,8 @@ double Obstacle::compute_distance_to_agent(const Agent& agent) const
 {
 	std::cerr << "Fonction of abstract class obstacle used" << std::endl;
 }
+
+std::pair<bool, Eigen::Vector3d> Obstacle::find_intersection_center(const Obstacle& other_obstacle) const
+{
+	std::cerr << "Fonction of abstract class obstacle used" << std::endl;
+}

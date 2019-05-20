@@ -57,7 +57,10 @@ public:
 	}
 
 	Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
-	double compute_distance_to_agent(const Agent& agent) const;	
+
+	double compute_distance_to_agent(const Agent& agent) const;
+
+	std::pair<bool, Eigen::Vector3d> find_intersection_center(const Ellipsoid& other_obstacle) const;
 };
 
 #endif

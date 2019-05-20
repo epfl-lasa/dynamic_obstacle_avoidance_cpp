@@ -107,6 +107,8 @@ public:
 	virtual Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
 	
 	virtual double compute_distance_to_agent(const Agent& agent) const;
+
+	virtual std::pair<bool, Eigen::Vector3d> find_intersection_center(const Obstacle& other_obstacle) const;
 };
 
 #endif
