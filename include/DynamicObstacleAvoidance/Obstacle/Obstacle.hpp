@@ -12,7 +12,10 @@
 #include "DynamicObstacleAvoidance/State/State.hpp"
 #include "DynamicObstacleAvoidance/State/Pose.hpp"
 #include "DynamicObstacleAvoidance/Agent.hpp"
+#include "DynamicObstacleAvoidance/Utils/Plotting/matplotlibcpp.hpp"
 #include <iostream>
+
+namespace plt = matplotlibcpp;
 
 class Obstacle 
 {
@@ -108,7 +111,7 @@ public:
 	
 	virtual double compute_distance_to_agent(const Agent& agent) const;
 
-	virtual std::pair<bool, Eigen::Vector3d> find_intersection_center(const Obstacle& other_obstacle) const;
+	virtual void draw() const;
 };
 
 #endif

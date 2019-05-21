@@ -3,6 +3,7 @@
 #include "DynamicObstacleAvoidance/Utils/Plotting/PlottingTools.hpp"
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Dense>
 #include <iostream>
 #include <deque>
 #include <stdlib.h> 
@@ -105,7 +106,7 @@ TEST(FitObstacles, PositiveNos)
 		std::cerr << "--------" << std::endl;
 		ellipse_list.push_back(e);
 	}
-	PlottingTools::plot_fitted_clusters(clusters, ellipse_list);
+	//PlottingTools::plot_fitted_clusters(clusters, ellipse_list);
 }
 
 int main(int argc, char **argv) {

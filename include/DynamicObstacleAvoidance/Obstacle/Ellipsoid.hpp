@@ -8,9 +8,12 @@
 #ifndef DYNAMIC_OBSTACLE_AVOIDANCE_OBSTACLE_ELLIPSOID_H_
 #define DYNAMIC_OBSTACLE_AVOIDANCE_OBSTACLE_ELLIPSOID_H_
 
-#include <iostream>
 #include <eigen3/Eigen/Core>
+#define _USE_MATH_DEFINES 
+#include <cmath>
+#include <vector>
 #include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
+#include "DynamicObstacleAvoidance/Utils/VectorTools.hpp"
 
 
 class Ellipsoid: public Obstacle 
@@ -18,6 +21,7 @@ class Ellipsoid: public Obstacle
 private:
 	Eigen::Array3d axis_lengths;
 	Eigen::Array3d curvature_factor;
+	double epsilon;
 
 public:
 	explicit Ellipsoid();
@@ -60,7 +64,7 @@ public:
 
 	double compute_distance_to_agent(const Agent& agent) const;
 
-	std::pair<bool, Eigen::Vector3d> find_intersection_center(const Ellipsoid& other_obstacle) const;
+	void draw() const;
 };
 
 #endif

@@ -110,18 +110,6 @@ TEST(ComputeNormalToExternalPointCloseToObstacle, PositiveNos)
 	for(int i=0; i<normal.size(); ++i) ASSERT_NEAR(normal(i), truth(i), 0.01);
 }
 
-TEST(FindIntersection, PositiveNos)
-{
-	Eigen::Vector3d position_o1(-1, 1, 0);
-	Eigen::Vector3d position_o2(0.5, -0.5, 0);
-	Eigen::Quaterniond orientation(1,0,0,0);
-	
-	Ellipsoid e1 = Ellipsoid(State(position_o1, orientation), 0.5);
-	Ellipsoid e2 = Ellipsoid(State(position_o2, orientation), 0.5);
-
-	std::pair<bool, Eigen::Vector3d> center = e1.find_intersection_center(e2);
-}
-
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

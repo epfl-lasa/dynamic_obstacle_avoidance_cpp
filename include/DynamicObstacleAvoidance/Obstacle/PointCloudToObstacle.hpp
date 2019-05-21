@@ -9,7 +9,6 @@
 #define DYNAMIC_OBSTACLE_AVOIDANCE_OBSTACLE_POINTCLOUDTOOBSTACLE_H_
 
 #include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Dense>
 #include <vector>
 #include <deque>
 #include <utility>

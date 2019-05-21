@@ -39,11 +39,13 @@ include_directories(
 set(CORE_SOURCES
 	src/Obstacle/Obstacle.cpp
  	src/Obstacle/Ellipsoid.cpp
+ 	src/Obstacle/Aggregate.cpp
  	src/Obstacle/PointCloudToObstacle.cpp
  	src/State/Pose.cpp
  	src/State/State.cpp
 	src/Modulation.cpp
   	src/Agent.cpp
+  	src/Utils/VectorTools.cpp
   	src/Utils/Plotting/PlottingTools.cpp
 )
 
