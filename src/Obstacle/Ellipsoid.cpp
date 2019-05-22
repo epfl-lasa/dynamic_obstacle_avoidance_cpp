@@ -50,7 +50,7 @@ void Ellipsoid::draw() const
 {
 	int n = 100;
 	// use a linespace to have a full rotation angle between [-pi, pi]
-	std::vector<double> alpha = VectorTools::linspace(0, 2*M_PI, n);
+	std::vector<double> alpha = MathTools::linspace(0, 2*M_PI, n);
 	// convert quaternion to AngleAxis
 	Eigen::AngleAxisd orientation(this->get_orientation());
 	Eigen::Vector3d axis = orientation.axis();

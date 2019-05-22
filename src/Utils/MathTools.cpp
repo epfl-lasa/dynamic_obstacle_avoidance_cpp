@@ -1,6 +1,6 @@
-#include "DynamicObstacleAvoidance/Utils/VectorTools.hpp"
+#include "DynamicObstacleAvoidance/Utils/MathTools.hpp"
 
-std::vector<double> VectorTools::linspace(const double& start, const double& ed, const int& num) {
+std::vector<double> MathTools::linspace(const double& start, const double& ed, const int& num) {
     // catch rarely, throw often
     if (num < 2) {
         throw new std::exception();

@@ -13,7 +13,7 @@
 #include <cmath>
 #include <vector>
 #include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
-#include "DynamicObstacleAvoidance/Utils/VectorTools.hpp"
+#include "DynamicObstacleAvoidance/Utils/MathTools.hpp"
 
 
 class Ellipsoid: public Obstacle 

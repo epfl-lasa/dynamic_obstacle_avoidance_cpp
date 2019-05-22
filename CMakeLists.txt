@@ -45,7 +45,7 @@ set(CORE_SOURCES
  	src/State/State.cpp
 	src/Modulation.cpp
   	src/Agent.cpp
-  	src/Utils/VectorTools.cpp
+  	src/Utils/MathTools.cpp
   	src/Utils/Plotting/PlottingTools.cpp
 )
 

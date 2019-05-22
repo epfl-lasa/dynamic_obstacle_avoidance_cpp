@@ -120,7 +120,7 @@ namespace Modulation
   		return acos (x) ;
   	}
 
-	Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const double& critical_distance, const double& weight_power)
+	Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const double& critical_distance, const double& weight_power, const double& max_velocity)
 	{
 		if(obstacles.empty()) return agent.get_linear_velocity();
 
@@ -186,6 +186,10 @@ namespace Modulation
 		Eigen::Vector3d modulated_velocity = ds_frame * reconstructed_velocity;
 		modulated_velocity *= velocity_magnitude;
 		modulated_velocity += obstacles_relative_velocity;
+		for(int i=0; i<3; ++i)
+		{
+			modulated_velocity(i) = (abs(modulated_velocity(i)) < max_velocity) ? modulated_velocity(i) : MathTools::sign<double>(modulated_velocity(i)) * max_velocity;
+		}
 		return modulated_velocity;
 	}
 }
