@@ -16,10 +16,14 @@ int main(int, char*[])
 	double Kp = 1;
 	double dt = 0.01;
 
-	int nb_simulations = 100;
+	int nb_simulations = 1;
 
 	for(int k=0; k<nb_simulations; ++k)
 	{
+		//unsigned int seed = rand() % 10000;
+		unsigned int seed = 4298;
+		srand(seed);
+
 		Eigen::Vector3d position_o1 = Eigen::Vector3d::Random() * 2;
 		Eigen::Vector3d position_o2 = Eigen::Vector3d::Random() * 2;
 		Eigen::Vector3d position_o3 = Eigen::Vector3d::Random() * 2;
@@ -31,7 +35,7 @@ int main(int, char*[])
 		auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation), 0.5);
 		auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation), 0.5);
 		auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3, orientation), 0.5);
-		ptrE1->set_axis_lengths(Eigen::Array3d(1, 1, 0));
+		ptrE1->set_axis_lengths(Eigen::Array3d(1.1, 1.1, 0));
 		ptrE2->set_axis_lengths(Eigen::Array3d(1, 1, 0));
 		ptrE3->set_axis_lengths(Eigen::Array3d(1, 1, 0));
 
@@ -68,6 +72,6 @@ int main(int, char*[])
 			agent.set_position(modulated_position);
 		}
 
-		PlottingTools::plot_configuration(agent, final_obstacle_list, target_position, position_history, "test_simulation" + std::to_string(k));
+		PlottingTools::plot_configuration(agent, final_obstacle_list, target_position, position_history, "test_" + std::to_string(k) + "_seed_" + std::to_string(seed));
 	}
 }	
