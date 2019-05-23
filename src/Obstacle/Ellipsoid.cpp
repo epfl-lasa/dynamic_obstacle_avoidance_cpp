@@ -1,20 +1,35 @@
 #include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 
 Ellipsoid::Ellipsoid():
-Obstacle(), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
-{}
+axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+{
+	this->set_type("Ellipsoid");
+}
 
-Ellipsoid::Ellipsoid(State state, const double& safety_margin):
+Ellipsoid::Ellipsoid(const Ellipsoid& ellipsoid):
+Obstacle(ellipsoid.get_state(), ellipsoid.get_safety_margin()), axis_lengths(ellipsoid.get_axis_lengths()),
+curvature_factor(ellipsoid.get_curvature_factor()), epsilon(1E-4)
+{
+	this->set_type("Ellipsoid");
+}
+
+Ellipsoid::Ellipsoid(const State& state, const double& safety_margin):
 Obstacle(state, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
-{}
+{
+	this->set_type("Ellipsoid");
+}
 
 Ellipsoid::Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin):
 Obstacle(state, reference_position, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
-{}
+{
+	this->set_type("Ellipsoid");
+}
 
 Ellipsoid::Ellipsoid(const double& cx, const double& cy, const double& cz, const double& safety_margin):
 Obstacle(cx, cy, cz, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
-{}
+{
+	this->set_type("Ellipsoid");
+}
 
 Ellipsoid::~Ellipsoid()
 {}
@@ -75,4 +90,19 @@ void Ellipsoid::draw() const
 	plt::plot(x_safety, y_safety, "k-");
 	plt::plot({this->get_position()(0)}, {this->get_position()(1)}, "ko");
 	plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, "kx");
+}
+
+bool Ellipsoid::is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const
+{
+	// first fast check based on distances between the centers
+	double centers_distance = (this->get_position() - other_obstacle.get_position()).norm();
+	double max_axis_o1 = this->get_axis_lengths().maxCoeff() + this->get_safety_margin();
+	double max_axis_o2 = other_obstacle.get_axis_lengths().maxCoeff() + other_obstacle.get_safety_margin();
+	// for now consider this as a sufficient condition
+	return (centers_distance < (max_axis_o1 + max_axis_o2));
+}
+
+Ellipsoid* Ellipsoid::implicit_clone() const
+{
+	return new Ellipsoid(*this);
 }

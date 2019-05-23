@@ -1,17 +1,47 @@
 #include "DynamicObstacleAvoidance/Obstacle/Aggregate.hpp"
 
-Aggregate::Aggregate(std::deque<std::unique_ptr<Obstacle> >& primitives)
+Aggregate::Aggregate()
 {
+	this->set_type("Aggregate");
+}
+
+Aggregate::Aggregate(const std::deque<std::unique_ptr<Obstacle> >& primitives)
+{
+	this->set_type("Aggregate");
 	// set the center as the baricenter and orientation to identity
 	Eigen::Vector3d position;
 	for(auto& o:primitives)
 	{
 		position += o->get_position();
-		this->primitives.push_back(std::move(o));
+		this->primitives.push_back(o->clone());
 	}
 	position /= this->primitives.size();
 	this->set_position(position);
 	this->set_reference_position(position);
+}
+
+void Aggregate::update_positions()
+{
+	Eigen::Vector3d position;
+	for(auto& o:this->primitives)
+	{
+		position += o->get_position();
+	}
+	position /= this->primitives.size();
+	this->set_position(position);
+	this->set_reference_position(position);
+}
+
+void Aggregate::add_primitive(const std::unique_ptr<Obstacle>& primitive)
+{
+	this->primitives.push_back(primitive->clone());
+	this->update_positions();
+}
+
+void Aggregate::add_primitive(const Obstacle& primitive)
+{
+	this->primitives.push_back(primitive.clone());
+	this->update_positions();
 }
 
 Eigen::Vector3d Aggregate::compute_normal_to_agent(const Agent& agent) const
@@ -51,3 +81,6 @@ void Aggregate::draw() const
 	}
 	plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, "bx");
 }
+
+Aggregate* Aggregate::implicit_clone() const
+{}

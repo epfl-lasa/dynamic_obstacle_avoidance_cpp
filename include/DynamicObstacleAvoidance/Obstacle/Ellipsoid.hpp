@@ -23,10 +23,19 @@ private:
 	Eigen::Array3d curvature_factor;
 	double epsilon;
 
+	bool is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const;
+
+	Ellipsoid* implicit_clone() const override;
+
 public:
 	explicit Ellipsoid();
+
+	explicit Ellipsoid(const Ellipsoid& ellipsoid);
+
 	explicit Ellipsoid(const double& cx, const double& cy, const double& cz, const double& safety_margin=0);
-	explicit Ellipsoid(State state, const double& safety_margin=0);
+
+	explicit Ellipsoid(const State& state, const double& safety_margin=0);
+
 	explicit Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin=0);
 	~Ellipsoid();
 
@@ -65,6 +74,18 @@ public:
 	double compute_distance_to_agent(const Agent& agent) const;
 
 	void draw() const;
+
+	inline std::ostream& print(std::ostream& os) const override
+	{ 
+		os << static_cast<Obstacle>(*this);
+		os << "axis lengths: (" << this->axis_lengths(0) << ", ";
+		os << this->axis_lengths(1) << ", ";
+		os << this->axis_lengths(2) << ")" << std::endl;
+		os << "curvature factor: (" << this->curvature_factor(0) << ", ";
+		os << this->curvature_factor(1) << ", ";
+		os << this->curvature_factor(2) << ")" << std::endl;
+  		return os;
+	}
 };
 
 #endif

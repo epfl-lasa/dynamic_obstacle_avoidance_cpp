@@ -47,6 +47,7 @@ set(CORE_SOURCES
   	src/Agent.cpp
   	src/Utils/MathTools.cpp
   	src/Utils/Plotting/PlottingTools.cpp
+  	src/Utils/ObstacleGeneration/Aggregation.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${CORE_SOURCES})

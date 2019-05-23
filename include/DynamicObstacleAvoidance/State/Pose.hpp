@@ -10,6 +10,7 @@
 
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Geometry>
+#include <iostream>
 
 class Pose
 {
@@ -67,6 +68,13 @@ public:
 	inline const Eigen::Vector3d operator*(const Eigen::Vector3d& v) const
 	{
 		return this->orientation * v + this->position;
+	}
+
+	inline friend std::ostream& operator<<(std::ostream& os, const Pose& pose) 
+	{ 
+  		os << "position: (" << pose.position(0) << ", " << pose.position(1) << ", " << pose.position(2) << ")" << std::endl;
+  		os << "orientation: (" <<pose.orientation.w() << ", " << pose.orientation.x() << ", " << pose.orientation.y() << ", " << pose.orientation.z() << ")";
+  		return os;
 	}
 
 	inline const Pose inverse() const

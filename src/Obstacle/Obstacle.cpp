@@ -1,4 +1,5 @@
 #include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
+#include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 
 Obstacle::Obstacle():state(Eigen::Vector3d(0,0,0))
 {}
@@ -21,14 +22,42 @@ Obstacle::~Obstacle()
 Eigen::Vector3d Obstacle::compute_normal_to_agent(const Agent& agent) const
 {
 	std::cerr << "Fonction compute_normal_to_agent of abstract class obstacle used" << std::endl;
+	return Eigen::Vector3d();
 }
 
 double Obstacle::compute_distance_to_agent(const Agent& agent) const
 {
 	std::cerr << "Fonction compute_distance_to_agent of abstract class obstacle used" << std::endl;
+	return 0.0;
 }
 
 void Obstacle::draw() const
 {
 	std::cerr << "Fonction draw of abstract class obstacle used" << std::endl;
+}
+
+bool Obstacle::is_intersecting(const Obstacle& other_obstacle) const
+{
+	if(other_obstacle.get_type() == "Ellipsoid") 
+	{
+		return this->is_intersecting_ellipsoid(dynamic_cast<const Ellipsoid&>(other_obstacle));
+	}	
+	std::cerr << "Fonction is_intersecting not implemented for this type of obstacles" << std::endl;
+	return false;
+}
+
+bool Obstacle::is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const
+{
+	std::cerr << "Fonction is_intersecting with Ellipsoid of abstract class obstacle used" << std::endl;
+	return false;
+}
+
+std::unique_ptr<Obstacle> Obstacle::clone() const
+{
+	return std::unique_ptr<Obstacle>(this->implicit_clone());
+}
+
+Obstacle* Obstacle::implicit_clone() const
+{
+	std::cerr << "Fonction implicit_clone of abstract class obstacle used" << std::endl;
 }

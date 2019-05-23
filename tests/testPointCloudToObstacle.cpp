@@ -95,7 +95,7 @@ TEST(FitObstacles, PositiveNos)
 	// cluster it
 	PointCloudToObstacle pco(1, 10);
 
-	auto obstacle_list = pco.fit_obstacles(surface_points);
+	/*auto obstacle_list = pco.fit_obstacles(surface_points);
 	std::deque<Ellipsoid> ellipse_list;
 	for(auto &o:obstacle_list)
 	{
@@ -105,7 +105,7 @@ TEST(FitObstacles, PositiveNos)
 		std::cerr << "axis: " << e.get_axis_lengths() << std::endl;
 		std::cerr << "--------" << std::endl;
 		ellipse_list.push_back(e);
-	}
+	}*/
 	//PlottingTools::plot_fitted_clusters(clusters, ellipse_list);
 }
 
