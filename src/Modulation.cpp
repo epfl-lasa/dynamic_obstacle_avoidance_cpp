@@ -4,14 +4,12 @@ namespace Modulation
 {
 	std::tuple<Eigen::Matrix3d, Eigen::Matrix3d, double> compute_modulation_matrix(const Agent& agent, const Obstacle& obstacle)
 	{
-		Eigen::Vector3d agent_position = agent.get_position();
-
 		// compute all necessary vectors
 		Eigen::Vector3d normal_vector = obstacle.compute_normal_to_agent(agent);
 		double distance_to_obstacle = obstacle.compute_distance_to_agent(agent);
 
 		// compute the basis matrices
-		auto basis_matrices = compute_basis_matrices(normal_vector, agent_position, obstacle.get_reference_position());
+		auto basis_matrices = compute_basis_matrices(normal_vector, agent.get_position(), obstacle.get_reference_position());
 		Eigen::Matrix3d reference_basis = std::get<0>(basis_matrices);
 		Eigen::Matrix3d orthogonal_basis = std::get<1>(basis_matrices);
 
@@ -19,7 +17,7 @@ namespace Modulation
 		Eigen::DiagonalMatrix<double, 3> diagonal_eigenvalues = compute_diagonal_eigenvalues(distance_to_obstacle);
 
 		// compute the modulation matrix
-		Eigen::Matrix3d modulation_matrix = obstacle.get_orientation() * reference_basis * diagonal_eigenvalues * reference_basis.inverse();
+		Eigen::Matrix3d modulation_matrix = reference_basis * diagonal_eigenvalues * reference_basis.inverse();
 		// return all computed elements
 		return std::make_tuple(modulation_matrix, orthogonal_basis, distance_to_obstacle);
 	}

@@ -19,6 +19,8 @@ private:
 	double safety_margin;
 
 public:
+	Agent(const Agent& agent);
+
 	explicit Agent(const State& state, const double& safety_margin=0.0);
 
 	inline const State get_state() const 
@@ -84,6 +86,18 @@ public:
 	inline void set_angular_velocity(const Eigen::Vector3d& angular_velocity)
 	{
 		this->state.set_angular_velocity(angular_velocity);
+	}
+
+	inline void transform(const Pose& p)
+	{
+		this->set_pose(p * this->get_pose());
+	}
+
+	inline const Agent transformed(const Pose& p) const
+	{
+		Agent agent(*this);
+		agent.transform(p);
+		return agent;
 	}
 
 	inline friend std::ostream& operator<<(std::ostream& os, const Agent& agent) 

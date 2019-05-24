@@ -49,7 +49,7 @@ Eigen::Vector3d Aggregate::compute_normal_to_agent(const Agent& agent) const
 	double min_dist = std::numeric_limits<double>::max();
 	int index;
 	int i = 0;
-	for(auto& o:primitives)
+	for(auto& o:this->primitives)
 	{
 		double tmp_dist = o->compute_distance_to_agent(agent);
 		if(tmp_dist < min_dist)
