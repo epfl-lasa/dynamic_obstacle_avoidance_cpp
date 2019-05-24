@@ -56,7 +56,6 @@ TEST(TestClustering, PositiveNos)
 
 Eigen::VectorXd normal_random_variable(const Eigen::VectorXd& mean, const Eigen::MatrixXd& covar)
 {
-
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigenSolver(covar);
     Eigen::MatrixXd transform = eigenSolver.eigenvectors() * eigenSolver.eigenvalues().cwiseSqrt().asDiagonal();
     std::mt19937 gen{ std::random_device{}() };

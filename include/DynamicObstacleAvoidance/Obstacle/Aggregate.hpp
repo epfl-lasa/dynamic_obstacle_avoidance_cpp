@@ -47,8 +47,8 @@ public:
 		os << "Composed of:" << std::endl;
 		for(auto& p:this->primitives)
 		{
+			os << "---" << std::endl;
 			os << *p;
-			os << "---" << std::endl;;
 		}
   		return os;
 	}

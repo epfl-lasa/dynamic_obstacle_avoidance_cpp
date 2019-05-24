@@ -18,3 +18,8 @@ std::vector<double> MathTools::linspace(const double& start, const double& ed, c
     pts.push_back(ed);
     return pts;
 }
+
+double MathTools::rand_float(const double& a, const double& b) 
+{
+    return ((double)rand() / RAND_MAX) * (a - b) + b;
+}

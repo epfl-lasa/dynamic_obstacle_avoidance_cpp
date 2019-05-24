@@ -56,8 +56,8 @@ void PlottingTools::plot_configuration(const Agent& agent, const std::deque<std:
 		++i;
 	}
 	plt::plot(x, y, "k-");
-	plt::xlim(-5, 5);
-	plt::ylim(-5, 5);
+	plt::xlim(-10, 10);
+	plt::ylim(-10, 10);
 	if(!savefile.compare(""))
 	{
 		plt::show();

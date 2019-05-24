@@ -3,12 +3,12 @@
 #include "DynamicObstacleAvoidance/Obstacle/Aggregate.hpp"
 #include "DynamicObstacleAvoidance/Utils/Plotting/PlottingTools.hpp"
 #include "DynamicObstacleAvoidance/Utils/ObstacleGeneration/Aggregation.hpp"
+#include "DynamicObstacleAvoidance/Utils/MathTools.hpp"
 #include <eigen3/Eigen/Core>
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
 #include <string>
-
 
 int main(int, char*[])
 {
@@ -21,25 +21,32 @@ int main(int, char*[])
 
 	for(int k=0; k<nb_simulations; ++k)
 	{
+		std::cerr << k << std::endl; 
 		unsigned int seed = rand() % 10000;
 		//unsigned int seed = 7208;
 		srand(seed);
 
 		// generate the list of obstacles
-		Eigen::Vector3d position_o1 = Eigen::Vector3d::Random() * 2;
-		Eigen::Vector3d position_o2 = Eigen::Vector3d::Random() * 2;
-		Eigen::Vector3d position_o3 = Eigen::Vector3d::Random() * 2;
-		position_o1(2) = 0;
-		position_o2(2) = 0;
-		position_o3(2) = 0;
-		Eigen::Quaterniond orientation(1,0,0,0);
+		Eigen::Vector3d position_o1(MathTools::rand_float(3,-3), MathTools::rand_float(3,-3), 0);
+		Eigen::Vector3d position_o2(MathTools::rand_float(3,-3), MathTools::rand_float(3,-3), 0);
+		Eigen::Vector3d position_o3(MathTools::rand_float(3,-3), MathTools::rand_float(3,-3), 0);
 
-		auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation), 0.5);
-		auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation), 0.5);
-		auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3, orientation), 0.5);
-		ptrE1->set_axis_lengths(Eigen::Array3d(1.5, 1.5, 0));
-		ptrE2->set_axis_lengths(Eigen::Array3d(1.5, 1.5, 0));
-		ptrE3->set_axis_lengths(Eigen::Array3d(1.5, 1.5, 0));
+		/*Eigen::Quaterniond orientation_o1(Eigen::AngleAxisd(MathTools::rand_float(2)*M_PI, Eigen::Vector3d::UnitZ()));
+		Eigen::Quaterniond orientation_o2(Eigen::AngleAxisd(MathTools::rand_float(2)*M_PI, Eigen::Vector3d::UnitZ()));
+		Eigen::Quaterniond orientation_o3(Eigen::AngleAxisd(MathTools::rand_float(2)*M_PI, Eigen::Vector3d::UnitZ()));*/
+
+		Eigen::Quaterniond orientation_o1(1,0,0,0);
+		Eigen::Quaterniond orientation_o2(1,0,0,0);
+		Eigen::Quaterniond orientation_o3(1,0,0,0);
+
+		auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation_o1), MathTools::rand_float(1));
+		auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation_o2), MathTools::rand_float(1));
+		auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3, orientation_o3), MathTools::rand_float(1));
+
+
+		ptrE1->set_axis_lengths(Eigen::Array3d(MathTools::rand_float(2), MathTools::rand_float(2), 0));
+		ptrE2->set_axis_lengths(Eigen::Array3d(MathTools::rand_float(2), MathTools::rand_float(2), 0));
+		ptrE3->set_axis_lengths(Eigen::Array3d(MathTools::rand_float(2), MathTools::rand_float(2), 0));
 
 		std::deque<std::unique_ptr<Obstacle> > obstacle_list;
 		obstacle_list.push_back(std::move(ptrE1));
@@ -48,19 +55,14 @@ int main(int, char*[])
 
 		// aggregate the obstacles if necessary
 		std::deque<std::unique_ptr<Obstacle> > aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
-		for(auto& o:aggregated_obstacle_list) std::cerr << *o << std::endl;
 
 		// create the agent
-		Eigen::Vector3d agent_position = Eigen::Vector3d::Random() * 5;
-		agent_position(1) = 4;
-		agent_position(2) = 0;
+		Eigen::Vector3d agent_position(MathTools::rand_float(5, -5), 8, 0);
 		State agent_state(agent_position);
 		Agent agent(agent_state);
 
 		// create the target
-		Eigen::Vector3d target_position = Eigen::Vector3d::Random() * 5;
-		target_position(1) = -4;
-		target_position(2) = 0;
+		Eigen::Vector3d target_position(MathTools::rand_float(5, -5), -8, 0);
 		std::deque<Eigen::Vector3d> position_history;
 
 		// control loop
