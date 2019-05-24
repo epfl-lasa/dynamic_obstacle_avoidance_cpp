@@ -43,12 +43,12 @@ public:
 
 	inline std::ostream& print(std::ostream& os) const override
 	{ 
-		os << static_cast<Obstacle>(*this);
+		os << static_cast<Obstacle>(*this) << std::endl;
 		os << "Composed of:" << std::endl;
 		for(auto& p:this->primitives)
 		{
 			os << "---" << std::endl;
-			os << *p;
+			os << *p << std::endl;
 		}
   		return os;
 	}

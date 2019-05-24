@@ -72,8 +72,18 @@ public:
 
 	inline friend std::ostream& operator<<(std::ostream& os, const Pose& pose) 
 	{ 
-  		os << "position: (" << pose.position(0) << ", " << pose.position(1) << ", " << pose.position(2) << ")" << std::endl;
-  		os << "orientation: (" <<pose.orientation.w() << ", " << pose.orientation.x() << ", " << pose.orientation.y() << ", " << pose.orientation.z() << ")";
+  		os << "position: (" << pose.position(0) << ", ";
+  		os << pose.position(1) << ", ";
+  		os << pose.position(2) << ")" << std::endl;
+  		os << "orientation: (" <<pose.orientation.w() << ", ";
+  		os << pose.orientation.x() << ", ";
+  		os << pose.orientation.y() << ", ";
+  		os << pose.orientation.z() << ")";
+  		Eigen::AngleAxisd axis_angle(pose.orientation);
+  		os << " <=> theta: " << axis_angle.angle() << ", ";
+  		os << "axis: (" << axis_angle.axis()(0) << ", ";
+  		os << axis_angle.axis()(1) << ", ";
+  		os << axis_angle.axis()(2) << ")";
   		return os;
 	}
 

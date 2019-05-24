@@ -77,13 +77,13 @@ public:
 
 	inline std::ostream& print(std::ostream& os) const override
 	{ 
-		os << static_cast<Obstacle>(*this);
+		os << static_cast<Obstacle>(*this) << std::endl;
 		os << "axis lengths: (" << this->axis_lengths(0) << ", ";
 		os << this->axis_lengths(1) << ", ";
 		os << this->axis_lengths(2) << ")" << std::endl;
 		os << "curvature factor: (" << this->curvature_factor(0) << ", ";
 		os << this->curvature_factor(1) << ", ";
-		os << this->curvature_factor(2) << ")" << std::endl;
+		os << this->curvature_factor(2) << ")";
   		return os;
 	}
 };

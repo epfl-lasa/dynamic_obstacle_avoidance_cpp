@@ -85,6 +85,14 @@ public:
 	{
 		this->state.set_angular_velocity(angular_velocity);
 	}
+
+	inline friend std::ostream& operator<<(std::ostream& os, const Agent& agent) 
+	{ 
+		os << "Agent" << std::endl;
+  		os << agent.state << std::endl;
+  		os << "safety margin: " << agent.safety_margin;
+  		return os;
+	}
 };
 
 #endif

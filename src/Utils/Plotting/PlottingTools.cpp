@@ -36,7 +36,7 @@ void PlottingTools::plot_fitted_clusters(const std::deque<Eigen::MatrixXd>& clus
 	}
 }
 
-void PlottingTools::plot_configuration(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile)
+void PlottingTools::plot_configuration(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile, const bool& is_show)
 {
 	plt::figure();
 	for(auto &o:obstacles)
@@ -58,13 +58,13 @@ void PlottingTools::plot_configuration(const Agent& agent, const std::deque<std:
 	plt::plot(x, y, "k-");
 	plt::xlim(-10, 10);
 	plt::ylim(-10, 10);
-	if(!savefile.compare(""))
-	{
-		plt::show();
-	}
-	else
+	if(savefile.compare(""))
 	{
 		std::string path = "/tmp/" + savefile + ".png";
 		plt::save(path);
+	}
+	if(is_show)
+	{
+		plt::show();
 	}
 }

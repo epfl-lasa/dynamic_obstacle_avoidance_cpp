@@ -134,11 +134,11 @@ public:
 	virtual inline std::ostream& print(std::ostream& os) const
 	{
 		os << this->type << std::endl;
-		os << this->state;
+		os << this->state << std::endl;
 		os << "reference position: (" << this->reference_position(0) << ", ";
 		os << this->reference_position(1) << ", ";
 		os << this->reference_position(2) << ")" << std::endl;
-		os << "safety margin: " <<this->safety_margin << std::endl;
+		os << "safety margin: " <<this->safety_margin;
   		return os;
 	}
 	

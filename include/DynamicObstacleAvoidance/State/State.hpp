@@ -84,8 +84,12 @@ public:
 	inline friend std::ostream& operator<<(std::ostream& os, const State& state) 
 	{ 
   		os << state.pose << std::endl;
-  		os << "linear velocity: (" << state.linear_velocity(0) << ", " << state.linear_velocity(1) << ", " << state.linear_velocity(2) << ")" << std::endl;
-  		os << "angular velocity: (" << state.angular_velocity(0) << ", " << state.angular_velocity(1) << ", " << state.angular_velocity(2) << ")" << std::endl;
+  		os << "linear velocity: (" << state.linear_velocity(0) << ", ";
+  		os << state.linear_velocity(1) << ", ";
+  		os << state.linear_velocity(2) << ")" << std::endl;
+  		os << "angular velocity: (" << state.angular_velocity(0) << ", ";
+  		os << state.angular_velocity(1) << ", ";
+  		os << state.angular_velocity(2) << ")";
   		return os;
 	}
 };

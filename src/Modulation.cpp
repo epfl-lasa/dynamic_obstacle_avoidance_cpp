@@ -64,7 +64,7 @@ namespace Modulation
 		Eigen::Vector3d unit_vector = Eigen::Vector3d::UnitZ();
 		Eigen::Vector3d tangent_vector = normal_vector.cross(unit_vector);
 		
-		if(tangent_vector.norm() == 0) 
+		if(abs(tangent_vector.norm()) < 1E-4) 
 		{
 			unit_vector = Eigen::Vector3d::UnitY();
 			tangent_vector = normal_vector.cross(unit_vector);
@@ -76,8 +76,15 @@ namespace Modulation
 
 		Eigen::Vector3d reference_direction = agent_position - obstacle_reference_position;
 		reference_direction.normalize();
+
+		if(abs(tangent_vector.cross(reference_direction).norm()) < 1E-4)
+		{
+			std::cerr << "Problem here" << std::endl;
+		}
+		
+		Eigen::Vector3d ref_cross_product = tangent_vector.cross(reference_direction);
 		Eigen::Matrix3d reference_basis;
-		reference_basis << reference_direction, tangent_vector, cross_product;
+		reference_basis << reference_direction, tangent_vector, ref_cross_product;
 		return std::make_pair(reference_basis, orthogonal_basis);
 	}
 
@@ -120,7 +127,7 @@ namespace Modulation
   		return acos (x) ;
   	}
 
-	Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const double& critical_distance, const double& weight_power, const double& max_velocity)
+	Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const double& critical_distance, const double& weight_power)
 	{
 		if(obstacles.empty()) return agent.get_linear_velocity();
 
@@ -186,10 +193,6 @@ namespace Modulation
 		Eigen::Vector3d modulated_velocity = ds_frame * reconstructed_velocity;
 		modulated_velocity *= velocity_magnitude;
 		modulated_velocity += obstacles_relative_velocity;
-		for(int i=0; i<3; ++i)
-		{
-			modulated_velocity(i) = (abs(modulated_velocity(i)) < max_velocity) ? modulated_velocity(i) : MathTools::sign<double>(modulated_velocity(i)) * max_velocity;
-		}
 		return modulated_velocity;
 	}
 }
