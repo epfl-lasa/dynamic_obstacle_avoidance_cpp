@@ -69,7 +69,7 @@ TEST(ComputeBasisMatrices, PositiveNos)
 	Agent agent(state);
 
 	Eigen::Vector3d normal = e.compute_normal_to_agent(agent);
-	auto basis_matrices = Modulation::compute_basis_matrices(normal, agent_position, e.get_reference_position());
+	auto basis_matrices = Modulation::compute_basis_matrices(normal, agent_position, e);
 
 	Eigen::Matrix3d reference_basis = std::get<0>(basis_matrices);
 	Eigen::Matrix3d orthogonal_basis = std::get<1>(basis_matrices);
@@ -112,7 +112,7 @@ TEST(ComputeBasisMatricesWithRotation, PositiveNos)
 	Agent agent(state);
 
 	Eigen::Vector3d normal = e.compute_normal_to_agent(agent);
-	auto basis_matrices = Modulation::compute_basis_matrices(normal, agent_position, e.get_reference_position());
+	auto basis_matrices = Modulation::compute_basis_matrices(normal, agent_position, e);
 	Eigen::Matrix3d orthogonal_basis = std::get<1>(basis_matrices);
 
 	Eigen::Matrix3d orthogonal_basis_truth;

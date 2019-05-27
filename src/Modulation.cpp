@@ -9,7 +9,7 @@ namespace Modulation
 		double distance_to_obstacle = obstacle.compute_distance_to_agent(agent);
 
 		// compute the basis matrices
-		auto basis_matrices = compute_basis_matrices(normal_vector, agent.get_position(), obstacle.get_reference_position());
+		auto basis_matrices = compute_basis_matrices(normal_vector, agent.get_position(), obstacle);
 		Eigen::Matrix3d reference_basis = std::get<0>(basis_matrices);
 		Eigen::Matrix3d orthogonal_basis = std::get<1>(basis_matrices);
 
@@ -17,7 +17,7 @@ namespace Modulation
 		Eigen::DiagonalMatrix<double, 3> diagonal_eigenvalues = compute_diagonal_eigenvalues(distance_to_obstacle);
 
 		// compute the modulation matrix
-		Eigen::Matrix3d modulation_matrix = reference_basis * diagonal_eigenvalues * reference_basis.inverse();
+		Eigen::Matrix3d modulation_matrix = obstacle.get_orientation() * reference_basis * diagonal_eigenvalues * reference_basis.inverse() * obstacle.get_orientation().inverse();
 		// return all computed elements
 		return std::make_tuple(modulation_matrix, orthogonal_basis, distance_to_obstacle);
 	}
@@ -57,7 +57,7 @@ namespace Modulation
 		return diagonal_eigenvalues;
 	}
 
-	std::pair<Eigen::Matrix3d, Eigen::Matrix3d> compute_basis_matrices(const Eigen::Vector3d& normal_vector, const Eigen::Vector3d& agent_position, const Eigen::Vector3d& obstacle_reference_position)
+	std::pair<Eigen::Matrix3d, Eigen::Matrix3d> compute_basis_matrices(const Eigen::Vector3d& normal_vector, const Eigen::Vector3d& agent_position, const Obstacle& obstacle)
 	{
 		Eigen::Vector3d unit_vector = Eigen::Vector3d::UnitZ();
 		Eigen::Vector3d tangent_vector = normal_vector.cross(unit_vector);
@@ -72,7 +72,7 @@ namespace Modulation
 		Eigen::Matrix3d orthogonal_basis;
 		orthogonal_basis << normal_vector, tangent_vector, cross_product;
 
-		Eigen::Vector3d reference_direction = agent_position - obstacle_reference_position;
+		Eigen::Vector3d reference_direction = obstacle.get_pose().inverse() * agent_position - obstacle.get_pose().inverse() * obstacle.get_reference_position();
 		reference_direction.normalize();
 
 		if(abs(tangent_vector.cross(reference_direction).norm()) < 1E-4)
@@ -108,7 +108,7 @@ namespace Modulation
 	{
 		Eigen::Vector3d unit_vector = Eigen::Vector3d::UnitZ();
 		Eigen::Vector3d cross_product = agent_relative_velocity.cross(unit_vector);
-		if(cross_product.norm() == 0) 
+		if(abs(cross_product.norm()) < 1E-4) 
 		{
 			cross_product = Eigen::Vector3d::UnitY();
 			cross_product = agent_relative_velocity.cross(unit_vector);

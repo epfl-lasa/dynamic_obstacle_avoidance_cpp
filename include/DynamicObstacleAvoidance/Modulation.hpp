@@ -25,7 +25,7 @@
 namespace Modulation
 {
     Eigen::ArrayXd weight_obstacles(const Eigen::ArrayXd& distances, const double& critical_distance, const double& weight_power);
-    std::pair<Eigen::Matrix3d, Eigen::Matrix3d> compute_basis_matrices(const Eigen::Vector3d& normal_vector, const Eigen::Vector3d& agent_position, const Eigen::Vector3d& obstacle_reference_position);
+    std::pair<Eigen::Matrix3d, Eigen::Matrix3d> compute_basis_matrices(const Eigen::Vector3d& normal_vector, const Eigen::Vector3d& agent_position, const Obstacle& obstacle);
     Eigen::DiagonalMatrix<double, 3> compute_diagonal_eigenvalues(const double& distance_to_obstacle, const double& reactivity_factor=1.0);
     std::pair<Eigen::Vector3d, Eigen::Vector3d> compute_relative_velocities(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const Eigen::ArrayXd& distances, const Eigen::ArrayXd& weights, const std::deque<Eigen::Matrix3d>& orthogonal_basis_list);
     /**

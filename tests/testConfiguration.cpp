@@ -26,7 +26,7 @@ int main(int, char*[])
 	{
 		std::cerr << k << std::endl; 
 		unsigned int seed = rand() % 10000;
-		//unsigned int seed = 1048;
+		//unsigned int seed = 8698;
 		srand(seed);
 
 		// generate the list of obstacles
@@ -38,9 +38,9 @@ int main(int, char*[])
 		Eigen::Quaterniond orientation_o2(Eigen::AngleAxisd(MathTools::rand_float(2)*M_PI, Eigen::Vector3d::UnitZ()));
 		Eigen::Quaterniond orientation_o3(Eigen::AngleAxisd(MathTools::rand_float(2)*M_PI, Eigen::Vector3d::UnitZ()));
 
-		orientation_o1 = Eigen::Quaterniond(1,0,0,0);
+		/*orientation_o1 = Eigen::Quaterniond(1,0,0,0);
 		orientation_o2 = Eigen::Quaterniond(1,0,0,0);
-		orientation_o3 = Eigen::Quaterniond(1,0,0,0);
+		orientation_o3 = Eigen::Quaterniond(1,0,0,0);*/
 
 		auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation_o1), MathTools::rand_float(1));
 		auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation_o2), MathTools::rand_float(1));
