@@ -38,7 +38,7 @@ int main(int, char*[])
 		Eigen::Quaterniond orientation_o2(Eigen::AngleAxisd(MathTools::rand_float(2)*M_PI, Eigen::Vector3d::UnitZ()));
 		Eigen::Quaterniond orientation_o3(Eigen::AngleAxisd(MathTools::rand_float(2)*M_PI, Eigen::Vector3d::UnitZ()));
 
-		/*orientation_o1 = Eigen::Quaterniond(1,0,0,0);
+/*		orientation_o1 = Eigen::Quaterniond(1,0,0,0);
 		orientation_o2 = Eigen::Quaterniond(1,0,0,0);
 		orientation_o3 = Eigen::Quaterniond(1,0,0,0);*/
 
@@ -53,8 +53,8 @@ int main(int, char*[])
 
 		std::deque<std::unique_ptr<Obstacle> > obstacle_list;
 		obstacle_list.push_back(std::move(ptrE1));
-		//obstacle_list.push_back(std::move(ptrE2));
-		//obstacle_list.push_back(std::move(ptrE3));
+		obstacle_list.push_back(std::move(ptrE2));
+		obstacle_list.push_back(std::move(ptrE3));
 
 		// aggregate the obstacles if necessary
 		std::deque<std::unique_ptr<Obstacle> > aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);

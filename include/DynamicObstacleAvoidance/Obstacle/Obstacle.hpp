@@ -30,11 +30,6 @@ private:
 	double safety_margin;
 
 protected:
-	inline const std::string get_type() const 
-	{ 
-		return this->type;
-	}
-
 	inline void set_type(const std::string& type)
 	{
 		this->type = type;
@@ -50,6 +45,11 @@ public:
 	explicit Obstacle(const State& state, const double& safety_margin=0);
 	explicit Obstacle(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin=0);
 	~Obstacle();
+
+	inline const std::string get_type() const 
+	{ 
+		return this->type;
+	}
 
 	inline const State get_state() const 
 	{ 

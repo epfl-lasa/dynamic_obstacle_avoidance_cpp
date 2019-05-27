@@ -7,8 +7,8 @@ axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 }
 
 Ellipsoid::Ellipsoid(const Ellipsoid& ellipsoid):
-Obstacle(ellipsoid.get_state(), ellipsoid.get_safety_margin()), axis_lengths(ellipsoid.get_axis_lengths()),
-curvature_factor(ellipsoid.get_curvature_factor()), epsilon(1E-4)
+Obstacle(ellipsoid.get_state(), ellipsoid.get_reference_position(), ellipsoid.get_safety_margin()),
+axis_lengths(ellipsoid.get_axis_lengths()), curvature_factor(ellipsoid.get_curvature_factor()), epsilon(1E-4)
 {
 	this->set_type("Ellipsoid");
 }

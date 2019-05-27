@@ -18,6 +18,10 @@ Aggregate::Aggregate(const std::deque<std::unique_ptr<Obstacle> >& primitives)
 	position /= this->primitives.size();
 	this->set_position(position);
 	this->set_reference_position(position);
+	for(auto& o:this->primitives)
+	{
+		o->set_reference_position(position);
+	}
 }
 
 void Aggregate::update_positions()
@@ -30,6 +34,10 @@ void Aggregate::update_positions()
 	position /= this->primitives.size();
 	this->set_position(position);
 	this->set_reference_position(position);
+	for(auto& o:this->primitives)
+	{
+		o->set_reference_position(position);
+	}
 }
 
 void Aggregate::add_primitive(const std::unique_ptr<Obstacle>& primitive)
@@ -42,6 +50,24 @@ void Aggregate::add_primitive(const Obstacle& primitive)
 {
 	this->primitives.push_back(primitive.clone());
 	this->update_positions();
+}
+
+const Obstacle& Aggregate::get_active_obstacle(const Agent& agent) const
+{
+	double min_dist = std::numeric_limits<double>::max();
+	int index;
+	int i = 0;
+	for(auto& o:this->primitives)
+	{
+		double tmp_dist = o->compute_distance_to_agent(agent);
+		if(tmp_dist < min_dist)
+		{
+			min_dist = tmp_dist;
+			index = i;
+		}
+		++i;
+	}
+	return *this->primitives[index];
 }
 
 Eigen::Vector3d Aggregate::compute_normal_to_agent(const Agent& agent) const
@@ -59,7 +85,10 @@ Eigen::Vector3d Aggregate::compute_normal_to_agent(const Agent& agent) const
 		}
 		++i;
 	}
-	return this->primitives[index]->compute_normal_to_agent(agent);
+	// put the normal in the aggregate frame
+	Eigen::Vector3d normal = this->primitives[index]->compute_normal_to_agent(agent);
+	//normal = this->get_pose().inverse() * this->primitives[index]->get_pose() * normal; 
+	return normal;
 }
 
 double Aggregate::compute_distance_to_agent(const Agent& agent) const

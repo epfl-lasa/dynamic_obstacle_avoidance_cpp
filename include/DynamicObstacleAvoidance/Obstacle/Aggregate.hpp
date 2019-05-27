@@ -31,9 +31,16 @@ public:
 
 	explicit Aggregate(const std::deque<std::unique_ptr<Obstacle> >& primitives);
 
+	inline const auto& get_primitives() const
+	{
+		return this->primitives;
+	}
+
 	void add_primitive(const std::unique_ptr<Obstacle>& primitive);
 
 	void add_primitive(const Obstacle& primitive);
+
+	const Obstacle& get_active_obstacle(const Agent& agent) const;
 
 	Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
 	

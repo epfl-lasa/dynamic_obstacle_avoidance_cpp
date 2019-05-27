@@ -9,7 +9,7 @@ namespace Modulation
 		double distance_to_obstacle = obstacle.compute_distance_to_agent(agent);
 
 		// compute the basis matrices
-		auto basis_matrices = compute_basis_matrices(normal_vector, agent.get_position(), obstacle);
+		auto basis_matrices = compute_basis_matrices(normal_vector, agent, obstacle);
 		Eigen::Matrix3d reference_basis = std::get<0>(basis_matrices);
 		Eigen::Matrix3d orthogonal_basis = std::get<1>(basis_matrices);
 
@@ -57,7 +57,7 @@ namespace Modulation
 		return diagonal_eigenvalues;
 	}
 
-	std::pair<Eigen::Matrix3d, Eigen::Matrix3d> compute_basis_matrices(const Eigen::Vector3d& normal_vector, const Eigen::Vector3d& agent_position, const Obstacle& obstacle)
+	std::pair<Eigen::Matrix3d, Eigen::Matrix3d> compute_basis_matrices(const Eigen::Vector3d& normal_vector, const Agent& agent, const Obstacle& obstacle)
 	{
 		Eigen::Vector3d unit_vector = Eigen::Vector3d::UnitZ();
 		Eigen::Vector3d tangent_vector = normal_vector.cross(unit_vector);
@@ -72,7 +72,7 @@ namespace Modulation
 		Eigen::Matrix3d orthogonal_basis;
 		orthogonal_basis << normal_vector, tangent_vector, cross_product;
 
-		Eigen::Vector3d reference_direction = obstacle.get_pose().inverse() * agent_position - obstacle.get_pose().inverse() * obstacle.get_reference_position();
+		Eigen::Vector3d reference_direction = obstacle.get_pose().inverse() * agent.get_position() - obstacle.get_pose().inverse() * obstacle.get_reference_position();
 		reference_direction.normalize();
 
 		if(abs(tangent_vector.cross(reference_direction).norm()) < 1E-4)
@@ -138,11 +138,23 @@ namespace Modulation
 		int i = 0;
 		for(auto &obs_it : obstacles)
 		{
-			auto matrices = Modulation::compute_modulation_matrix(agent, *obs_it);
-			// store matrices used later
-			modulation_matrix_list.push_back(std::get<0>(matrices));
-			orthogonal_basis_list.push_back(std::get<1>(matrices));		
-			distances(i) = std::get<2>(matrices);
+			if(obs_it->get_type() == "Aggregate")
+			{
+				const Obstacle& obstacle = dynamic_cast<Aggregate*>(obs_it.get())->get_active_obstacle(agent);
+				auto matrices = Modulation::compute_modulation_matrix(agent, obstacle);
+				// store matrices used later
+				modulation_matrix_list.push_back(std::get<0>(matrices));
+				orthogonal_basis_list.push_back(std::get<1>(matrices));		
+				distances(i) = std::get<2>(matrices);
+			}
+			else
+			{
+				auto matrices = Modulation::compute_modulation_matrix(agent, *obs_it);
+				// store matrices used later
+				modulation_matrix_list.push_back(std::get<0>(matrices));
+				orthogonal_basis_list.push_back(std::get<1>(matrices));		
+				distances(i) = std::get<2>(matrices);
+			}
 			++i;
 		}
 
