@@ -111,6 +111,63 @@ TEST(ComputeNormalToExternalPointCloseToObstacle, PositiveNos)
 	for(int i=0; i<normal.size(); ++i) ASSERT_NEAR(normal(i), truth(i), 0.01);
 }
 
+TEST(IsInteresecting, PositiveNos)
+{
+	Ellipsoid e1;
+	Eigen::Vector3d position_o2(1,1,0);
+	Eigen::Quaterniond orientation_o2(Eigen::AngleAxisd(0.75, Eigen::Vector3d::UnitZ()));
+	Ellipsoid e2(State(position_o2, orientation_o2));
+
+	ASSERT_EQ(e1.is_intersecting(e2), true);
+	ASSERT_EQ(e2.is_intersecting(e1), true);
+}
+
+TEST(IsNotInteresecting, PositiveNos)
+{
+	Ellipsoid e1;
+	Eigen::Vector3d position_o2(4,4,0);
+	Eigen::Quaterniond orientation_o2(Eigen::AngleAxisd(0.75, Eigen::Vector3d::UnitZ()));
+	Ellipsoid e2(State(position_o2, orientation_o2));
+
+	ASSERT_EQ(e1.is_intersecting(e2), false);
+	ASSERT_EQ(e2.is_intersecting(e1), false);
+}
+
+TEST(IsInteresectingBothRotations, PositiveNos)
+{
+	Eigen::Vector3d position_o5(3.7, 4.7, 0);
+	Eigen::Vector3d position_o6(4.6, 4.7, 0);
+	Eigen::Quaterniond orientation_o5(Eigen::AngleAxisd(0.75, Eigen::Vector3d::UnitZ()));
+	Eigen::Quaterniond orientation_o6(Eigen::AngleAxisd(-0.75, Eigen::Vector3d::UnitZ()));
+
+	Ellipsoid e1(State(position_o5, orientation_o5));
+	Ellipsoid e2(State(position_o6, orientation_o6));
+	e1.set_axis_lengths(Eigen::Array3d(0.75, 0.2, 0));
+	e2.set_axis_lengths(Eigen::Array3d(0.75, 0.2, 0));
+
+	ASSERT_EQ(e1.is_intersecting(e2), true);
+	ASSERT_EQ(e2.is_intersecting(e1), true);
+}
+
+TEST(IsNotInteresectingBothRotations, PositiveNos)
+{
+	Eigen::Vector3d position_o1(3, 0.62, 0);
+	Eigen::Vector3d position_o6(4.6, 4.7, 0);
+
+	Eigen::Quaterniond orientation_o1(Eigen::AngleAxisd(0, Eigen::Vector3d::UnitZ()));
+	Eigen::Quaterniond orientation_o6(Eigen::AngleAxisd(-0.75, Eigen::Vector3d::UnitZ()));
+
+	Ellipsoid e1(State(position_o1, orientation_o1));
+	Ellipsoid e2(State(position_o6, orientation_o6));
+
+	e1.set_axis_lengths(Eigen::Array3d(0.05, 0.7, 0));
+	e2.set_axis_lengths(Eigen::Array3d(0.75, 0.2, 0));
+
+	ASSERT_EQ(e1.is_intersecting(e2), false);
+	ASSERT_EQ(e2.is_intersecting(e1), false);
+}
+
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

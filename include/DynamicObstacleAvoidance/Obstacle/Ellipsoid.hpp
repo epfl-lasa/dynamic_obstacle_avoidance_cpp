@@ -28,6 +28,8 @@ private:
 
 	Ellipsoid* implicit_clone() const override;
 
+	Eigen::MatrixXd sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const;
+
 public:
 	explicit Ellipsoid();
 

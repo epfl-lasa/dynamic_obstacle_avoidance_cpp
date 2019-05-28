@@ -95,15 +95,53 @@ void Ellipsoid::draw() const
 
 bool Ellipsoid::is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const
 {
-	// first fast check based on distances between the centers
+	/*// first fast check based on distances between the centers
 	double centers_distance = (this->get_position() - other_obstacle.get_position()).norm();
 	double max_axis_o1 = this->get_axis_lengths().maxCoeff() + this->get_safety_margin();
 	double max_axis_o2 = other_obstacle.get_axis_lengths().maxCoeff() + other_obstacle.get_safety_margin();
 	// for now consider this as a sufficient condition
-	return (centers_distance < (max_axis_o1 + max_axis_o2));
+	return (centers_distance < (max_axis_o1 + max_axis_o2));*/
+
+	// first sample the first ellipsoid
+	int nb_samples = 100;
+	Eigen::MatrixXd samples = other_obstacle.sample_from_parameterization(nb_samples, true);
+	// for each points check if at least one of them is inside
+	bool intersecting = false;
+	int i = 0;
+	Eigen::Array3d lengths = this->get_axis_lengths() + this->get_safety_margin();
+	while(!intersecting && i<samples.cols())
+	{
+		Eigen::Vector3d point = this->get_pose().inverse() * samples.col(i);
+		double eq_value = ((point(0) * point(0)) / (lengths(0) * lengths(0))) + ((point(1) * point(1)) / (lengths(1) * lengths(1)));
+		intersecting = (eq_value <= 1);
+		++i;
+	}
+	return intersecting;
 }
 
 Ellipsoid* Ellipsoid::implicit_clone() const
 {
 	return new Ellipsoid(*this);
+}
+
+Eigen::MatrixXd Ellipsoid::sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const
+{
+	// convert quaternion to AngleAxis
+	Eigen::AngleAxisd orientation(this->get_orientation());
+	Eigen::Vector3d axis = orientation.axis();
+	double theta = (axis(2) > 0) ? orientation.angle() :  2*M_PI - orientation.angle();
+	Eigen::Array3d lengths = (is_include_safety_margin) ? this->get_axis_lengths() + this->get_safety_margin() : this->get_axis_lengths();
+
+	// use a linespace to have a full rotation angle between [-pi, pi]
+	std::vector<double> alpha = MathTools::linspace(0, 2*M_PI, nb_samples);
+
+	Eigen::MatrixXd samples(3, nb_samples);
+	for(int i=0; i<nb_samples; ++i)
+	{
+		double a = alpha.at(i);
+		samples(0, i) = lengths(0) * cos(a) * cos(theta) - lengths(1) * sin(a) * sin(theta) + this->get_position()(0);
+		samples(1, i) = lengths(0) * cos(a) * sin(theta) + lengths(1) * sin(a) * cos(theta) + this->get_position()(1);
+		samples(2, i) = 0;
+	}
+	return samples;
 }
