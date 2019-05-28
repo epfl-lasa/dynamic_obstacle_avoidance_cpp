@@ -1,5 +1,6 @@
 #include "DynamicObstacleAvoidance/Modulation.hpp"
 #include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
+#include "DynamicObstacleAvoidance/Agent.hpp"
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
 

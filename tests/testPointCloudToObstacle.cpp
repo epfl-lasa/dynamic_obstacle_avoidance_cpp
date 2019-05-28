@@ -1,6 +1,7 @@
 #include "DynamicObstacleAvoidance/Obstacle/PointCloudToObstacle.hpp"
 #include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 #include "DynamicObstacleAvoidance/Utils/Plotting/PlottingTools.hpp"
+#include "DynamicObstacleAvoidance/Agent.hpp"
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
@@ -98,7 +99,7 @@ TEST(FitObstacles, PositiveNos)
 	std::deque<Ellipsoid> ellipse_list;
 	for(auto &o:obstacle_list)
 	{
-		Ellipsoid e = *dynamic_cast<Ellipsoid*>(o.get());
+		Ellipsoid e = *static_cast<Ellipsoid*>(o.get());
 		std::cerr << "position: " << e.get_position() << std::endl;
 		std::cerr << "rotation: " << e.get_orientation().w() << ", " << e.get_orientation().x() << ", " << e.get_orientation().y() << ", " << e.get_orientation().z() << std::endl;
 		std::cerr << "axis: " << e.get_axis_lengths() << std::endl;

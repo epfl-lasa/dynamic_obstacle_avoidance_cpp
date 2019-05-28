@@ -4,6 +4,7 @@
 #include "DynamicObstacleAvoidance/Utils/Plotting/PlottingTools.hpp"
 #include "DynamicObstacleAvoidance/Utils/ObstacleGeneration/Aggregation.hpp"
 #include "DynamicObstacleAvoidance/Utils/MathTools.hpp"
+#include "DynamicObstacleAvoidance/Agent.hpp"
 #include <eigen3/Eigen/Core>
 #include <iostream>
 #include <ctime>

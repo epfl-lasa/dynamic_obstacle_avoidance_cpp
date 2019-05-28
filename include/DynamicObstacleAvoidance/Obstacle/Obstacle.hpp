@@ -10,15 +10,17 @@
 
 #include <eigen3/Eigen/Core>
 #include <memory>
+#include <deque>
 #include "DynamicObstacleAvoidance/State/State.hpp"
 #include "DynamicObstacleAvoidance/State/Pose.hpp"
-#include "DynamicObstacleAvoidance/Agent.hpp"
 #include "DynamicObstacleAvoidance/Utils/Plotting/matplotlibcpp.hpp"
 #include <iostream>
 
 namespace plt = matplotlibcpp;
 
 class Ellipsoid;
+
+class Agent;
 
 class Obstacle 
 {
@@ -148,7 +150,9 @@ public:
 
 	virtual void draw() const;
 
-	virtual bool is_intersecting(const Obstacle& other_obstacle) const;
+	bool is_intersecting(const Obstacle& other_obstacle) const;
+
+	bool is_intersecting(const std::deque<std::unique_ptr<Obstacle> >& other_obstacles) const;
 
 	std::unique_ptr<Obstacle> clone() const;
 };

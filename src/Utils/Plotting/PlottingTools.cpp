@@ -44,6 +44,7 @@ void PlottingTools::plot_configuration(const Agent& agent, const std::deque<std:
 		o->draw();
 	}
 	plt::plot({agent.get_position()(0)}, {agent.get_position()(1)}, "bo");
+	agent.get_envelope().draw();
 	plt::plot({goal(0)}, {goal(1)}, "rx");
 
 	std::vector<double> x(position_history.size());
@@ -56,8 +57,8 @@ void PlottingTools::plot_configuration(const Agent& agent, const std::deque<std:
 		++i;
 	}
 	plt::plot(x, y, "k-");
-	plt::xlim(-10, 10);
-	plt::ylim(-10, 10);
+	plt::xlim(-1, 8);
+	plt::ylim(-2, 8);
 	if(savefile.compare(""))
 	{
 		std::string path = "/tmp/" + savefile + ".png";

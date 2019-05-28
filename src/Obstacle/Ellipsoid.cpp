@@ -1,4 +1,5 @@
 #include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
+#include "DynamicObstacleAvoidance/Agent.hpp"
 
 Ellipsoid::Ellipsoid():
 axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)

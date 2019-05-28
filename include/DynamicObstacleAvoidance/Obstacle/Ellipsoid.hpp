@@ -15,6 +15,7 @@
 #include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
 #include "DynamicObstacleAvoidance/Utils/MathTools.hpp"
 
+class Agent;
 
 class Ellipsoid: public Obstacle 
 {

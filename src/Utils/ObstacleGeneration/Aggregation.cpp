@@ -15,12 +15,12 @@ std::deque<std::unique_ptr<Obstacle> > Aggregation::aggregate_obstacles(const st
 			{	
 				if(aggregate_indexes[i] != -1 && aggregate_indexes[j] == -1)
 				{
-					dynamic_cast<Aggregate*>(aggregated_obstacles[aggregate_indexes[i]].get())->add_primitive(obstacles[j]);
+					static_cast<Aggregate*>(aggregated_obstacles[aggregate_indexes[i]].get())->add_primitive(obstacles[j]);
 					aggregate_indexes[j] = aggregate_indexes[i];
 				}
 				else if(aggregate_indexes[j] != -1 && aggregate_indexes[i] == -1)
 				{
-					dynamic_cast<Aggregate*>(aggregated_obstacles[aggregate_indexes[j]].get())->add_primitive(obstacles[i]);
+					static_cast<Aggregate*>(aggregated_obstacles[aggregate_indexes[j]].get())->add_primitive(obstacles[i]);
 					aggregate_indexes[i] = aggregate_indexes[j];
 				}
 				else

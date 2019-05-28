@@ -67,7 +67,7 @@ const Obstacle& Aggregate::get_active_obstacle(const Agent& agent) const
 		}
 		++i;
 	}
-	return *this->primitives[index];
+	return *(this->primitives[index]);
 }
 
 Eigen::Vector3d Aggregate::compute_normal_to_agent(const Agent& agent) const

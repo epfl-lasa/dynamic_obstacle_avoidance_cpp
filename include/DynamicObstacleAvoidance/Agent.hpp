@@ -11,17 +11,27 @@
 #include <eigen3/Eigen/Core>
 #include "DynamicObstacleAvoidance/State/State.hpp"
 #include "DynamicObstacleAvoidance/State/Pose.hpp"
+#include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 
 class Agent
 {
 private:
 	State state;
 	double safety_margin;
+	std::unique_ptr<Obstacle> envelope;
+	double delta_t;
+
+	void update_envelope();
 
 public:
 	Agent(const Agent& agent);
 
 	explicit Agent(const State& state, const double& safety_margin=0.0);
+
+	inline const Obstacle& get_envelope() const 
+	{ 
+		return *(this->envelope);
+	}
 
 	inline const State get_state() const 
 	{ 
@@ -66,26 +76,31 @@ public:
 	inline void set_pose(const Pose& pose)
 	{
 		this->state.set_pose(pose);
+		this->update_envelope();
 	}
 
 	inline void set_position(const Eigen::Vector3d& position)
 	{
 		this->state.set_position(position);
+		this->update_envelope();
 	}
 
 	inline void set_orientation(const Eigen::Quaterniond& orientation)
 	{
 		this->state.set_orientation(orientation);
+		this->update_envelope();
 	}
 
 	inline void set_linear_velocity(const Eigen::Vector3d& linear_velocity)
 	{
 		this->state.set_linear_velocity(linear_velocity);
+		this->update_envelope();
 	}
 
 	inline void set_angular_velocity(const Eigen::Vector3d& angular_velocity)
 	{
 		this->state.set_angular_velocity(angular_velocity);
+		this->update_envelope();
 	}
 
 	inline void transform(const Pose& p)

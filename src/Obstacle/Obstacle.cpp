@@ -1,5 +1,6 @@
 #include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
 #include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
+#include "DynamicObstacleAvoidance/Agent.hpp"
 
 Obstacle::Obstacle():state(Eigen::Vector3d(0,0,0))
 {}
@@ -40,10 +41,17 @@ bool Obstacle::is_intersecting(const Obstacle& other_obstacle) const
 {
 	if(other_obstacle.get_type() == "Ellipsoid") 
 	{
-		return this->is_intersecting_ellipsoid(dynamic_cast<const Ellipsoid&>(other_obstacle));
+		return this->is_intersecting_ellipsoid(static_cast<const Ellipsoid&>(other_obstacle));
 	}	
 	std::cerr << "Fonction is_intersecting not implemented for this type of obstacles" << std::endl;
 	return false;
+}
+
+bool Obstacle::is_intersecting(const std::deque<std::unique_ptr<Obstacle> >& other_obstacles) const
+{
+	bool intersecting = false;
+	for(auto& o:other_obstacles) intersecting = (intersecting || this->is_intersecting(*o));
+	return intersecting;
 }
 
 bool Obstacle::is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const

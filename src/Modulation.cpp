@@ -129,6 +129,9 @@ namespace Modulation
 	{
 		if(obstacles.empty()) return agent.get_linear_velocity();
 
+		// no modulation if no obstacle in sight
+		if(!agent.get_envelope().is_intersecting(obstacles)) return agent.get_linear_velocity();
+
 		// initialize the list of matrices for calculation
 		std::deque<Eigen::Matrix3d> modulation_matrix_list;
 		std::deque<Eigen::Matrix3d> orthogonal_basis_list;
@@ -140,7 +143,7 @@ namespace Modulation
 		{
 			if(obs_it->get_type() == "Aggregate")
 			{
-				const Obstacle& obstacle = dynamic_cast<Aggregate*>(obs_it.get())->get_active_obstacle(agent);
+				const Obstacle& obstacle = static_cast<Aggregate*>(obs_it.get())->get_active_obstacle(agent);
 				auto matrices = Modulation::compute_modulation_matrix(agent, obstacle);
 				// store matrices used later
 				modulation_matrix_list.push_back(std::get<0>(matrices));

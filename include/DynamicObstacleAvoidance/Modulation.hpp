@@ -19,9 +19,8 @@
 #include <memory>
 #include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
 #include "DynamicObstacleAvoidance/Obstacle/Aggregate.hpp"
-#include "DynamicObstacleAvoidance/Agent.hpp"
-#include "DynamicObstacleAvoidance/State/State.hpp"
 #include "DynamicObstacleAvoidance/Utils/MathTools.hpp"
+#include "DynamicObstacleAvoidance/Agent.hpp"
 
 namespace Modulation
 {
