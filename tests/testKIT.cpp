@@ -10,8 +10,6 @@
 #include <cstdlib>
 #include <string>
 
-using namespace DynamicObstacleAvoidance;
-
 int main(int, char*[])
 {
 	srand(time(0));
