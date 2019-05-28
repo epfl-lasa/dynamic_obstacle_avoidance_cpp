@@ -62,7 +62,7 @@ namespace Modulation
 		Eigen::Vector3d unit_vector = Eigen::Vector3d::UnitZ();
 		Eigen::Vector3d tangent_vector = normal_vector.cross(unit_vector);
 		
-		if(abs(tangent_vector.norm()) < 1E-4) 
+		if(tangent_vector.norm() < 1E-4) 
 		{
 			unit_vector = Eigen::Vector3d::UnitY();
 			tangent_vector = normal_vector.cross(unit_vector);
@@ -75,7 +75,7 @@ namespace Modulation
 		Eigen::Vector3d reference_direction = obstacle.get_pose().inverse() * agent.get_position() - obstacle.get_pose().inverse() * obstacle.get_reference_position();
 		reference_direction.normalize();
 
-		if(abs(tangent_vector.cross(reference_direction).norm()) < 1E-4)
+		if(tangent_vector.cross(reference_direction).norm() < 1E-4)
 		{
 			std::cerr << "Problem here" << std::endl;
 		}
@@ -108,7 +108,7 @@ namespace Modulation
 	{
 		Eigen::Vector3d unit_vector = Eigen::Vector3d::UnitZ();
 		Eigen::Vector3d cross_product = agent_relative_velocity.cross(unit_vector);
-		if(abs(cross_product.norm()) < 1E-4) 
+		if(cross_product.norm() < 1E-4) 
 		{
 			cross_product = Eigen::Vector3d::UnitY();
 			cross_product = agent_relative_velocity.cross(unit_vector);
