@@ -119,3 +119,8 @@ add_executable(runTestConfiguration tests/testConfiguration.cpp)
 target_link_libraries(runTestConfiguration
 	${PROJECT_NAME}
 )
+
+add_executable(runTestKIT tests/testKIT.cpp)
+target_link_libraries(runTestKIT
+	${PROJECT_NAME}
+)
