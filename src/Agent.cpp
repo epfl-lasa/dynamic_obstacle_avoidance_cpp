@@ -18,8 +18,9 @@ void Agent::update_envelope()
 	this->envelope->set_reference_position(center_position);
 	static_cast<Ellipsoid*>(this->envelope.get())->set_axis_lengths(Eigen::Array3d((center_position - this->get_position()).norm() + this->safety_margin, this->safety_margin, safety_margin));
 	// calculate the orientation using cross product
-	double theta = acos(this->get_linear_velocity().normalized().dot(Eigen::Vector3d::UnitX()));
-	double phi = acos(this->get_linear_velocity().normalized().dot(Eigen::Vector3d::UnitZ()));
+	double cos_theta = this->get_linear_velocity().normalized().dot(Eigen::Vector3d::UnitX());
+	double sin_theta = this->get_linear_velocity().normalized().dot(Eigen::Vector3d::UnitY());
+	double theta = atan2(sin_theta, cos_theta);
 	// for now consider 2D representation
 	this->envelope->set_orientation(Eigen::Quaterniond(Eigen::AngleAxisd(theta, Eigen::Vector3d::UnitZ())));
 }
