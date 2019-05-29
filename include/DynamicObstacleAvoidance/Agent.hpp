@@ -124,6 +124,8 @@ public:
   		os << "safety margin: " << agent.safety_margin;
   		return os;
 	}
+
+	bool in_obstacle(const Obstacle& obstacle) const;
 };
 
 #endif

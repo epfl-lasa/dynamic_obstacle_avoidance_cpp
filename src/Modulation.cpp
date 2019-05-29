@@ -194,7 +194,7 @@ namespace Modulation
 		double norm_modulated_velocity_angle_space = sum_modulated_velocity_angle_space.norm();
 		Eigen::Vector3d reconstructed_velocity;
 
-		if(norm_modulated_velocity_angle_space == 0)
+		if(norm_modulated_velocity_angle_space < 1E-4)
 		{
 			reconstructed_velocity << 1, sum_modulated_velocity_angle_space;
 		}
@@ -206,6 +206,12 @@ namespace Modulation
 		Eigen::Vector3d modulated_velocity = ds_frame * reconstructed_velocity;
 		modulated_velocity *= velocity_magnitude;
 		modulated_velocity += obstacles_relative_velocity;
+
+		if(modulated_velocity.hasNaN())
+		{
+			std:: cerr << "Modulated velocity contains NaN numbers, returning 0 velocity" << std::endl;
+			modulated_velocity = Eigen::Vector3d(0,0,0);
+		}
 		return modulated_velocity;
 	}
 }
