@@ -207,6 +207,22 @@ namespace Modulation
 		modulated_velocity *= velocity_magnitude;
 		modulated_velocity += obstacles_relative_velocity;
 
+		// extra caution, push away if you are in an obstacle
+		Eigen::Vector3d repulsion_velocity(0,0,0);
+		for(auto& o:obstacles)
+		{
+			if(agent.in_obstacle(*o))
+			{
+				repulsion_velocity += (agent.get_position() - o->get_reference_position()).normalized();
+			}
+		}
+
+		if(repulsion_velocity.norm() > 1E-4)
+		{
+			std::cerr << "Agent in obstacle, repulsion activated" << std::endl;
+			modulated_velocity = repulsion_velocity;
+		}
+
 		if(modulated_velocity.hasNaN())
 		{
 			std:: cerr << "Modulated velocity contains NaN numbers, returning 0 velocity" << std::endl;
