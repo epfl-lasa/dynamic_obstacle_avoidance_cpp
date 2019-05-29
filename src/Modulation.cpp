@@ -125,7 +125,7 @@ namespace Modulation
   		return acos (x) ;
   	}
 
-	Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const bool& is_local, const double& critical_distance, const double& weight_power)
+	Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const bool& is_local, const bool& add_repulsion, const double& critical_distance, const double& weight_power)
 	{
 		if(obstacles.empty()) return agent.get_linear_velocity();
 
@@ -209,18 +209,21 @@ namespace Modulation
 
 		// extra caution, push away if you are in an obstacle
 		Eigen::Vector3d repulsion_velocity(0,0,0);
-		for(auto& o:obstacles)
+		if(add_repulsion)
 		{
-			if(agent.in_obstacle(*o))
+			for(auto& o:obstacles)
 			{
-				repulsion_velocity += (agent.get_position() - o->get_reference_position()).normalized();
+				if(agent.in_obstacle(*o))
+				{
+					repulsion_velocity += 0.1 * (agent.get_position() - o->get_reference_position()).normalized();
+				}
 			}
-		}
 
-		if(repulsion_velocity.norm() > 1E-4)
-		{
-			std::cerr << "Agent in obstacle, repulsion activated" << std::endl;
-			modulated_velocity = repulsion_velocity;
+			if(repulsion_velocity.norm() > 1E-4)
+			{
+				std::cerr << "Agent in obstacle, repulsion activated" << std::endl;
+				modulated_velocity += repulsion_velocity;
+			}
 		}
 
 		if(modulated_velocity.hasNaN())
