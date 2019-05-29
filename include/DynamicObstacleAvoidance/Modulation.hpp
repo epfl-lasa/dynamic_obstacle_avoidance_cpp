@@ -39,7 +39,7 @@ namespace Modulation
     * @param[out] eigenValues Eigenvalue matrix which is responsible for the modulation
     */
     std::tuple<Eigen::Matrix3d, Eigen::Matrix3d, double> compute_modulation_matrix(const Agent& agent, const Obstacle& obstacle);
-    Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const double& critical_distance=1.0, const double& weight_power=2.0);
+    Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const bool& is_local=false, const double& critical_distance=1.0, const double& weight_power=2.0);
 }
 
 #endif

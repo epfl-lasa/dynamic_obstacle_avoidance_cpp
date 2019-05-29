@@ -125,12 +125,12 @@ namespace Modulation
   		return acos (x) ;
   	}
 
-	Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const double& critical_distance, const double& weight_power)
+	Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const bool& is_local, const double& critical_distance, const double& weight_power)
 	{
 		if(obstacles.empty()) return agent.get_linear_velocity();
 
 		// no modulation if no obstacle in sight
-		if(!agent.get_envelope().is_intersecting(obstacles)) return agent.get_linear_velocity();
+		if(is_local && !agent.get_envelope().is_intersecting(obstacles)) return agent.get_linear_velocity();
 
 		// initialize the list of matrices for calculation
 		std::deque<Eigen::Matrix3d> modulation_matrix_list;
