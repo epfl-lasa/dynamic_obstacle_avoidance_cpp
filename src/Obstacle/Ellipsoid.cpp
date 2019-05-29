@@ -93,21 +93,38 @@ void Ellipsoid::draw() const
 	plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, "kx");
 }
 
+bool Ellipsoid::is_inside(const Eigen::Vector3d& point) const
+{
+	Eigen::Array3d lengths = this->get_axis_lengths() + this->get_safety_margin();
+	Eigen::Vector3d transformed_point = this->get_pose().inverse() * point;
+	double eq_value = ((transformed_point(0) * transformed_point(0)) / (lengths(0) * lengths(0))) + ((transformed_point(1) * transformed_point(1)) / (lengths(1) * lengths(1)));
+	return (eq_value <= 1);
+}
+
 bool Ellipsoid::is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const
 {
-	// first sample the first ellipsoid
-	int nb_samples = 100;
-	Eigen::MatrixXd samples = other_obstacle.sample_from_parameterization(nb_samples, true);
-	// for each points check if at least one of them is inside
 	bool intersecting = false;
-	int i = 0;
-	Eigen::Array3d lengths = this->get_axis_lengths() + this->get_safety_margin();
-	while(!intersecting && i<samples.cols())
+	// first check that center points satisfy equations of the other
+	if(this->is_inside(other_obstacle.get_position()))
 	{
-		Eigen::Vector3d point = this->get_pose().inverse() * samples.col(i);
-		double eq_value = ((point(0) * point(0)) / (lengths(0) * lengths(0))) + ((point(1) * point(1)) / (lengths(1) * lengths(1)));
-		intersecting = (eq_value <= 1);
-		++i;
+		intersecting = true;
+	}
+	else if(other_obstacle.is_inside(this->get_position()))
+	{
+		intersecting = true;
+	}
+	else
+	{
+		// first sample the first ellipsoid
+		int nb_samples = 100;
+		Eigen::MatrixXd samples = other_obstacle.sample_from_parameterization(nb_samples, true);
+		// for each points check if at least one of them is inside
+		int i = 0;
+		while(!intersecting && i<samples.cols())
+		{
+			intersecting = this->is_inside(samples.col(i));
+			++i;
+		}
 	}
 	return intersecting;
 }

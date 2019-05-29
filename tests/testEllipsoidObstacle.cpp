@@ -111,6 +111,17 @@ TEST(ComputeNormalToExternalPointCloseToObstacle, PositiveNos)
 	for(int i=0; i<normal.size(); ++i) ASSERT_NEAR(normal(i), truth(i), 0.01);
 }
 
+TEST(IsInside, PositiveNos)
+{
+	Ellipsoid e1;
+	Ellipsoid e2;
+	e2.set_axis_lengths(Eigen::Vector3d(2,2,0));
+
+	ASSERT_EQ(e1.is_intersecting(e2), true);
+	ASSERT_EQ(e2.is_intersecting(e1), true);
+}
+
+
 TEST(IsInteresecting, PositiveNos)
 {
 	Ellipsoid e1;
