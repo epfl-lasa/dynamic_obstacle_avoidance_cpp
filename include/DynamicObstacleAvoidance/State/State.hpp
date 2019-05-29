@@ -20,6 +20,7 @@ private:
 	Eigen::Vector3d angular_velocity;
 
 public:
+	explicit State();
 	explicit State(const Pose& pose);
 	explicit State(const double& x, const double& y, const double& z);
 	explicit State(const Eigen::Vector3d& position);

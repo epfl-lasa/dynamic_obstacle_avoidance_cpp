@@ -1,5 +1,9 @@
 #include "DynamicObstacleAvoidance/State/State.hpp"
 
+State::State():
+linear_velocity(0,0,0), angular_velocity(0,0,0)
+{}
+
 State::State(const Pose& pose):
 pose(pose), linear_velocity(0,0,0), angular_velocity(0,0,0)
 {}

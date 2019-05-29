@@ -1,14 +1,20 @@
 #include "DynamicObstacleAvoidance/Agent.hpp"
 
-Agent::Agent(const Agent& agent):
-state(agent.state), safety_margin(agent.safety_margin), envelope(agent.get_envelope().clone()), delta_t(1)
-{}
+Agent::Agent(const double& safety_margin):
+safety_margin(safety_margin), delta_t(0.5)
+{
+	this->envelope = std::make_unique<Ellipsoid>(State(this->get_position()));
+}
 
 Agent::Agent(const State& state, const double& safety_margin):
 state(state), safety_margin(safety_margin), delta_t(0.5)
 {
 	this->envelope = std::make_unique<Ellipsoid>(State(this->get_position()));
 }
+
+Agent::Agent(const Agent& agent):
+state(agent.state), safety_margin(agent.safety_margin), envelope(agent.get_envelope().clone()), delta_t(agent.delta_t)
+{}
 
 void Agent::update_envelope()
 {

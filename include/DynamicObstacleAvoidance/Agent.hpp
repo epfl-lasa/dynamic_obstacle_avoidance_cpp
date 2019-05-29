@@ -24,9 +24,11 @@ private:
 	void update_envelope();
 
 public:
-	Agent(const Agent& agent);
+	explicit Agent(const double& safety_margin=0.0);
 
 	explicit Agent(const State& state, const double& safety_margin=0.0);
+
+	Agent(const Agent& agent);
 
 	inline const Obstacle& get_envelope() const 
 	{ 
