@@ -18,7 +18,7 @@ state(agent.state), safety_margin(agent.safety_margin), envelope(agent.get_envel
 
 void Agent::update_envelope()
 {
-	double margin = std::min(0.1, this->safety_margin);
+	double margin = std::max(0.1, this->safety_margin);
 	// project an ellipsoid in front of the agent based on its velocity
 	Eigen::Vector3d center_position = this->get_position() + this->delta_t * this->get_linear_velocity().normalized();
 	this->envelope->set_position(center_position);
@@ -34,7 +34,7 @@ void Agent::update_envelope()
 
 bool Agent::in_obstacle(const Obstacle& obstacle) const
 {
-	double margin = std::min(0.1, this->safety_margin);
+	double margin = std::max(0.1, this->safety_margin);
 	Ellipsoid safety_envelope(State(this->get_position()));
 	safety_envelope.set_axis_lengths(Eigen::Vector3d(margin, margin, margin));
 	return safety_envelope.is_intersecting(obstacle);
