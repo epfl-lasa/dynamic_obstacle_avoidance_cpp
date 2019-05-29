@@ -95,13 +95,6 @@ void Ellipsoid::draw() const
 
 bool Ellipsoid::is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const
 {
-	/*// first fast check based on distances between the centers
-	double centers_distance = (this->get_position() - other_obstacle.get_position()).norm();
-	double max_axis_o1 = this->get_axis_lengths().maxCoeff() + this->get_safety_margin();
-	double max_axis_o2 = other_obstacle.get_axis_lengths().maxCoeff() + other_obstacle.get_safety_margin();
-	// for now consider this as a sufficient condition
-	return (centers_distance < (max_axis_o1 + max_axis_o2));*/
-
 	// first sample the first ellipsoid
 	int nb_samples = 100;
 	Eigen::MatrixXd samples = other_obstacle.sample_from_parameterization(nb_samples, true);

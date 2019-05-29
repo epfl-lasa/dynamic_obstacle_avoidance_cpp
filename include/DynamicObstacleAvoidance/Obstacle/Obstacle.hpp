@@ -20,6 +20,8 @@ namespace plt = matplotlibcpp;
 
 class Ellipsoid;
 
+class Aggregate;
+
 class Agent;
 
 class Obstacle 
@@ -38,6 +40,8 @@ protected:
 	}
 
 	virtual bool is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const;
+
+	bool is_intersecting_aggregate(const Aggregate& other_obstacle) const;
 
 	virtual Obstacle* implicit_clone() const;
 
