@@ -25,8 +25,8 @@ int main(int, char*[])
 	bool plot_steps = true;
 
 	// generate the list of obstacles
-	Eigen::Vector3d position_o1(3, 0.62, 0);
-	Eigen::Vector3d position_o2(4.4, 0, 0);
+	Eigen::Vector3d position_o1(3, 2.62, 0);
+	Eigen::Vector3d position_o2(4.4, 2, 0);
 	Eigen::Vector3d position_o3(0.3, 3, 0);
 	Eigen::Vector3d position_o4(1, 3.75, 0);
 	Eigen::Vector3d position_o5(3.7, 4.7, 0);
@@ -58,8 +58,8 @@ int main(int, char*[])
 	ptrE7->set_axis_lengths(Eigen::Array3d(2, 0.2, 0));
 
 	// set reference points for pairs of ellipses
-	ptrE1->set_reference_position(Eigen::Vector3d(3, 0.05, 0));
-	ptrE2->set_reference_position(Eigen::Vector3d(3, 0.05, 0));
+	ptrE1->set_reference_position(Eigen::Vector3d(3, 2.05, 0));
+	ptrE2->set_reference_position(Eigen::Vector3d(3, 2.05, 0));
 
 	ptrE3->set_reference_position(Eigen::Vector3d(0.4, 3.55, 0));
 	ptrE4->set_reference_position(Eigen::Vector3d(0.4, 3.55, 0));
@@ -75,7 +75,7 @@ int main(int, char*[])
 	obstacle_list.push_back(std::move(ptrE4));
 	obstacle_list.push_back(std::move(ptrE5));
 	obstacle_list.push_back(std::move(ptrE6));
-	obstacle_list.push_back(std::move(ptrE7));
+	//obstacle_list.push_back(std::move(ptrE7));
 
 	for(int k=0; k<nb_simulations; ++k)
 	{
