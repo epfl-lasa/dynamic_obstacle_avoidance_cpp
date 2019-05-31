@@ -215,7 +215,7 @@ namespace Modulation
 			{
 				if(agent.in_obstacle(*o))
 				{
-					repulsion_velocity += 0.1 * (agent.get_position() - o->get_reference_position()).normalized();
+					repulsion_velocity += o->get_repulsion_factor(agent) * (agent.get_position() - o->get_reference_position()).normalized();
 				}
 			}
 

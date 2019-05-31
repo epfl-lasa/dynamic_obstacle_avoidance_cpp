@@ -91,6 +91,8 @@ public:
 		os << this->curvature_factor(2) << ")";
   		return os;
 	}
+
+	double get_repulsion_factor(const Agent& agent) const;
 };
 
 #endif

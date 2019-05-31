@@ -155,3 +155,11 @@ Eigen::MatrixXd Ellipsoid::sample_from_parameterization(const int& nb_samples, c
 	}
 	return samples;
 }
+
+double Ellipsoid::get_repulsion_factor(const Agent& agent) const
+{
+	Eigen::Vector3d transformed_point = this->get_pose().inverse() * agent.get_position();
+	Eigen::Array3d lengths = this->get_axis_lengths() + this->get_safety_margin() + agent.get_safety_margin();
+	double eq_value = ((transformed_point(0) * transformed_point(0)) / (lengths(0) * lengths(0))) + ((transformed_point(1) * transformed_point(1)) / (lengths(1) * lengths(1)));
+	return 1 - eq_value;
+}

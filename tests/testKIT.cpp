@@ -23,9 +23,17 @@ int main(int, char*[])
 	bool debug = false;
 	bool is_show = false;
 	bool plot_steps = true;
+	double obstacles_safety_margin = 0.0;
+	double agent_safety_margin = 0.6;
+
+	//Eigen::Vector3d agent_position(4.4, 3.1, 0.0);
+	//Eigen::Vector3d target_position(2., 5., 0.);
+
+	Eigen::Vector3d agent_position(2, 5, 0.0);
+	Eigen::Vector3d target_position(4.18, 3.84, 0.);
 
 	// generate the list of obstacles
-	Eigen::Vector3d position_o1(3, 2.62, 0);
+	Eigen::Vector3d position_o1(2.95, 2.5, 0);
 	Eigen::Vector3d position_o2(4.4, 2, 0);
 	Eigen::Vector3d position_o3(0.3, 3, 0);
 	Eigen::Vector3d position_o4(1, 3.75, 0);
@@ -41,20 +49,20 @@ int main(int, char*[])
 	Eigen::Quaterniond orientation_o6(Eigen::AngleAxisd(-0.75, Eigen::Vector3d::UnitZ()));
 	Eigen::Quaterniond orientation_o7(Eigen::AngleAxisd(0, Eigen::Vector3d::UnitZ()));
 
-	auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation_o1));
-	auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation_o2));
-	auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3, orientation_o3));
-	auto ptrE4 = std::make_unique<Ellipsoid>(State(position_o4, orientation_o4));
-	auto ptrE5 = std::make_unique<Ellipsoid>(State(position_o5, orientation_o5));
-	auto ptrE6 = std::make_unique<Ellipsoid>(State(position_o6, orientation_o6));
-	auto ptrE7 = std::make_unique<Ellipsoid>(State(position_o7, orientation_o7));
+	auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation_o1), obstacles_safety_margin);
+	auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation_o2), obstacles_safety_margin);
+	auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3, orientation_o3), obstacles_safety_margin);
+	auto ptrE4 = std::make_unique<Ellipsoid>(State(position_o4, orientation_o4), obstacles_safety_margin);
+	auto ptrE5 = std::make_unique<Ellipsoid>(State(position_o5, orientation_o5), obstacles_safety_margin);
+	auto ptrE6 = std::make_unique<Ellipsoid>(State(position_o6, orientation_o6), obstacles_safety_margin);
+	auto ptrE7 = std::make_unique<Ellipsoid>(State(position_o7, orientation_o7), obstacles_safety_margin);
 
-	ptrE1->set_axis_lengths(Eigen::Array3d(0.05, 0.7, 0));
+	ptrE1->set_axis_lengths(Eigen::Array3d(0.2, 0.75, 0));
 	ptrE2->set_axis_lengths(Eigen::Array3d(1.5, 0.15, 0));
 	ptrE3->set_axis_lengths(Eigen::Array3d(0.2, 2, 0));
-	ptrE4->set_axis_lengths(Eigen::Array3d(0.7, 0.2, 0));
-	ptrE5->set_axis_lengths(Eigen::Array3d(0.75, 0.2, 0));
-	ptrE6->set_axis_lengths(Eigen::Array3d(0.75, 0.2, 0));
+	ptrE4->set_axis_lengths(Eigen::Array3d(0.7, 0.3, 0));
+	ptrE5->set_axis_lengths(Eigen::Array3d(0.55, 0.3, 0));
+	ptrE6->set_axis_lengths(Eigen::Array3d(0.55, 0.2, 0));
 	ptrE7->set_axis_lengths(Eigen::Array3d(2, 0.2, 0));
 
 	// set reference points for pairs of ellipses
@@ -85,16 +93,10 @@ int main(int, char*[])
 		srand(seed);
 
 		// create the agent
-		Eigen::Vector3d agent_position(MathTools::rand_float(6,4), MathTools::rand_float(3,1), 0);
 		State agent_state(agent_position);
-		Agent agent(agent_state, 0.5);
-
-		// create the target
-		//Eigen::Vector3d target_position(MathTools::rand_float(2.5,1), MathTools::rand_float(3), 0);
-		Eigen::Vector3d target_position(MathTools::rand_float(2.5,1.5), MathTools::rand_float(6,4), 0);
+		Agent agent(agent_state, agent_safety_margin);
 
 		std::deque<Eigen::Vector3d> position_history;
-
 		if(debug) 
 		{
 			for(auto& o:obstacle_list) std::cerr << *o << std::endl;
@@ -114,7 +116,7 @@ int main(int, char*[])
 			Eigen::Vector3d desired_velocity = -Kp * (current_position - target_position);
 			agent.set_linear_velocity(desired_velocity);
 
-			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, obstacle_list);
+			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, obstacle_list, true, true);
 			Eigen::Vector3d modulated_position = current_position + dt * modulated_velocity;
 			agent.set_position(modulated_position);
 			

@@ -84,3 +84,8 @@ Obstacle* Obstacle::implicit_clone() const
 {
 	std::cerr << "Fonction implicit_clone of abstract class obstacle used" << std::endl;
 }
+
+double Obstacle::get_repulsion_factor(const Agent& agent) const
+{
+	std::cerr << "Fonction get_repulsion_factor of abstract class obstacle used" << std::endl;
+}

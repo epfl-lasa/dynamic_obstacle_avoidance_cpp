@@ -159,6 +159,8 @@ public:
 	bool is_intersecting(const std::deque<std::unique_ptr<Obstacle> >& other_obstacles) const;
 
 	std::unique_ptr<Obstacle> clone() const;
+
+	virtual double get_repulsion_factor(const Agent& agent) const;
 };
 
 #endif
