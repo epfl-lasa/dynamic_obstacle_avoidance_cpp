@@ -25,7 +25,7 @@ find_package(
 	mlpack REQUIRED
 )
 
-find_package(PythonLibs 2.7)
+find_package(PythonLibs 3.6)
 find_package(OpenMP)
 
 include_directories(
