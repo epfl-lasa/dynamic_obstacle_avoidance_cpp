@@ -19,6 +19,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   	add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+add_subdirectory(lib/dlib dlib_build)
+
 find_package(
 	Eigen3 REQUIRED
 	armadillo REQUIRED
@@ -114,6 +116,12 @@ if (runtests)
 	add_test(NAME runTestState COMMAND runTestState)
 	add_test(NAME runTestPointCloudToObstacle COMMAND runTestPointCloudToObstacle)
 endif()
+
+add_executable(runTestOptimization tests/testOptimization.cpp)
+target_link_libraries(runTestOptimization
+	dlib::dlib
+	${PROJECT_NAME}
+)
 
 add_executable(runTestConfiguration tests/testConfiguration.cpp)
 target_link_libraries(runTestConfiguration
