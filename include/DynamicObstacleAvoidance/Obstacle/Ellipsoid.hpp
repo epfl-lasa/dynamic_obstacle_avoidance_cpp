@@ -33,15 +33,15 @@ private:
 	Eigen::MatrixXd sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const;
 
 public:
-	explicit Ellipsoid();
+	explicit Ellipsoid(const std::string& name="");
 
 	explicit Ellipsoid(const Ellipsoid& ellipsoid);
 
-	explicit Ellipsoid(const double& cx, const double& cy, const double& cz, const double& safety_margin=0);
+	explicit Ellipsoid(const double& cx, const double& cy, const double& cz, const double& safety_margin=0, const std::string& name="");
 
-	explicit Ellipsoid(const State& state, const double& safety_margin=0);
+	explicit Ellipsoid(const State& state, const double& safety_margin=0, const std::string& name="");
 
-	explicit Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin=0);
+	explicit Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin=0, const std::string& name="");
 	~Ellipsoid();
 
 	inline const Eigen::Array3d get_axis_lengths() const 
@@ -78,7 +78,7 @@ public:
 
 	double compute_distance_to_agent(const Agent& agent) const;
 
-	void draw() const;
+	void draw(const std::string& color="k") const;
 
 	inline std::ostream& print(std::ostream& os) const override
 	{ 
@@ -93,6 +93,8 @@ public:
 	}
 
 	double get_repulsion_factor(const Agent& agent) const;
+
+	double area(const bool& is_include_safety_margin=true) const;
 };
 
 #endif

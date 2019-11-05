@@ -27,6 +27,7 @@ class Agent;
 class Obstacle 
 {
 private:
+	std::string name;
 	State state;
 	Eigen::Vector3d reference_position;
 	std::string type;
@@ -46,15 +47,20 @@ protected:
 	virtual Obstacle* implicit_clone() const;
 
 public:
-	explicit Obstacle();
-	explicit Obstacle(const double& cx, const double& cy, const double& cz, const double& safety_margin=0);
-	explicit Obstacle(const State& state, const double& safety_margin=0);
-	explicit Obstacle(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin=0);
+	explicit Obstacle(const std::string& name="");
+	explicit Obstacle(const double& cx, const double& cy, const double& cz, const double& safety_margin=0, const std::string& name="");
+	explicit Obstacle(const State& state, const double& safety_margin=0, const std::string& name="");
+	explicit Obstacle(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin=0, const std::string& name="");
 	~Obstacle();
 
 	inline const std::string get_type() const 
 	{ 
 		return this->type;
+	}
+
+	inline std::string get_name() const
+	{
+		return this->name;
 	}
 
 	inline const State get_state() const 
@@ -95,6 +101,11 @@ public:
 	inline double get_safety_margin() const
 	{ 
 		return this->safety_margin;
+	}
+
+	inline void set_name(const std::string& name)
+	{
+		this->name = name;
 	}
 
 	inline void set_pose(const Pose& pose)
@@ -152,7 +163,7 @@ public:
 	
 	virtual double compute_distance_to_agent(const Agent& agent) const;
 
-	virtual void draw() const;
+	virtual void draw(const std::string& color="k") const;
 
 	bool is_intersecting(const Obstacle& other_obstacle) const;
 

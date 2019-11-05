@@ -46,7 +46,7 @@ public:
 	
 	double compute_distance_to_agent(const Agent& agent) const;
 
-	void draw() const;
+	void draw(const std::string& color="k") const;
 
 	inline std::ostream& print(std::ostream& os) const override
 	{ 

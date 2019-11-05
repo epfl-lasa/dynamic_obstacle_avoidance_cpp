@@ -1,33 +1,33 @@
 #include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 #include "DynamicObstacleAvoidance/Agent.hpp"
 
-Ellipsoid::Ellipsoid():
+Ellipsoid::Ellipsoid(const std::string& name):
 axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 {
 	this->set_type("Ellipsoid");
 }
 
 Ellipsoid::Ellipsoid(const Ellipsoid& ellipsoid):
-Obstacle(ellipsoid.get_state(), ellipsoid.get_reference_position(), ellipsoid.get_safety_margin()),
+Obstacle(ellipsoid.get_state(), ellipsoid.get_reference_position(), ellipsoid.get_safety_margin(), ellipsoid.get_name()),
 axis_lengths(ellipsoid.get_axis_lengths()), curvature_factor(ellipsoid.get_curvature_factor()), epsilon(1E-4)
 {
 	this->set_type("Ellipsoid");
 }
 
-Ellipsoid::Ellipsoid(const State& state, const double& safety_margin):
-Obstacle(state, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+Ellipsoid::Ellipsoid(const State& state, const double& safety_margin, const std::string& name):
+Obstacle(state, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 {
 	this->set_type("Ellipsoid");
 }
 
-Ellipsoid::Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin):
-Obstacle(state, reference_position, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+Ellipsoid::Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin, const std::string& name):
+Obstacle(state, reference_position, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 {
 	this->set_type("Ellipsoid");
 }
 
-Ellipsoid::Ellipsoid(const double& cx, const double& cy, const double& cz, const double& safety_margin):
-Obstacle(cx, cy, cz, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+Ellipsoid::Ellipsoid(const double& cx, const double& cy, const double& cz, const double& safety_margin, const std::string& name):
+Obstacle(cx, cy, cz, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 {
 	this->set_type("Ellipsoid");
 }
@@ -62,7 +62,7 @@ double Ellipsoid::compute_distance_to_agent(const Agent& agent) const
 	return tmp_values.sum();
 }
 
-void Ellipsoid::draw() const 
+void Ellipsoid::draw(const std::string& color) const 
 {
 	int n = 100;
 	// use a linespace to have a full rotation angle between [-pi, pi]
@@ -87,10 +87,18 @@ void Ellipsoid::draw() const
 		x_safety.at(i) = safety_length(0) * cos(a) * cos(theta) - safety_length(1) * sin(a) * sin(theta) + this->get_position()(0);
 		y_safety.at(i) = safety_length(0) * cos(a) * sin(theta) + safety_length(1) * sin(a) * cos(theta) + this->get_position()(1);
 	}
-	plt::plot(x, y);
-	plt::plot(x_safety, y_safety, "k-");
-	plt::plot({this->get_position()(0)}, {this->get_position()(1)}, "ko");
-	plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, "kx");
+	plt::plot(x, y, color + "-");
+	plt::plot(x_safety, y_safety, color + "-");
+
+	if(this->get_name() == "")
+	{
+		plt::plot({this->get_position()(0)}, {this->get_position()(1)}, color + "o");
+	}
+	else
+	{
+		plt::text(this->get_position()(0), this->get_position()(1), this->get_name());
+	}
+	plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, color + "x");
 }
 
 bool Ellipsoid::is_inside(const Eigen::Vector3d& point) const
@@ -162,4 +170,10 @@ double Ellipsoid::get_repulsion_factor(const Agent& agent) const
 	Eigen::Array3d lengths = this->get_axis_lengths() + this->get_safety_margin() + agent.get_safety_margin();
 	double eq_value = ((transformed_point(0) * transformed_point(0)) / (lengths(0) * lengths(0))) + ((transformed_point(1) * transformed_point(1)) / (lengths(1) * lengths(1)));
 	return 1 - eq_value;
+}
+
+double Ellipsoid::area(const bool& is_include_safety_margin) const
+{
+	//Eigen::Array3d lengths = (is_include_safety_margin) ? this->get_axis_lengths() + this->get_safety_margin() : this->get_axis_lengths();
+	//return 4 * M_PI * (math::pow((math::pow(lengths(0), 1.6) + math::pow(lengths(0), 1.6) + math::pow(lengths(0), 1.6))/3, 1/1.6))
 }

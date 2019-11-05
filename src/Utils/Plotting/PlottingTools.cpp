@@ -38,18 +38,21 @@ void PlottingTools::plot_fitted_clusters(const std::deque<Eigen::MatrixXd>& clus
 
 void PlottingTools::plot_configuration(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile, const bool& is_show)
 {
+	std::vector<std::string> colors = {"b", "g", "r", "c", "m", "y"};
 	plt::figure();
+	unsigned int i = 0;
 	for(auto &o:obstacles)
 	{
-		o->draw();
+		o->draw(colors[i]);
+		i = (i + 1) % colors.size();
 	}
-	plt::plot({agent.get_position()(0)}, {agent.get_position()(1)}, "bo");
-	agent.get_envelope().draw();
+	//plt::plot({agent.get_position()(0)}, {agent.get_position()(1)}, "bo");
+	//agent.get_envelope().draw();
 	plt::plot({goal(0)}, {goal(1)}, "rx");
 
 	std::vector<double> x(position_history.size());
 	std::vector<double> y(position_history.size());
-	int i=0;
+	i = 0;
 	for(auto& point:position_history)
 	{
 		x.at(i) = point(0);

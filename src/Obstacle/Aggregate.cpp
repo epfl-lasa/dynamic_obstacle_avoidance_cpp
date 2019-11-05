@@ -102,11 +102,11 @@ double Aggregate::compute_distance_to_agent(const Agent& agent) const
 	return min_dist;
 }
 
-void Aggregate::draw() const
+void Aggregate::draw(const std::string& color) const
 {
 	for(auto& o:this->primitives)
 	{
-		o->draw();
+		o->draw(color);
 	}
 	plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, "bx");
 }
