@@ -172,6 +172,8 @@ public:
 	std::unique_ptr<Obstacle> clone() const;
 
 	virtual double get_repulsion_factor(const Agent& agent) const;
+
+	virtual Eigen::MatrixXd sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const;
 };
 
 #endif

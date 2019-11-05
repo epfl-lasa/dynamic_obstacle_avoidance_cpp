@@ -23,7 +23,7 @@ double cost_star_shape_hull(const Ellipsoid& e1, const Ellipsoid& e2, const Aggr
 			c1 += (e1.is_inside(samples.col(i)) || e2.is_inside(samples.col(i))) ? 0 : 1;
 		}
 	}
-	//double c2 = e1.area() + e2.area()
+	double c2 = e1.area() + e2.area();
 	return intersec_factor * c0 + inside_factor * c1 + area_factor * c2;
 }
 

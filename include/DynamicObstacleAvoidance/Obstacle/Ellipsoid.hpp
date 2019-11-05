@@ -26,11 +26,7 @@ private:
 
 	bool is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const;
 
-	bool is_inside(const Eigen::Vector3d& point) const;
-
 	Ellipsoid* implicit_clone() const override;
-
-	Eigen::MatrixXd sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const;
 
 public:
 	explicit Ellipsoid(const std::string& name="");
@@ -95,6 +91,10 @@ public:
 	double get_repulsion_factor(const Agent& agent) const;
 
 	double area(const bool& is_include_safety_margin=true) const;
+
+	Eigen::MatrixXd sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const;
+
+	bool is_inside(const Eigen::Vector3d& point) const;
 };
 
 #endif

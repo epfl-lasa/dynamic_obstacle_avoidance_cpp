@@ -90,3 +90,8 @@ double Obstacle::get_repulsion_factor(const Agent& agent) const
 {
 	std::cerr << "Fonction get_repulsion_factor of abstract class obstacle used" << std::endl;
 }
+
+Eigen::MatrixXd Obstacle::sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const
+{
+	std::cerr << "Fonction sample_from_parameterization of abstract class obstacle used" << std::endl;
+}
