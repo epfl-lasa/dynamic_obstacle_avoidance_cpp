@@ -2,6 +2,8 @@
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
 
+using namespace DynamicObstacleAvoidance;
+
 TEST(MultiplyTransformsBothOperators, PositiveNos)
 {
 	Eigen::Vector3d pos1(1,2,3);

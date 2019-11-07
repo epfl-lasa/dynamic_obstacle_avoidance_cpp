@@ -9,6 +9,8 @@
 #include <deque>
 #include <stdlib.h> 
 
+using namespace DynamicObstacleAvoidance;
+
 TEST(TestFitEllipsoid, PositiveNos)
 {
 	Eigen::MatrixXd surface_points(3,10);

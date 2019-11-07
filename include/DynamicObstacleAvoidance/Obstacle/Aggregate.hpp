@@ -13,51 +13,69 @@
 #include <deque>
 #include <limits>
 #include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
-
+#include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 #include <iostream>
+#include <dlib/optimization.h>
+#include <dlib/global_optimization.h>
 
+using namespace std::placeholders;
 
-class Aggregate: public Obstacle 
+namespace DynamicObstacleAvoidance
 {
-private:
-	std::deque<std::unique_ptr<Obstacle> > primitives;
-
-	void update_positions();
-
-	Aggregate* implicit_clone() const override;
-
-public:
-	explicit Aggregate();
-
-	explicit Aggregate(const std::deque<std::unique_ptr<Obstacle> >& primitives);
-
-	inline const auto& get_primitives() const
+	class Aggregate: public Obstacle 
 	{
-		return this->primitives;
-	}
+	private:
+		unsigned int nb_samples;
+		double intersec_factor;
+		double inside_factor;
+		double distance_factor;
+		double area_factor;
 
-	void add_primitive(const std::unique_ptr<Obstacle>& primitive);
+		std::deque<std::unique_ptr<Obstacle> > primitives;
 
-	void add_primitive(const Obstacle& primitive);
+		void update_positions();
 
-	const Obstacle& get_active_obstacle(const Agent& agent) const;
+		Aggregate* implicit_clone() const override;
 
-	Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
-	
-	double compute_distance_to_agent(const Agent& agent) const;
+		double cost_function(const dlib::matrix<double,0,1>& x);
 
-	void draw(const std::string& color="k") const;
+		double cost_star_shape_hull(const Ellipsoid& e1, const Ellipsoid& e2);
 
-	inline std::ostream& print(std::ostream& os) const override
-	{ 
-		os << static_cast<Obstacle>(*this) << std::endl;
-		os << "Composed of:" << std::endl;
-		for(auto& p:this->primitives)
+	public:
+		explicit Aggregate();
+
+		explicit Aggregate(const std::deque<std::unique_ptr<Obstacle> >& primitives);
+
+		inline const auto& get_primitives() const
 		{
-			os << "---" << std::endl;
-			os << *p << std::endl;
+			return this->primitives;
 		}
-  		return os;
-	}
-};
+
+		void add_primitive(const std::unique_ptr<Obstacle>& primitive);
+
+		void add_primitive(const Obstacle& primitive);
+
+		const Obstacle& get_active_obstacle(const Agent& agent) const;
+
+		Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
+		
+		double compute_distance_to_agent(const Agent& agent) const;
+
+		void draw(const std::string& color="k") const;
+
+		std::pair<Ellipsoid, Ellipsoid> compute_star_shape_hull();
+
+		inline std::ostream& print(std::ostream& os) const override
+		{ 
+			os << static_cast<Obstacle>(*this) << std::endl;
+			os << "Composed of:" << std::endl;
+			for(auto& p:this->primitives)
+			{
+				os << "---" << std::endl;
+				os << *p << std::endl;
+			}
+	  		return os;
+		}
+	};
+}
 #endif

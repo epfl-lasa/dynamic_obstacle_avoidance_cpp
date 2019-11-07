@@ -4,17 +4,19 @@
 #include <vector>
 #include <cstdlib>
 
-namespace MathTools 
+namespace DynamicObstacleAvoidance
 {
-	std::vector<double> linspace(const double& start, const double& ed, const int& num);
-
-	double rand_float(const double& a, const double& b=0);
-
-	template <typename T> 
-	int sign(T val) 
+	namespace MathTools 
 	{
-    	return (T(0) < val) - (val < T(0));
+		std::vector<double> linspace(const double& start, const double& ed, const int& num);
+
+		double rand_float(const double& a, const double& b=0);
+
+		template <typename T> 
+		int sign(T val) 
+		{
+	    	return (T(0) < val) - (val < T(0));
+		}
 	}
 }
-
 #endif

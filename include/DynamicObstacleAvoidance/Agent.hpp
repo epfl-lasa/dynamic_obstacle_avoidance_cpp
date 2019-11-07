@@ -13,119 +13,121 @@
 #include "DynamicObstacleAvoidance/State/Pose.hpp"
 #include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 
-class Agent
+namespace DynamicObstacleAvoidance
 {
-private:
-	State state;
-	double safety_margin;
-	std::unique_ptr<Obstacle> envelope;
-	double delta_t;
-
-	void update_envelope();
-
-public:
-	explicit Agent(const double& safety_margin=0.0);
-
-	explicit Agent(const State& state, const double& safety_margin=0.0);
-
-	Agent(const Agent& agent);
-
-	inline const Obstacle& get_envelope() const 
-	{ 
-		return *(this->envelope);
-	}
-
-	inline const State get_state() const 
-	{ 
-		return this->state;
-	}
-
-	inline const Pose get_pose() const 
-	{ 
-		return this->state.get_pose();
-	}
-
-	inline const Eigen::Vector3d get_position() const 
-	{ 
-		return this->state.get_position();
-	}
-
-	inline const Eigen::Quaterniond get_orientation() const 
-	{ 
-		return this->state.get_orientation();
-	}
-
-	inline const Eigen::Vector3d get_linear_velocity() const
+	class Agent
 	{
-		return this->state.get_linear_velocity();
-	}
+	private:
+		State state;
+		double safety_margin;
+		std::unique_ptr<Obstacle> envelope;
+		double delta_t;
 
-	inline const Eigen::Vector3d get_angular_velocity() const
-	{
-		return this->state.get_angular_velocity();
-	}
+		void update_envelope();
 
-	inline double get_safety_margin() const
-	{ 
-		return this->safety_margin;
-	}
+	public:
+		explicit Agent(const double& safety_margin=0.0);
 
-	inline void set_safety_margin(const double& safety_margin)
-	{ 
-		this->safety_margin = safety_margin;
-	}
+		explicit Agent(const State& state, const double& safety_margin=0.0);
 
-	inline void set_pose(const Pose& pose)
-	{
-		this->state.set_pose(pose);
-		this->update_envelope();
-	}
+		Agent(const Agent& agent);
 
-	inline void set_position(const Eigen::Vector3d& position)
-	{
-		this->state.set_position(position);
-		this->update_envelope();
-	}
+		inline const Obstacle& get_envelope() const 
+		{ 
+			return *(this->envelope);
+		}
 
-	inline void set_orientation(const Eigen::Quaterniond& orientation)
-	{
-		this->state.set_orientation(orientation);
-		this->update_envelope();
-	}
+		inline const State get_state() const 
+		{ 
+			return this->state;
+		}
 
-	inline void set_linear_velocity(const Eigen::Vector3d& linear_velocity)
-	{
-		this->state.set_linear_velocity(linear_velocity);
-		this->update_envelope();
-	}
+		inline const Pose get_pose() const 
+		{ 
+			return this->state.get_pose();
+		}
 
-	inline void set_angular_velocity(const Eigen::Vector3d& angular_velocity)
-	{
-		this->state.set_angular_velocity(angular_velocity);
-		this->update_envelope();
-	}
+		inline const Eigen::Vector3d get_position() const 
+		{ 
+			return this->state.get_position();
+		}
 
-	inline void transform(const Pose& p)
-	{
-		this->set_pose(p * this->get_pose());
-	}
+		inline const Eigen::Quaterniond get_orientation() const 
+		{ 
+			return this->state.get_orientation();
+		}
 
-	inline const Agent transformed(const Pose& p) const
-	{
-		Agent agent(*this);
-		agent.transform(p);
-		return agent;
-	}
+		inline const Eigen::Vector3d get_linear_velocity() const
+		{
+			return this->state.get_linear_velocity();
+		}
 
-	inline friend std::ostream& operator<<(std::ostream& os, const Agent& agent) 
-	{ 
-		os << "Agent" << std::endl;
-  		os << agent.state << std::endl;
-  		os << "safety margin: " << agent.safety_margin;
-  		return os;
-	}
+		inline const Eigen::Vector3d get_angular_velocity() const
+		{
+			return this->state.get_angular_velocity();
+		}
 
-	bool in_obstacle(const Obstacle& obstacle) const;
-};
+		inline double get_safety_margin() const
+		{ 
+			return this->safety_margin;
+		}
 
+		inline void set_safety_margin(const double& safety_margin)
+		{ 
+			this->safety_margin = safety_margin;
+		}
+
+		inline void set_pose(const Pose& pose)
+		{
+			this->state.set_pose(pose);
+			this->update_envelope();
+		}
+
+		inline void set_position(const Eigen::Vector3d& position)
+		{
+			this->state.set_position(position);
+			this->update_envelope();
+		}
+
+		inline void set_orientation(const Eigen::Quaterniond& orientation)
+		{
+			this->state.set_orientation(orientation);
+			this->update_envelope();
+		}
+
+		inline void set_linear_velocity(const Eigen::Vector3d& linear_velocity)
+		{
+			this->state.set_linear_velocity(linear_velocity);
+			this->update_envelope();
+		}
+
+		inline void set_angular_velocity(const Eigen::Vector3d& angular_velocity)
+		{
+			this->state.set_angular_velocity(angular_velocity);
+			this->update_envelope();
+		}
+
+		inline void transform(const Pose& p)
+		{
+			this->set_pose(p * this->get_pose());
+		}
+
+		inline const Agent transformed(const Pose& p) const
+		{
+			Agent agent(*this);
+			agent.transform(p);
+			return agent;
+		}
+
+		inline friend std::ostream& operator<<(std::ostream& os, const Agent& agent) 
+		{ 
+			os << "Agent" << std::endl;
+	  		os << agent.state << std::endl;
+	  		os << "safety margin: " << agent.safety_margin;
+	  		return os;
+		}
+
+		bool in_obstacle(const Obstacle& obstacle) const;
+	};
+}
 #endif

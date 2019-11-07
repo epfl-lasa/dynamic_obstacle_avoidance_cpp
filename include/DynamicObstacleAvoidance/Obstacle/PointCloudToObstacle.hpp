@@ -23,26 +23,28 @@
 #include "DynamicObstacleAvoidance/State/State.hpp"
 #include "DynamicObstacleAvoidance/State/Pose.hpp"
 
-class PointCloudToObstacle
+namespace DynamicObstacleAvoidance
 {
-private:
-	std::mutex mutex;
-	mlpack::dbscan::DBSCAN<> cluster_algorithm;
-	double safety_margin;
-	
-	arma::gmm_full learn_gmm_on_points(const Eigen::MatrixXd& surface_points, const int& nb_gaussians=2);
+	class PointCloudToObstacle
+	{
+	private:
+		std::mutex mutex;
+		mlpack::dbscan::DBSCAN<> cluster_algorithm;
+		double safety_margin;
+		
+		arma::gmm_full learn_gmm_on_points(const Eigen::MatrixXd& surface_points, const int& nb_gaussians=2);
 
-	Eigen::MatrixXd from_laser_scan_to_point_cloud(const Eigen::ArrayXd& distances, const double& starting_angle, const double& delta_angle, const double& z_coordinate) const;
+		Eigen::MatrixXd from_laser_scan_to_point_cloud(const Eigen::ArrayXd& distances, const double& starting_angle, const double& delta_angle, const double& z_coordinate) const;
 
-public:
-	explicit PointCloudToObstacle(const double& epsilon, const int& min_points_by_cluster, const double& safety_margin=0);
-	~PointCloudToObstacle();
+	public:
+		explicit PointCloudToObstacle(const double& epsilon, const int& min_points_by_cluster, const double& safety_margin=0);
+		~PointCloudToObstacle();
 
-	std::deque<Eigen::MatrixXd> cluster_surface_points(const Eigen::MatrixXd& surface_points);
+		std::deque<Eigen::MatrixXd> cluster_surface_points(const Eigen::MatrixXd& surface_points);
 
-	std::deque<std::unique_ptr<Ellipsoid> > fit_ellipsoids_on_cluster(const Eigen::MatrixXd& surface_points, const int& nb_ellipsoids);
+		std::deque<std::unique_ptr<Ellipsoid> > fit_ellipsoids_on_cluster(const Eigen::MatrixXd& surface_points, const int& nb_ellipsoids);
 
-	std::deque<std::unique_ptr<Obstacle> > fit_obstacles(const Eigen::MatrixXd& surface_points);
-};
-
+		std::deque<std::unique_ptr<Obstacle> > fit_obstacles(const Eigen::MatrixXd& surface_points);
+	};
+}
 #endif

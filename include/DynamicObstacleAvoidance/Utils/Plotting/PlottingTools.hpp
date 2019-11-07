@@ -14,15 +14,18 @@
 
 namespace plt = matplotlibcpp;
 
-namespace PlottingTools 
+namespace DynamicObstacleAvoidance
 {
-	std::vector<double> linespace(const double& start, const double& ed, const int& num);
+	namespace PlottingTools 
+	{
+		std::vector<double> linespace(const double& start, const double& ed, const int& num);
 
-	void plot_clusters(const std::deque<Eigen::MatrixXd>& clusters, bool is_show=true);
+		void plot_clusters(const std::deque<Eigen::MatrixXd>& clusters, bool is_show=true);
 
-	void plot_fitted_clusters(const std::deque<Eigen::MatrixXd>& clusters, const std::deque<std::unique_ptr<Obstacle> >& obstacles, bool is_show=true);
+		void plot_fitted_clusters(const std::deque<Eigen::MatrixXd>& clusters, const std::deque<std::unique_ptr<Obstacle> >& obstacles, bool is_show=true);
 
-	void plot_configuration(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile="", const bool& is_show=true);
+		void plot_configuration(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile="", const bool& is_show=true);
+	}
 }
 
 #endif

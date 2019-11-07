@@ -5,8 +5,11 @@
 #include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 #include "DynamicObstacleAvoidance/Obstacle/Aggregate.hpp"
 
-namespace Aggregation
+namespace DynamicObstacleAvoidance
 {
-	std::deque<std::unique_ptr<Obstacle> > aggregate_obstacles(const std::deque<std::unique_ptr<Obstacle> >& obstacles);
+	namespace Aggregation
+	{
+		std::deque<std::unique_ptr<Obstacle> > aggregate_obstacles(const std::deque<std::unique_ptr<Obstacle> >& obstacles);
+	}
 }
 #endif

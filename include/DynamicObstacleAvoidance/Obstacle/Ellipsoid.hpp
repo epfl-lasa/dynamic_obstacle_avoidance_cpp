@@ -15,68 +15,94 @@
 #include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
 #include "DynamicObstacleAvoidance/Utils/MathTools.hpp"
 
-class Agent;
-
-class Ellipsoid: public Obstacle 
+namespace DynamicObstacleAvoidance
 {
-private:
-	Eigen::Array3d axis_lengths;
-	Eigen::Array3d curvature_factor;
-	double epsilon;
+	class Agent;
 
-	bool is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const;
+	class Ellipsoid: public Obstacle 
+	{
+	private:
+		Eigen::Array3d axis_lengths;
+		Eigen::Array3d curvature_factor;
+		double epsilon;
 
-	Ellipsoid* implicit_clone() const override;
+		bool is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const;
 
-public:
-	explicit Ellipsoid(const std::string& name="");
+		Ellipsoid* implicit_clone() const override;
 
-	explicit Ellipsoid(const Ellipsoid& ellipsoid);
+	public:
+		explicit Ellipsoid(const std::string& name="");
 
-	explicit Ellipsoid(const double& cx, const double& cy, const double& cz, const double& safety_margin=0, const std::string& name="");
+		explicit Ellipsoid(const Ellipsoid& ellipsoid);
 
-	explicit Ellipsoid(const State& state, const double& safety_margin=0, const std::string& name="");
+		explicit Ellipsoid(const double& cx, const double& cy, const double& cz, const double& safety_margin=0, const std::string& name="");
 
-	explicit Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin=0, const std::string& name="");
-	~Ellipsoid();
+		explicit Ellipsoid(const State& state, const double& safety_margin=0, const std::string& name="");
 
-	inline const Eigen::Array3d get_axis_lengths() const 
+		explicit Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin=0, const std::string& name="");
+		
+		~Ellipsoid();
+
+		const Eigen::Array3d& get_axis_lengths() const;
+
+		double get_axis_lengths(const int& index) const; 
+
+		const Eigen::Array3d& get_curvature_factor() const; 
+
+		double get_curvature_factor(const int& index) const ;
+
+		void set_axis_lengths(const Eigen::Array3d& axis_lengths);
+
+		void set_curvature_factor(const Eigen::Array3d& curvature_factor);
+
+		Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
+
+		double compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin=0.) const;
+
+		void draw(const std::string& color="k") const;
+
+		std::ostream& print(std::ostream& os) const override;
+
+		double get_repulsion_factor(const Agent& agent) const;
+
+		double area(const bool& is_include_safety_margin=true) const;
+
+		Eigen::MatrixXd sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const;
+
+		bool is_inside(const Eigen::Vector3d& point) const;
+	};
+
+	inline const Eigen::Array3d& Ellipsoid::get_axis_lengths() const 
 	{ 
 		return this->axis_lengths;
 	}
 
-	inline double get_axis_lengths(const int& index) const 
+	inline double Ellipsoid::get_axis_lengths(const int& index) const 
 	{ 
 		return this->axis_lengths(index);
 	}
 
-	inline const Eigen::Array3d get_curvature_factor() const 
+	inline const Eigen::Array3d& Ellipsoid::get_curvature_factor() const 
 	{ 
 		return this->curvature_factor;
 	}
 
-	inline double get_curvature_factor(const int& index) const 
+	inline double Ellipsoid::get_curvature_factor(const int& index) const 
 	{ 
 		return this->curvature_factor(index);
 	}
 
-	inline void set_axis_lengths(const Eigen::Array3d& axis_lengths)
+	inline void Ellipsoid::set_axis_lengths(const Eigen::Array3d& axis_lengths)
 	{
 		this->axis_lengths = axis_lengths;
 	}
 
-	inline void set_curvature_factor(const Eigen::Array3d& curvature_factor)
+	inline void Ellipsoid::set_curvature_factor(const Eigen::Array3d& curvature_factor)
 	{
 		this->curvature_factor = curvature_factor;
 	}
 
-	Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
-
-	double compute_distance_to_agent(const Agent& agent) const;
-
-	void draw(const std::string& color="k") const;
-
-	inline std::ostream& print(std::ostream& os) const override
+	inline std::ostream& Ellipsoid::print(std::ostream& os) const
 	{ 
 		os << static_cast<Obstacle>(*this) << std::endl;
 		os << "axis lengths: (" << this->axis_lengths(0) << ", ";
@@ -85,16 +111,7 @@ public:
 		os << "curvature factor: (" << this->curvature_factor(0) << ", ";
 		os << this->curvature_factor(1) << ", ";
 		os << this->curvature_factor(2) << ")";
-  		return os;
+			return os;
 	}
-
-	double get_repulsion_factor(const Agent& agent) const;
-
-	double area(const bool& is_include_safety_margin=true) const;
-
-	Eigen::MatrixXd sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const;
-
-	bool is_inside(const Eigen::Vector3d& point) const;
-};
-
+}
 #endif

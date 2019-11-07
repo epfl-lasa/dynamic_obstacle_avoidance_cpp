@@ -3,6 +3,8 @@
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
 
+using namespace DynamicObstacleAvoidance;
+
 TEST(ComputeDistanceToExternalPointNonNullPosition, PositiveNos)
 {
 	Eigen::Vector3d position(2, 1, 0);

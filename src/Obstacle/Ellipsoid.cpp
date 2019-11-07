@@ -1,179 +1,182 @@
 #include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 #include "DynamicObstacleAvoidance/Agent.hpp"
 
-Ellipsoid::Ellipsoid(const std::string& name):
-axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+namespace DynamicObstacleAvoidance
 {
-	this->set_type("Ellipsoid");
-}
-
-Ellipsoid::Ellipsoid(const Ellipsoid& ellipsoid):
-Obstacle(ellipsoid.get_state(), ellipsoid.get_reference_position(), ellipsoid.get_safety_margin(), ellipsoid.get_name()),
-axis_lengths(ellipsoid.get_axis_lengths()), curvature_factor(ellipsoid.get_curvature_factor()), epsilon(1E-4)
-{
-	this->set_type("Ellipsoid");
-}
-
-Ellipsoid::Ellipsoid(const State& state, const double& safety_margin, const std::string& name):
-Obstacle(state, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
-{
-	this->set_type("Ellipsoid");
-}
-
-Ellipsoid::Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin, const std::string& name):
-Obstacle(state, reference_position, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
-{
-	this->set_type("Ellipsoid");
-}
-
-Ellipsoid::Ellipsoid(const double& cx, const double& cy, const double& cz, const double& safety_margin, const std::string& name):
-Obstacle(cx, cy, cz, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
-{
-	this->set_type("Ellipsoid");
-}
-
-Ellipsoid::~Ellipsoid()
-{}
-
-Eigen::Vector3d Ellipsoid::compute_normal_to_agent(const Agent& agent) const
-{
-	Eigen::Array3d point_in_frame = this->get_pose().inverse() * agent.get_position();
-	Eigen::Array3d lengths = this->axis_lengths + this->get_safety_margin() + agent.get_safety_margin();
-	Eigen::Array3d tmp_values = (2 * this->curvature_factor * point_in_frame);
-	for(int i=0; i<3; ++i)
+	Ellipsoid::Ellipsoid(const std::string& name):
+	Obstacle(name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 	{
-		tmp_values(i) = (lengths(i) > this->epsilon) ? tmp_values(i) / (lengths(i) * lengths(i)) : tmp_values(i);
+		this->set_type("Ellipsoid");
 	}
-	Eigen::Vector3d normal_vector = tmp_values.pow(2 * this->curvature_factor - 1);
-	normal_vector.normalize();
-	return normal_vector;
-}
 
-double Ellipsoid::compute_distance_to_agent(const Agent& agent) const
-{
-	Eigen::Array3d point_in_frame = this->get_pose().inverse() * agent.get_position();
-	Eigen::Array3d lengths = this->axis_lengths + this->get_safety_margin() + agent.get_safety_margin();
-	Eigen::Array3d tmp_values;
-	for(int i=0; i<3; ++i)
+	Ellipsoid::Ellipsoid(const Ellipsoid& ellipsoid):
+	Obstacle(ellipsoid.get_state(), ellipsoid.get_reference_position(), ellipsoid.get_safety_margin(), ellipsoid.get_name()),
+	axis_lengths(ellipsoid.get_axis_lengths()), curvature_factor(ellipsoid.get_curvature_factor()), epsilon(1E-4)
 	{
-		tmp_values(i) = (lengths(i) > this->epsilon) ? point_in_frame(i) / lengths(i) : point_in_frame(i);
+		this->set_type("Ellipsoid");
 	}
-	tmp_values = tmp_values.pow(2 * this->curvature_factor);
-	return tmp_values.sum();
-}
 
-void Ellipsoid::draw(const std::string& color) const 
-{
-	int n = 100;
-	// use a linespace to have a full rotation angle between [-pi, pi]
-	std::vector<double> alpha = MathTools::linspace(0, 2*M_PI, n);
-	// convert quaternion to AngleAxis
-	Eigen::AngleAxisd orientation(this->get_orientation());
-	Eigen::Vector3d axis = orientation.axis();
-	double theta = (axis(2) > 0) ? orientation.angle() :  2*M_PI - orientation.angle();
-
-	// use the parametric equation of an ellipse to draw
-	std::vector<double> x(n);
-	std::vector<double> y(n);
-	std::vector<double> x_safety(n);
-	std::vector<double> y_safety(n);
-	Eigen::Array3d safety_length =  this->get_axis_lengths() + this->get_safety_margin();
-	for (int i=0; i<n; ++i)
+	Ellipsoid::Ellipsoid(const State& state, const double& safety_margin, const std::string& name):
+	Obstacle(state, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 	{
-		double a = alpha.at(i);
-		x.at(i) = this->get_axis_lengths(0) * cos(a) * cos(theta) - this->get_axis_lengths(1) * sin(a) * sin(theta) + this->get_position()(0);
-		y.at(i) = this->get_axis_lengths(0) * cos(a) * sin(theta) + this->get_axis_lengths(1) * sin(a) * cos(theta) + this->get_position()(1);
-
-		x_safety.at(i) = safety_length(0) * cos(a) * cos(theta) - safety_length(1) * sin(a) * sin(theta) + this->get_position()(0);
-		y_safety.at(i) = safety_length(0) * cos(a) * sin(theta) + safety_length(1) * sin(a) * cos(theta) + this->get_position()(1);
+		this->set_type("Ellipsoid");
 	}
-	plt::plot(x, y, color + "-");
-	plt::plot(x_safety, y_safety, color + "-");
 
-	if(this->get_name() == "")
+	Ellipsoid::Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin, const std::string& name):
+	Obstacle(state, reference_position, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 	{
-		plt::plot({this->get_position()(0)}, {this->get_position()(1)}, color + "o");
+		this->set_type("Ellipsoid");
 	}
-	else
-	{
-		plt::text(this->get_position()(0), this->get_position()(1), this->get_name());
-	}
-	plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, color + "x");
-}
 
-bool Ellipsoid::is_inside(const Eigen::Vector3d& point) const
-{
-	Eigen::Array3d lengths = this->get_axis_lengths() + this->get_safety_margin();
-	Eigen::Vector3d transformed_point = this->get_pose().inverse() * point;
-	double eq_value = ((transformed_point(0) * transformed_point(0)) / (lengths(0) * lengths(0))) + ((transformed_point(1) * transformed_point(1)) / (lengths(1) * lengths(1)));
-	return (eq_value <= 1);
-}
+	Ellipsoid::Ellipsoid(const double& cx, const double& cy, const double& cz, const double& safety_margin, const std::string& name):
+	Obstacle(cx, cy, cz, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+	{
+		this->set_type("Ellipsoid");
+	}
 
-bool Ellipsoid::is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const
-{
-	bool intersecting = false;
-	// first check that center points satisfy equations of the other
-	if(this->is_inside(other_obstacle.get_position()))
+	Ellipsoid::~Ellipsoid()
+	{}
+
+	Eigen::Vector3d Ellipsoid::compute_normal_to_agent(const Agent& agent) const
 	{
-		intersecting = true;
-	}
-	else if(other_obstacle.is_inside(this->get_position()))
-	{
-		intersecting = true;
-	}
-	else
-	{
-		// first sample the first ellipsoid
-		int nb_samples = 100;
-		Eigen::MatrixXd samples = other_obstacle.sample_from_parameterization(nb_samples, true);
-		// for each points check if at least one of them is inside
-		int i = 0;
-		while(!intersecting && i<samples.cols())
+		Eigen::Array3d point_in_frame = this->get_pose().inverse() * agent.get_position();
+		Eigen::Array3d lengths = this->axis_lengths + this->get_safety_margin() + agent.get_safety_margin();
+		Eigen::Array3d tmp_values = (2 * this->curvature_factor * point_in_frame);
+		for(int i=0; i<3; ++i)
 		{
-			intersecting = this->is_inside(samples.col(i));
-			++i;
+			tmp_values(i) = (lengths(i) > this->epsilon) ? tmp_values(i) / (lengths(i) * lengths(i)) : tmp_values(i);
 		}
+		Eigen::Vector3d normal_vector = tmp_values.pow(2 * this->curvature_factor - 1);
+		normal_vector.normalize();
+		return normal_vector;
 	}
-	return intersecting;
-}
 
-Ellipsoid* Ellipsoid::implicit_clone() const
-{
-	return new Ellipsoid(*this);
-}
-
-Eigen::MatrixXd Ellipsoid::sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const
-{
-	// convert quaternion to AngleAxis
-	Eigen::AngleAxisd orientation(this->get_orientation());
-	Eigen::Vector3d axis = orientation.axis();
-	double theta = (axis(2) > 0) ? orientation.angle() :  2*M_PI - orientation.angle();
-	Eigen::Array3d lengths = (is_include_safety_margin) ? this->get_axis_lengths() + this->get_safety_margin() : this->get_axis_lengths();
-
-	// use a linespace to have a full rotation angle between [-pi, pi]
-	std::vector<double> alpha = MathTools::linspace(0, 2*M_PI, nb_samples);
-
-	Eigen::MatrixXd samples(3, nb_samples);
-	for(int i=0; i<nb_samples; ++i)
+	double Ellipsoid::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const
 	{
-		double a = alpha.at(i);
-		samples(0, i) = lengths(0) * cos(a) * cos(theta) - lengths(1) * sin(a) * sin(theta) + this->get_position()(0);
-		samples(1, i) = lengths(0) * cos(a) * sin(theta) + lengths(1) * sin(a) * cos(theta) + this->get_position()(1);
-		samples(2, i) = 0;
+		Eigen::Array3d point_in_frame = this->get_pose().inverse() * point;
+		Eigen::Array3d lengths = this->axis_lengths + this->get_safety_margin() + safety_margin;
+		Eigen::Array3d tmp_values;
+		for(int i=0; i<3; ++i)
+		{
+			tmp_values(i) = (lengths(i) > this->epsilon) ? point_in_frame(i) / lengths(i) : point_in_frame(i);
+		}
+		tmp_values = tmp_values.pow(2 * this->curvature_factor);
+		return tmp_values.sum();
 	}
-	return samples;
-}
 
-double Ellipsoid::get_repulsion_factor(const Agent& agent) const
-{
-	Eigen::Vector3d transformed_point = this->get_pose().inverse() * agent.get_position();
-	Eigen::Array3d lengths = this->get_axis_lengths() + this->get_safety_margin() + agent.get_safety_margin();
-	double eq_value = ((transformed_point(0) * transformed_point(0)) / (lengths(0) * lengths(0))) + ((transformed_point(1) * transformed_point(1)) / (lengths(1) * lengths(1)));
-	return 1 - eq_value;
-}
+	void Ellipsoid::draw(const std::string& color) const 
+	{
+		int n = 100;
+		// use a linespace to have a full rotation angle between [-pi, pi]
+		std::vector<double> alpha = MathTools::linspace(0, 2*M_PI, n);
+		// convert quaternion to AngleAxis
+		Eigen::AngleAxisd orientation(this->get_orientation());
+		Eigen::Vector3d axis = orientation.axis();
+		double theta = (axis(2) > 0) ? orientation.angle() :  2*M_PI - orientation.angle();
 
-double Ellipsoid::area(const bool& is_include_safety_margin) const
-{
-	//Eigen::Array3d lengths = (is_include_safety_margin) ? this->get_axis_lengths() + this->get_safety_margin() : this->get_axis_lengths();
-	//return 4 * M_PI * (math::pow((math::pow(lengths(0), 1.6) + math::pow(lengths(0), 1.6) + math::pow(lengths(0), 1.6))/3, 1/1.6))
+		// use the parametric equation of an ellipse to draw
+		std::vector<double> x(n);
+		std::vector<double> y(n);
+		std::vector<double> x_safety(n);
+		std::vector<double> y_safety(n);
+		Eigen::Array3d safety_length =  this->get_axis_lengths() + this->get_safety_margin();
+		for (int i=0; i<n; ++i)
+		{
+			double a = alpha.at(i);
+			x.at(i) = this->get_axis_lengths(0) * cos(a) * cos(theta) - this->get_axis_lengths(1) * sin(a) * sin(theta) + this->get_position()(0);
+			y.at(i) = this->get_axis_lengths(0) * cos(a) * sin(theta) + this->get_axis_lengths(1) * sin(a) * cos(theta) + this->get_position()(1);
+
+			x_safety.at(i) = safety_length(0) * cos(a) * cos(theta) - safety_length(1) * sin(a) * sin(theta) + this->get_position()(0);
+			y_safety.at(i) = safety_length(0) * cos(a) * sin(theta) + safety_length(1) * sin(a) * cos(theta) + this->get_position()(1);
+		}
+		plt::plot(x, y, color + "-");
+		plt::plot(x_safety, y_safety, color + "-");
+
+		if(this->get_name() == "")
+		{
+			plt::plot({this->get_position()(0)}, {this->get_position()(1)}, color + "o");
+		}
+		else
+		{
+			plt::text(this->get_position()(0), this->get_position()(1), this->get_name());
+		}
+		plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, color + "x");
+	}
+
+	bool Ellipsoid::is_inside(const Eigen::Vector3d& point) const
+	{
+		Eigen::Array3d lengths = this->get_axis_lengths() + this->get_safety_margin();
+		Eigen::Vector3d transformed_point = this->get_pose().inverse() * point;
+		double eq_value = ((transformed_point(0) * transformed_point(0)) / (lengths(0) * lengths(0))) + ((transformed_point(1) * transformed_point(1)) / (lengths(1) * lengths(1)));
+		return (eq_value <= 1);
+	}
+
+	bool Ellipsoid::is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const
+	{
+		bool intersecting = false;
+		// first check that center points satisfy equations of the other
+		if(this->is_inside(other_obstacle.get_position()))
+		{
+			intersecting = true;
+		}
+		else if(other_obstacle.is_inside(this->get_position()))
+		{
+			intersecting = true;
+		}
+		else
+		{
+			// first sample the first ellipsoid
+			int nb_samples = 100;
+			Eigen::MatrixXd samples = other_obstacle.sample_from_parameterization(nb_samples, true);
+			// for each points check if at least one of them is inside
+			int i = 0;
+			while(!intersecting && i<samples.cols())
+			{
+				intersecting = this->is_inside(samples.col(i));
+				++i;
+			}
+		}
+		return intersecting;
+	}
+
+	Ellipsoid* Ellipsoid::implicit_clone() const
+	{
+		return new Ellipsoid(*this);
+	}
+
+	Eigen::MatrixXd Ellipsoid::sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const
+	{
+		// convert quaternion to AngleAxis
+		Eigen::AngleAxisd orientation(this->get_orientation());
+		Eigen::Vector3d axis = orientation.axis();
+		double theta = (axis(2) > 0) ? orientation.angle() :  2*M_PI - orientation.angle();
+		Eigen::Array3d lengths = (is_include_safety_margin) ? this->get_axis_lengths() + this->get_safety_margin() : this->get_axis_lengths();
+
+		// use a linespace to have a full rotation angle between [-pi, pi]
+		std::vector<double> alpha = MathTools::linspace(0, 2*M_PI, nb_samples);
+
+		Eigen::MatrixXd samples(3, nb_samples);
+		for(int i=0; i<nb_samples; ++i)
+		{
+			double a = alpha.at(i);
+			samples(0, i) = lengths(0) * cos(a) * cos(theta) - lengths(1) * sin(a) * sin(theta) + this->get_position()(0);
+			samples(1, i) = lengths(0) * cos(a) * sin(theta) + lengths(1) * sin(a) * cos(theta) + this->get_position()(1);
+			samples(2, i) = 0;
+		}
+		return samples;
+	}
+
+	double Ellipsoid::get_repulsion_factor(const Agent& agent) const
+	{
+		Eigen::Vector3d transformed_point = this->get_pose().inverse() * agent.get_position();
+		Eigen::Array3d lengths = this->get_axis_lengths() + this->get_safety_margin() + agent.get_safety_margin();
+		double eq_value = ((transformed_point(0) * transformed_point(0)) / (lengths(0) * lengths(0))) + ((transformed_point(1) * transformed_point(1)) / (lengths(1) * lengths(1)));
+		return 1 - eq_value;
+	}
+
+	double Ellipsoid::area(const bool& is_include_safety_margin) const
+	{
+		Eigen::Array3d lengths = (is_include_safety_margin) ? this->get_axis_lengths() + this->get_safety_margin() : this->get_axis_lengths();
+		return 4 * M_PI * (pow((pow(lengths(0), 1.6) + pow(lengths(1), 1.6) + pow(lengths(2), 1.6))/3, 1/1.6));
+	}
 }

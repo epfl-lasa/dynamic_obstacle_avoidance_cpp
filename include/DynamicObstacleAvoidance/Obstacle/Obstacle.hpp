@@ -18,162 +18,166 @@
 
 namespace plt = matplotlibcpp;
 
-class Ellipsoid;
-
-class Aggregate;
-
-class Agent;
-
-class Obstacle 
+namespace DynamicObstacleAvoidance
 {
-private:
-	std::string name;
-	State state;
-	Eigen::Vector3d reference_position;
-	std::string type;
+	class Ellipsoid;
 
-	double safety_margin;
+	class Aggregate;
 
-protected:
-	inline void set_type(const std::string& type)
+	class Agent;
+
+	class Obstacle 
 	{
-		this->type = type;
-	}
+	private:
+		std::string name;
+		State state;
+		Eigen::Vector3d reference_position;
+		std::string type;
 
-	virtual bool is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const;
+		double safety_margin;
 
-	bool is_intersecting_aggregate(const Aggregate& other_obstacle) const;
+	protected:
+		inline void set_type(const std::string& type)
+		{
+			this->type = type;
+		}
 
-	virtual Obstacle* implicit_clone() const;
+		virtual bool is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const;
 
-public:
-	explicit Obstacle(const std::string& name="");
-	explicit Obstacle(const double& cx, const double& cy, const double& cz, const double& safety_margin=0, const std::string& name="");
-	explicit Obstacle(const State& state, const double& safety_margin=0, const std::string& name="");
-	explicit Obstacle(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin=0, const std::string& name="");
-	~Obstacle();
+		bool is_intersecting_aggregate(const Aggregate& other_obstacle) const;
 
-	inline const std::string get_type() const 
-	{ 
-		return this->type;
-	}
+		virtual Obstacle* implicit_clone() const;
 
-	inline std::string get_name() const
-	{
-		return this->name;
-	}
+	public:
+		explicit Obstacle(const std::string& name="");
+		explicit Obstacle(const double& cx, const double& cy, const double& cz, const double& safety_margin=0, const std::string& name="");
+		explicit Obstacle(const State& state, const double& safety_margin=0, const std::string& name="");
+		explicit Obstacle(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin=0, const std::string& name="");
+		~Obstacle();
 
-	inline const State get_state() const 
-	{ 
-		return this->state;
-	}
+		inline const std::string get_type() const 
+		{ 
+			return this->type;
+		}
 
-	inline const Pose get_pose() const 
-	{ 
-		return this->state.get_pose();
-	}
+		inline std::string get_name() const
+		{
+			return this->name;
+		}
 
-	inline const Eigen::Vector3d get_position() const 
-	{ 
-		return this->state.get_position();
-	}
+		inline const State get_state() const 
+		{ 
+			return this->state;
+		}
 
-	inline const Eigen::Quaterniond get_orientation() const 
-	{ 
-		return this->state.get_orientation();
-	}
+		inline const Pose get_pose() const 
+		{ 
+			return this->state.get_pose();
+		}
 
-	inline const Eigen::Vector3d get_linear_velocity() const
-	{
-		return this->state.get_linear_velocity();
-	}
+		inline const Eigen::Vector3d get_position() const 
+		{ 
+			return this->state.get_position();
+		}
 
-	inline const Eigen::Vector3d get_angular_velocity() const
-	{
-		return this->state.get_angular_velocity();
-	}
+		inline const Eigen::Quaterniond get_orientation() const 
+		{ 
+			return this->state.get_orientation();
+		}
 
-	inline const Eigen::Vector3d get_reference_position() const
-	{
-		return this->reference_position;
-	}
+		inline const Eigen::Vector3d get_linear_velocity() const
+		{
+			return this->state.get_linear_velocity();
+		}
 
-	inline double get_safety_margin() const
-	{ 
-		return this->safety_margin;
-	}
+		inline const Eigen::Vector3d get_angular_velocity() const
+		{
+			return this->state.get_angular_velocity();
+		}
 
-	inline void set_name(const std::string& name)
-	{
-		this->name = name;
-	}
+		inline const Eigen::Vector3d get_reference_position() const
+		{
+			return this->reference_position;
+		}
 
-	inline void set_pose(const Pose& pose)
-	{
-		this->state.set_pose(pose);
-	}
+		inline double get_safety_margin() const
+		{ 
+			return this->safety_margin;
+		}
 
-	inline void set_position(const Eigen::Vector3d& position)
-	{
-		this->state.set_position(position);
-	}
+		inline void set_name(const std::string& name)
+		{
+			this->name = name;
+		}
 
-	inline void set_position(const double& x, const double& y, const double& z)
-	{
-		this->state.set_position(x, y, z);
-	}
+		inline void set_pose(const Pose& pose)
+		{
+			this->state.set_pose(pose);
+		}
 
-	inline void set_orientation(const Eigen::Quaterniond& orientation)
-	{
-		this->state.set_orientation(orientation);
-	}
+		inline void set_position(const Eigen::Vector3d& position)
+		{
+			this->state.set_position(position);
+		}
 
-	inline void set_linear_velocity(const Eigen::Vector3d& linear_velocity)
-	{
-		this->state.set_linear_velocity(linear_velocity);
-	}
+		inline void set_position(const double& x, const double& y, const double& z)
+		{
+			this->state.set_position(x, y, z);
+		}
 
-	inline void set_angular_velocity(const Eigen::Vector3d& angular_velocity)
-	{
-		this->state.set_angular_velocity(angular_velocity);
-	}
+		inline void set_orientation(const Eigen::Quaterniond& orientation)
+		{
+			this->state.set_orientation(orientation);
+		}
 
-	inline void set_reference_position(const Eigen::Vector3d& reference_position)
-	{
-		this->reference_position = reference_position;
-	}
+		inline void set_linear_velocity(const Eigen::Vector3d& linear_velocity)
+		{
+			this->state.set_linear_velocity(linear_velocity);
+		}
 
-	inline friend std::ostream& operator<<(std::ostream& os, const Obstacle& obstacle) 
-	{ 
-		return obstacle.print(os);
-	}
+		inline void set_angular_velocity(const Eigen::Vector3d& angular_velocity)
+		{
+			this->state.set_angular_velocity(angular_velocity);
+		}
 
-	virtual inline std::ostream& print(std::ostream& os) const
-	{
-		os << this->type << std::endl;
-		os << this->state << std::endl;
-		os << "reference position: (" << this->reference_position(0) << ", ";
-		os << this->reference_position(1) << ", ";
-		os << this->reference_position(2) << ")" << std::endl;
-		os << "safety margin: " <<this->safety_margin;
-  		return os;
-	}
-	
-	virtual Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
-	
-	virtual double compute_distance_to_agent(const Agent& agent) const;
+		inline void set_reference_position(const Eigen::Vector3d& reference_position)
+		{
+			this->reference_position = reference_position;
+		}
 
-	virtual void draw(const std::string& color="k") const;
+		inline friend std::ostream& operator<<(std::ostream& os, const Obstacle& obstacle) 
+		{ 
+			return obstacle.print(os);
+		}
 
-	bool is_intersecting(const Obstacle& other_obstacle) const;
+		virtual inline std::ostream& print(std::ostream& os) const
+		{
+			os << this->type << std::endl;
+			os << this->state << std::endl;
+			os << "reference position: (" << this->reference_position(0) << ", ";
+			os << this->reference_position(1) << ", ";
+			os << this->reference_position(2) << ")" << std::endl;
+			os << "safety margin: " <<this->safety_margin;
+	  		return os;
+		}
+		
+		virtual Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
+		
+		virtual double compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin=0.) const;
 
-	bool is_intersecting(const std::deque<std::unique_ptr<Obstacle> >& other_obstacles) const;
+		double compute_distance_to_agent(const Agent& agent) const;
 
-	std::unique_ptr<Obstacle> clone() const;
+		virtual void draw(const std::string& color="k") const;
 
-	virtual double get_repulsion_factor(const Agent& agent) const;
+		bool is_intersecting(const Obstacle& other_obstacle) const;
 
-	virtual Eigen::MatrixXd sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const;
-};
+		bool is_intersecting(const std::deque<std::unique_ptr<Obstacle> >& other_obstacles) const;
 
+		std::unique_ptr<Obstacle> clone() const;
+
+		virtual double get_repulsion_factor(const Agent& agent) const;
+
+		virtual Eigen::MatrixXd sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const;
+	};
+}
 #endif

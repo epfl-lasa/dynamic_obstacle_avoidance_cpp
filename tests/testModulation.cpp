@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
 
+using namespace DynamicObstacleAvoidance;
 
 TEST(WeightObstacleUnderCriticalDistance, PositiveNos)
 {
