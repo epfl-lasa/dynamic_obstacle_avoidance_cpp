@@ -152,7 +152,7 @@ namespace DynamicObstacleAvoidance
 		double theta = (axis(2) > 0) ? orientation.angle() :  2*M_PI - orientation.angle();
 		Eigen::Array3d lengths = (is_include_safety_margin) ? this->get_axis_lengths() + this->get_safety_margin() : this->get_axis_lengths();
 
-		// use a linespace to have a full rotation angle between [-pi, pi]
+		// use a linespace to have a full rotation angle between [0, 2pi]
 		std::vector<double> alpha = MathTools::linspace(0, 2*M_PI, nb_samples);
 
 		Eigen::MatrixXd samples(3, nb_samples);

@@ -39,7 +39,7 @@ namespace DynamicObstacleAvoidance
 
 	void Aggregate::update_positions()
 	{
-		Eigen::Vector3d position;
+		Eigen::Vector3d position = Eigen::Vector3d::Zero();
 		for(auto& o:this->primitives)
 		{
 			position += o->get_position();

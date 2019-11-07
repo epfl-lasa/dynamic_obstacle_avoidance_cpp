@@ -1,5 +1,6 @@
 #include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 #include "DynamicObstacleAvoidance/Obstacle/Aggregate.hpp"
+#include "DynamicObstacleAvoidance/Obstacle/StarShapeHull.hpp"
 #include "DynamicObstacleAvoidance/Utils/Plotting/PlottingTools.hpp"
 #include "DynamicObstacleAvoidance/Utils/ObstacleGeneration/Aggregation.hpp"
 #include "DynamicObstacleAvoidance/Utils/MathTools.hpp"
@@ -38,6 +39,9 @@ int main(int, char*[])
 	Eigen::Vector3d position_o6(4.6, 4.7, 0);
 	Eigen::Vector3d position_o7(2, 5.7, 0);
 
+	Eigen::Vector3d position_o8(0.5, 3.5, 0);
+
+
 	Eigen::Quaterniond orientation_o1(Eigen::AngleAxisd(0, Eigen::Vector3d::UnitZ()));
 	Eigen::Quaterniond orientation_o2(Eigen::AngleAxisd(0, Eigen::Vector3d::UnitZ()));
 	Eigen::Quaterniond orientation_o3(Eigen::AngleAxisd(0, Eigen::Vector3d::UnitZ()));
@@ -45,6 +49,8 @@ int main(int, char*[])
 	Eigen::Quaterniond orientation_o5(Eigen::AngleAxisd(0.75, Eigen::Vector3d::UnitZ()));
 	Eigen::Quaterniond orientation_o6(Eigen::AngleAxisd(-0.75, Eigen::Vector3d::UnitZ()));
 	Eigen::Quaterniond orientation_o7(Eigen::AngleAxisd(0, Eigen::Vector3d::UnitZ()));
+	Eigen::Quaterniond orientation_o8(Eigen::AngleAxisd(0, Eigen::Vector3d::UnitZ()));
+
 
 	std::unique_ptr<Ellipsoid> ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation_o1), obstacles_safety_margin, "e1");
 	std::unique_ptr<Ellipsoid> ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation_o2), obstacles_safety_margin, "e2");
@@ -53,6 +59,7 @@ int main(int, char*[])
 	std::unique_ptr<Ellipsoid> ptrE5 = std::make_unique<Ellipsoid>(State(position_o5, orientation_o5), obstacles_safety_margin, "e5");
 	std::unique_ptr<Ellipsoid> ptrE6 = std::make_unique<Ellipsoid>(State(position_o6, orientation_o6), obstacles_safety_margin, "e6");
 	std::unique_ptr<Ellipsoid> ptrE7 = std::make_unique<Ellipsoid>(State(position_o7, orientation_o7), obstacles_safety_margin, "e7");
+	std::unique_ptr<Ellipsoid> ptrE8 = std::make_unique<Ellipsoid>(State(position_o8, orientation_o8), obstacles_safety_margin, "e8");
 
 	ptrE1->set_axis_lengths(Eigen::Array3d(0.2, 0.75, 0));
 	ptrE2->set_axis_lengths(Eigen::Array3d(1.5, 0.15, 0));
@@ -61,14 +68,16 @@ int main(int, char*[])
 	ptrE5->set_axis_lengths(Eigen::Array3d(0.65, 0.3, 0));
 	ptrE6->set_axis_lengths(Eigen::Array3d(0.55, 0.2, 0));
 	ptrE7->set_axis_lengths(Eigen::Array3d(2, 0.2, 0));
+	ptrE8->set_axis_lengths(Eigen::Array3d(0.5, 0.5, 0));
 
 	Aggregate a;
 	a.add_primitive(*ptrE3);
 	a.add_primitive(*ptrE4);
-	auto hull = a.compute_star_shape_hull();
+	a.add_primitive(*ptrE8);
 
-	std::unique_ptr<Ellipsoid> a1 = std::make_unique<Ellipsoid>(hull.first);
-	std::unique_ptr<Ellipsoid> a2 = std::make_unique<Ellipsoid>(hull.second);
+	std::cout << a << std::endl;
+	
+	std::unique_ptr<StarShapeHull> hull = std::make_unique<StarShapeHull>(a.get_primitives());
 
 	// add to the list
 	std::deque<std::unique_ptr<Obstacle> > obstacle_list;
@@ -79,12 +88,12 @@ int main(int, char*[])
 	obstacle_list.push_back(std::move(ptrE5));
 	obstacle_list.push_back(std::move(ptrE6));
 	obstacle_list.push_back(std::move(ptrE7));
+	obstacle_list.push_back(std::move(ptrE8));
 
 	// aggregate the obstacles if necessary
 	std::deque<std::unique_ptr<Obstacle> > aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
 
-	aggregated_obstacle_list.push_back(std::move(a1));
-	aggregated_obstacle_list.push_back(std::move(a2));
+	aggregated_obstacle_list.push_back(std::move(hull));
 
 	// plot the configuration
 	std::deque<Eigen::Vector3d> position_history;
