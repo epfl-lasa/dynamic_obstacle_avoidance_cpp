@@ -43,6 +43,7 @@ set(CORE_SOURCES
  	src/Obstacle/Ellipsoid.cpp
  	src/Obstacle/Aggregate.cpp
  	src/Obstacle/PointCloudToObstacle.cpp
+ 	src/Obstacle/StarShapeHull.cpp
  	src/State/Pose.cpp
  	src/State/State.cpp
 	src/Modulation.cpp
@@ -55,9 +56,9 @@ set(CORE_SOURCES
 add_library(${PROJECT_NAME} SHARED ${CORE_SOURCES})
 
 if(OpenMP_CXX_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX armadillo mlpack ${PYTHON_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX armadillo mlpack ${PYTHON_LIBRARIES} dlib::dlib)
 else()
-	target_link_libraries(${PROJECT_NAME} armadillo mlpack ${PYTHON_LIBRARIES})
+	target_link_libraries(${PROJECT_NAME} armadillo mlpack ${PYTHON_LIBRARIES} dlib::dlib)
 endif()
 
 
@@ -119,7 +120,6 @@ endif()
 
 add_executable(runTestOptimization tests/testOptimization.cpp)
 target_link_libraries(runTestOptimization
-	dlib::dlib
 	${PROJECT_NAME}
 )
 
