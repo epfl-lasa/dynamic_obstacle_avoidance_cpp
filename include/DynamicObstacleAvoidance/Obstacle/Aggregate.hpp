@@ -13,12 +13,8 @@
 #include <deque>
 #include <limits>
 #include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
-#include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
+#include "DynamicObstacleAvoidance/Obstacle/StarShapeHull.hpp"
 #include <iostream>
-#include <dlib/optimization.h>
-#include <dlib/global_optimization.h>
-
-using namespace std::placeholders;
 
 namespace DynamicObstacleAvoidance
 {
@@ -30,26 +26,21 @@ namespace DynamicObstacleAvoidance
 		double inside_factor;
 		double distance_factor;
 		double area_factor;
-
+		StarShapeHull hull;
 		std::deque<std::unique_ptr<Obstacle> > primitives;
 
 		void update_positions();
 
 		Aggregate* implicit_clone() const override;
 
-		double cost_function(const dlib::matrix<double,0,1>& x);
-
-		double cost_star_shape_hull(const Ellipsoid& e1, const Ellipsoid& e2);
+		void update_hull();
 
 	public:
 		explicit Aggregate();
 
 		explicit Aggregate(const std::deque<std::unique_ptr<Obstacle> >& primitives);
 
-		inline const auto& get_primitives() const
-		{
-			return this->primitives;
-		}
+		const auto& get_primitives() const;
 
 		void add_primitive(const std::unique_ptr<Obstacle>& primitive);
 
@@ -63,19 +54,24 @@ namespace DynamicObstacleAvoidance
 
 		void draw(const std::string& color="k") const;
 
-		std::pair<Ellipsoid, Ellipsoid> compute_star_shape_hull();
-
-		inline std::ostream& print(std::ostream& os) const override
-		{ 
-			os << static_cast<Obstacle>(*this) << std::endl;
-			os << "Composed of:" << std::endl;
-			for(auto& p:this->primitives)
-			{
-				os << "---" << std::endl;
-				os << *p << std::endl;
-			}
-	  		return os;
-		}
+		std::ostream& print(std::ostream& os) const override;
 	};
+
+	inline const auto& Aggregate::get_primitives() const
+	{
+		return this->primitives;
+	}
+
+	inline std::ostream& Aggregate::print(std::ostream& os) const
+	{ 
+		os << static_cast<Obstacle>(*this) << std::endl;
+		os << "Composed of:" << std::endl;
+		for(auto& p:this->primitives)
+		{
+			os << "---" << std::endl;
+			os << *p << std::endl;
+		}
+  		return os;
+	}
 }
 #endif

@@ -60,4 +60,12 @@ namespace DynamicObstacleAvoidance
 
         return A;
     }
+
+    std::pair<Eigen::Vector3d, Eigen::Vector3d> MathTools::find_closest_points(Eigen::MatrixXd A, Eigen::Vector3d p, unsigned int index)
+    {
+        std::vector<double> vec;
+        for (int64_t i = 0; i < A.cols(); ++i) vec.push_back(A.col(i)(index));
+        std::vector<double>::iterator it = std::lower_bound(std::begin(vec), std::end(vec), p(index));
+        return std::make_pair(A.col(it - vec.begin()), A.col((it + 1) - vec.begin()));
+    }
 }

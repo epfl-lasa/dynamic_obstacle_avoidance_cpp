@@ -2,18 +2,18 @@
 
 namespace DynamicObstacleAvoidance
 {
-	StarShapeHull::StarShapeHull(const std::string& name):
-	Obstacle(name)
+	StarShapeHull::StarShapeHull(unsigned int resolution, const std::string& name):
+	Obstacle(name), resolution(resolution)
 	{
 		this->set_type("StarShapeHull");
+		this->set_resolution(resolution);
 	}
 
 	StarShapeHull::StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, unsigned int resolution, const std::string& name):
-	Obstacle(name), resolution(resolution), surface_points(Eigen::MatrixXd::Zero(3, resolution))
+	Obstacle(name)
 	{
 		this->set_type("StarShapeHull");
-		this->set_position(this->compute_baricenter(primitives));
-		this->set_reference_position(this->get_position());
+		this->set_resolution(resolution);
 		this->compute_from_primitives(primitives);
 	}
 
@@ -28,8 +28,19 @@ namespace DynamicObstacleAvoidance
         return result;
     }
 
-	void StarShapeHull::compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, double threshold, double min_radius)
+    void StarShapeHull::compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, double threshold, double min_radius, unsigned int window_size)
+    {
+    	// first set the reference point
+		Eigen::Vector3d reference_point = this->compute_baricenter(primitives);
+		// then compute the hull
+		this->compute_from_primitives(primitives, reference_point, threshold, min_radius, window_size);
+	}
+
+	void StarShapeHull::compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point, double threshold, double min_radius, unsigned int window_size)
 	{
+		this->set_reference_position(reference_point);
+		this->set_position(reference_point);
+
 		std::vector<double> theta = MathTools::linspace(-M_PI, M_PI, this->resolution);
 		Eigen::MatrixXd cluster_points(3, primitives.size() * this->resolution);
 		unsigned int k = 0;
@@ -50,40 +61,48 @@ namespace DynamicObstacleAvoidance
 		for(unsigned int i = 0; i < this->resolution; ++i)
 		{
 			std::vector<double> radiuses;
-			unsigned int w = 100;
 			while(k < sorted_cluster_points.cols() and sorted_cluster_points.col(k)(1) < theta[i])
 			{
 				radiuses.push_back(sorted_cluster_points.col(k)(0));
 				++k;
 			}
-
-			for(unsigned int j = 0; j < w; ++j)
+			for(unsigned int j = 0; j < window_size; ++j)
 			{
-				int idx = (k + j - w /2) % sorted_cluster_points.cols();
+				unsigned int idx = (k + j - window_size /2) % sorted_cluster_points.cols();
 				if(abs(sorted_cluster_points.col(idx)(1) - theta[i]) < threshold) radiuses.push_back(sorted_cluster_points.col(idx)(0));
 			}
 			double radius = (!radiuses.empty()) ? *std::max_element(std::begin(radiuses), std::end(radiuses)) : min_radius;
+			radius = (i > 0) ? 0.8 * radius + 0.2 * polar_surface_points.col(i-1)(0) : radius;
 			Eigen::Vector3d polar_point(radius, theta[i], 0);
-			this->surface_points.col(i) = this->get_pose() * MathTools::polar_to_cartesian(polar_point);
-			++k;
+			this->polar_surface_points.col(i) = polar_point;
+			this->cartesian_surface_points.col(i) = this->get_pose() * MathTools::polar_to_cartesian(polar_point);
 		}
 	}
 
 	Eigen::Vector3d StarShapeHull::compute_normal_to_agent(const Agent& agent) const
-	{}
+	{
+		Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * agent.get_position());
+		auto surface_points = MathTools::find_closest_points(this->polar_surface_points, polar_point, 1);
+		Eigen::Vector3d p1 = MathTools::polar_to_cartesian(surface_points.first);
+		Eigen::Vector3d p2 = MathTools::polar_to_cartesian(surface_points.second); 
+	}
 
 	double StarShapeHull::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const
-	{}
+	{
+		Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * point);
+		Eigen::Vector3d surface_point = MathTools::find_closest_points(this->polar_surface_points, polar_point, 1).first;
+		return polar_point(0) - (surface_point(0) + safety_margin);
+	}
 
 	void StarShapeHull::draw(const std::string& color) const
 	{
 		std::vector<double> x;
 		std::vector<double> y;
 
-		for (int i=0; i<this->resolution; ++i)
+		for (unsigned int i=0; i<this->resolution; ++i)
 		{
-			x.push_back(this->surface_points.col(i)(0));
-			y.push_back(this->surface_points.col(i)(1));
+			x.push_back(this->cartesian_surface_points.col(i)(0));
+			y.push_back(this->cartesian_surface_points.col(i)(1));
 		}
 		plt::plot(x, y, color + "-");
 

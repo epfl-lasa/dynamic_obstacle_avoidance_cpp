@@ -70,15 +70,6 @@ int main(int, char*[])
 	ptrE7->set_axis_lengths(Eigen::Array3d(2, 0.2, 0));
 	ptrE8->set_axis_lengths(Eigen::Array3d(0.5, 0.5, 0));
 
-	Aggregate a;
-	a.add_primitive(*ptrE3);
-	a.add_primitive(*ptrE4);
-	a.add_primitive(*ptrE8);
-
-	std::cout << a << std::endl;
-	
-	std::unique_ptr<StarShapeHull> hull = std::make_unique<StarShapeHull>(a.get_primitives());
-
 	// add to the list
 	std::deque<std::unique_ptr<Obstacle> > obstacle_list;
 	obstacle_list.push_back(std::move(ptrE1));
@@ -92,8 +83,6 @@ int main(int, char*[])
 
 	// aggregate the obstacles if necessary
 	std::deque<std::unique_ptr<Obstacle> > aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
-
-	aggregated_obstacle_list.push_back(std::move(hull));
 
 	// plot the configuration
 	std::deque<Eigen::Vector3d> position_history;
