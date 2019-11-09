@@ -42,11 +42,11 @@ namespace DynamicObstacleAvoidance
 		this->set_position(reference_point);
 
 		std::vector<double> theta = MathTools::linspace(-M_PI, M_PI, this->resolution);
-		Eigen::MatrixXd cluster_points(3, primitives.size() * this->resolution);
+		Eigen::MatrixXd cluster_points(3, primitives.size() * this->primitives_resolution);
 		unsigned int k = 0;
 		for(auto& o:primitives)
 		{
-			Eigen::MatrixXd surface_points = o->sample_from_parameterization(this->resolution, true);
+			Eigen::MatrixXd surface_points = o->sample_from_parameterization(this->primitives_resolution, true);
 			for(unsigned int i = 0; i < surface_points.cols(); i++)
 			{
 			 	Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * surface_points.col(i));
@@ -60,19 +60,22 @@ namespace DynamicObstacleAvoidance
 		k = 0;
 		for(unsigned int i = 0; i < this->resolution; ++i)
 		{
-			std::vector<double> radiuses;
-			while(k < sorted_cluster_points.cols() and sorted_cluster_points.col(k)(1) < theta[i])
-			{
-				radiuses.push_back(sorted_cluster_points.col(k)(0));
-				++k;
-			}
+			std::vector<Eigen::Vector3d> radiuses;
+			while(k < sorted_cluster_points.cols() and sorted_cluster_points.col(k)(1) < theta[i]) ++k;
 			for(unsigned int j = 0; j < window_size; ++j)
 			{
 				unsigned int idx = (k + j - window_size /2) % sorted_cluster_points.cols();
-				if(abs(sorted_cluster_points.col(idx)(1) - theta[i]) < threshold) radiuses.push_back(sorted_cluster_points.col(idx)(0));
+				if(abs(sorted_cluster_points.col(idx)(1) - theta[i]) < threshold) radiuses.push_back(sorted_cluster_points.col(idx));
 			}
-			double radius = (!radiuses.empty()) ? *std::max_element(std::begin(radiuses), std::end(radiuses)) : min_radius;
-			radius = (i > 0) ? 0.8 * radius + 0.2 * polar_surface_points.col(i-1)(0) : radius;
+			double radius = min_radius;
+			if(!radiuses.empty())
+			{
+				std::sort(std::begin(radiuses), std::end(radiuses), [](const Eigen::Vector3d& lhs, const Eigen::Vector3d& rhs){return lhs(0) > rhs(0);});
+				unsigned int h = 0;
+				while(h < radiuses.size() and abs(radiuses[h](1) - theta[i]) > threshold) ++h;
+				radius = radiuses[h](0);
+			}
+			radius = (i > 0) ? 0.9 * radius + 0.1 * polar_surface_points.col(i-1)(0) : radius;
 			Eigen::Vector3d polar_point(radius, theta[i], 0);
 			this->polar_surface_points.col(i) = polar_point;
 			this->cartesian_surface_points.col(i) = this->get_pose() * MathTools::polar_to_cartesian(polar_point);

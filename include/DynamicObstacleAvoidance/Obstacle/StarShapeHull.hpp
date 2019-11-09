@@ -24,6 +24,7 @@ namespace DynamicObstacleAvoidance
 	{
 	private:
 		unsigned int resolution; 
+		unsigned int primitives_resolution;
 		Eigen::MatrixXd cartesian_surface_points;
 		Eigen::MatrixXd polar_surface_points;
 
@@ -42,14 +43,15 @@ namespace DynamicObstacleAvoidance
 
 		void set_resolution(unsigned int resolution);
 
-		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point, double threshold=0.05, double min_radius=0.1, unsigned int window_size=10);
+		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point, double threshold=0.03, double min_radius=0.1, unsigned int window_size=20);
 		
-		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, double threshold=0.05, double min_radius=0.1, unsigned int window_size=10);
+		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, double threshold=0.03, double min_radius=0.1, unsigned int window_size=20);
 	};
 
 	inline void StarShapeHull::set_resolution(unsigned int resolution)
 	{
 		this->resolution = resolution;
+		this->primitives_resolution = resolution;
 		this->cartesian_surface_points = Eigen::MatrixXd::Zero(3, resolution);
 		this->polar_surface_points = Eigen::MatrixXd::Zero(3, resolution);
 	}
