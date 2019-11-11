@@ -10,6 +10,7 @@
 
 #include "DynamicObstacleAvoidance/Agent.hpp"
 #include "DynamicObstacleAvoidance/Obstacle/Obstacle.hpp"
+#include "DynamicObstacleAvoidance/Obstacle/Ellipsoid.hpp"
 #include "DynamicObstacleAvoidance/Utils/MathTools.hpp"
 #include <algorithm>
 #include <deque>
@@ -43,9 +44,11 @@ namespace DynamicObstacleAvoidance
 
 		void set_resolution(unsigned int resolution);
 
-		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point, double threshold=0.03, double min_radius=0.1, unsigned int window_size=20);
+		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point, double min_radius=0.1);
+
+		//void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point, double threshold=0.03, double min_radius=0.1, unsigned int window_size=20);
 		
-		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, double threshold=0.03, double min_radius=0.1, unsigned int window_size=20);
+		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, double min_radius=0.1);
 	};
 
 	inline void StarShapeHull::set_resolution(unsigned int resolution)

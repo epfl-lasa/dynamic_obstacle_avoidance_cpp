@@ -29,16 +29,16 @@ namespace DynamicObstacleAvoidance
     Eigen::Vector3d MathTools::cartesian_to_polar(const Eigen::Vector3d& cartesian_point)
     {
         double radius = sqrt(cartesian_point(0) * cartesian_point(0) + cartesian_point(1) * cartesian_point(1) + cartesian_point(2) * cartesian_point(2));
-        double theta = atan2(cartesian_point(1), cartesian_point(0));
-        double phi = acos(cartesian_point(2) / radius);
+        double theta = acos(cartesian_point(2) / radius);
+        double phi = atan2(cartesian_point(1), cartesian_point(0));
         return Eigen::Vector3d(radius, theta, phi);
     }
 
     Eigen::Vector3d MathTools::polar_to_cartesian(const Eigen::Vector3d& cartesian_point)
     {
-        double X = cos(cartesian_point(1)) * cos(cartesian_point(2)) * cartesian_point(0);
-        double Y = sin(cartesian_point(1)) * cos(cartesian_point(2)) * cartesian_point(0);
-        double Z = sin(cartesian_point(2)) * cartesian_point(0);
+        double X = cartesian_point(0) * sin(cartesian_point(1)) * cos(cartesian_point(2));
+        double Y = cartesian_point(0) * sin(cartesian_point(1)) * sin(cartesian_point(2));
+        double Z = cartesian_point(0) * cos(cartesian_point(1));
         return Eigen::Vector3d(X, Y, Z);
     }
 

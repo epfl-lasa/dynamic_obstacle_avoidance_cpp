@@ -28,57 +28,65 @@ namespace DynamicObstacleAvoidance
         return result;
     }
 
-    void StarShapeHull::compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, double threshold, double min_radius, unsigned int window_size)
+    void StarShapeHull::compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, double min_radius)
     {
     	// first set the reference point
 		Eigen::Vector3d reference_point = this->compute_baricenter(primitives);
 		// then compute the hull
-		this->compute_from_primitives(primitives, reference_point, threshold, min_radius, window_size);
+		this->compute_from_primitives(primitives, reference_point, min_radius);
 	}
 
-	void StarShapeHull::compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point, double threshold, double min_radius, unsigned int window_size)
+	void StarShapeHull::compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point, double min_radius)
 	{
 		this->set_reference_position(reference_point);
 		this->set_position(reference_point);
 
-		std::vector<double> theta = MathTools::linspace(-M_PI, M_PI, this->resolution);
-		Eigen::MatrixXd cluster_points(3, primitives.size() * this->primitives_resolution);
-		unsigned int k = 0;
-		for(auto& o:primitives)
-		{
-			Eigen::MatrixXd surface_points = o->sample_from_parameterization(this->primitives_resolution, true);
-			for(unsigned int i = 0; i < surface_points.cols(); i++)
-			{
-			 	Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * surface_points.col(i));
-			 	cluster_points.col(k * this->resolution + i) = polar_point;
-			}
-			++k;
-		}
-		// sort by ascending order of theta
-		Eigen::MatrixXd sorted_cluster_points = MathTools::sorted_cols_by_theta(cluster_points);
-		// recreate a star shape hull using polar coordinates
-		k = 0;
+		std::vector<double> phi = MathTools::linspace(-M_PI, M_PI, this->resolution);
+		
 		for(unsigned int i = 0; i < this->resolution; ++i)
 		{
-			std::vector<Eigen::Vector3d> radiuses;
-			while(k < sorted_cluster_points.cols() and sorted_cluster_points.col(k)(1) < theta[i]) ++k;
-			for(unsigned int j = 0; j < window_size; ++j)
+			// create a point with polar coordinates
+			Eigen::Vector3d ref_point = MathTools::polar_to_cartesian(Eigen::Vector3d(1, acos(0), phi[i]));
+			std::vector<Eigen::Vector3d> intersection_points;
+			for(auto& o:primitives)
 			{
-				unsigned int idx = (k + j - window_size /2) % sorted_cluster_points.cols();
-				if(abs(sorted_cluster_points.col(idx)(1) - theta[i]) < threshold) radiuses.push_back(sorted_cluster_points.col(idx));
+				// transform both reference points in the object frame
+				Eigen::Vector3d x1 = o->get_pose().inverse() * this->get_reference_position();
+				Eigen::Vector3d x2 = o->get_pose().inverse() * this->get_pose() * ref_point;
+				// calculate the line passing by the two points
+				double a = (x2(1) - x1(1)) / (x2(0) - x1(0));
+				double b = x1(1) - a * x1(0);
+				// set the interesection equation with the ellipsoid and solve it
+				Eigen::Array3d lengths = static_cast<Ellipsoid*>(o.get())->get_axis_lengths();
+				double r1squared = lengths(0) * lengths(0);
+				double r2squared = lengths(1) * lengths(1);
+				double A = 1 / r1squared + (a*a) / r2squared;
+				double B = (2*a*b) / r2squared;
+				double C = (b*b) / r2squared - 1;
+				double delta = B*B - 4*A*C;
+				// solutions
+				if(delta >= 0)
+				{
+					double px1 = (-B - sqrt(delta)) / (2*A);
+					Eigen::Vector3d p1(px1, a * px1 + b, 0);
+					double px2 = (-B + sqrt(delta)) / (2*A);
+					Eigen::Vector3d p2(px2, a * px2 + b, 0);
+					// transform those back to the reference point frame and in polar coordinates
+					intersection_points.push_back(MathTools::cartesian_to_polar(this->get_pose().inverse() * o->get_pose() * p1));
+					intersection_points.push_back(MathTools::cartesian_to_polar(this->get_pose().inverse() * o->get_pose() * p2));
+				}
 			}
-			double radius = min_radius;
-			if(!radiuses.empty())
+			Eigen::Vector3d surface_point = Eigen::Vector3d(min_radius, acos(0), phi[i]);
+			if(!intersection_points.empty())
 			{
-				std::sort(std::begin(radiuses), std::end(radiuses), [](const Eigen::Vector3d& lhs, const Eigen::Vector3d& rhs){return lhs(0) > rhs(0);});
-				unsigned int h = 0;
-				while(h < radiuses.size() and abs(radiuses[h](1) - theta[i]) > threshold) ++h;
-				radius = radiuses[h](0);
+				// sort the intersection points in descending radius
+				std::sort(std::begin(intersection_points), std::end(intersection_points), [](const Eigen::Vector3d& lhs, const Eigen::Vector3d& rhs){return lhs(0) > rhs(0);});
+				unsigned int k = 0;
+				while(k < intersection_points.size() and (abs(intersection_points[k](2) - phi[i]) > 1e-4)) ++k;
+				surface_point = (k < intersection_points.size()) ? intersection_points[k] : surface_point;
 			}
-			radius = (i > 0) ? 0.9 * radius + 0.1 * polar_surface_points.col(i-1)(0) : radius;
-			Eigen::Vector3d polar_point(radius, theta[i], 0);
-			this->polar_surface_points.col(i) = polar_point;
-			this->cartesian_surface_points.col(i) = this->get_pose() * MathTools::polar_to_cartesian(polar_point);
+			this->polar_surface_points.col(i) = surface_point;
+			this->cartesian_surface_points.col(i) = this->get_pose() * MathTools::polar_to_cartesian(surface_point);
 		}
 	}
 
