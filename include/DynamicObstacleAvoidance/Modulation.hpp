@@ -26,9 +26,9 @@ namespace DynamicObstacleAvoidance
 {
     namespace Modulation
     {
-        Eigen::ArrayXd weight_obstacles(const Eigen::ArrayXd& distances, const double& critical_distance, const double& weight_power);
+        Eigen::ArrayXd weight_obstacles(const Eigen::ArrayXd& distances, double critical_distance, double weight_power);
         std::pair<Eigen::Matrix3d, Eigen::Matrix3d> compute_basis_matrices(const Eigen::Vector3d& normal_vector, const Agent& agent, const Obstacle& obstacle);
-        Eigen::DiagonalMatrix<double, 3> compute_diagonal_eigenvalues(const double& distance_to_obstacle, const double& reactivity_factor=1.0);
+        Eigen::DiagonalMatrix<double, 3> compute_diagonal_eigenvalues(double distance_to_obstacle, double reactivity_factor=1.0);
         std::pair<Eigen::Vector3d, Eigen::Vector3d> compute_relative_velocities(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const Eigen::ArrayXd& distances, const Eigen::ArrayXd& weights, const std::deque<Eigen::Matrix3d>& orthogonal_basis_list);
         /**
         * @brief The function evaluates the gamma function and all necessary components needed to construct the modulation function, to ensure safe avoidance of the obstacles.
@@ -41,7 +41,7 @@ namespace DynamicObstacleAvoidance
         * @param[out] eigenValues Eigenvalue matrix which is responsible for the modulation
         */
         std::tuple<Eigen::Matrix3d, Eigen::Matrix3d, double> compute_modulation_matrix(const Agent& agent, const Obstacle& obstacle);
-        Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const bool& is_local=false, const bool& add_repulsion=false, const double& critical_distance=1.0, const double& weight_power=2.0);
+        Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, bool is_local=false, bool add_repulsion=false, double critical_distance=1.0, double weight_power=2.0);
     }
 }
 

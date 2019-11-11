@@ -20,17 +20,17 @@ int main(int, char*[])
 	double Kp = 1;
 	double dt = 0.01;
 
-	int nb_simulations = 1;
+	int nb_simulations = 100;
 	int nb_steps = 1000;
 	bool is_show = false;
 	bool debug = false;
-	bool plot_steps = true;
+	bool plot_steps = false;
 
 	for(int k=0; k<nb_simulations; ++k)
 	{
 		std::cerr << k << std::endl; 
-		//unsigned int seed = rand() % 10000;
-		unsigned int seed = 7507;
+		unsigned int seed = rand() % 10000;
+		//unsigned int seed = 7507;
 		srand(seed);
 
 		// generate the list of obstacles
@@ -46,9 +46,9 @@ int main(int, char*[])
 		orientation_o2 = Eigen::Quaterniond(1,0,0,0);
 		orientation_o3 = Eigen::Quaterniond(1,0,0,0);*/
 
-		auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation_o1), MathTools::rand_float(1));
-		auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation_o2), MathTools::rand_float(1));
-		auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3, orientation_o3), MathTools::rand_float(1));
+		auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation_o1));
+		auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation_o2));
+		auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3, orientation_o3));
 
 
 		ptrE1->set_axis_lengths(Eigen::Array3d(MathTools::rand_float(2), MathTools::rand_float(2), 0));
@@ -91,7 +91,7 @@ int main(int, char*[])
 			Eigen::Vector3d desired_velocity = -Kp * (current_position - target_position);
 			agent.set_linear_velocity(desired_velocity);
 
-			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, obstacle_list, true);
+			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, aggregated_obstacle_list);
 			Eigen::Vector3d modulated_position = current_position + dt * modulated_velocity;
 			agent.set_position(modulated_position);
 

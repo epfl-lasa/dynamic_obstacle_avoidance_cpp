@@ -93,9 +93,10 @@ namespace DynamicObstacleAvoidance
 	Eigen::Vector3d StarShapeHull::compute_normal_to_agent(const Agent& agent) const
 	{
 		Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * agent.get_position());
-		auto surface_points = MathTools::find_closest_points(this->polar_surface_points, polar_point, 1);
+		auto surface_points = MathTools::find_closest_points(this->polar_surface_points, polar_point, 2);
 		Eigen::Vector3d p1 = MathTools::polar_to_cartesian(surface_points.first);
-		Eigen::Vector3d p2 = MathTools::polar_to_cartesian(surface_points.second); 
+		Eigen::Vector3d p2 = MathTools::polar_to_cartesian(surface_points.second);
+		return (p2-p1).cross(Eigen::Vector3d::UnitZ());
 	}
 
 	double StarShapeHull::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const

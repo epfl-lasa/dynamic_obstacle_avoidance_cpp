@@ -46,11 +46,11 @@ namespace DynamicObstacleAvoidance
 
 		void add_primitive(const Obstacle& primitive);
 
-		const Obstacle& get_active_obstacle(const Agent& agent) const;
+		//const Obstacle& get_active_obstacle(const Agent& agent) const;
 
 		Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
 		
-		double compute_distance_to_agent(const Agent& agent) const;
+		double compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const;
 
 		void draw(const std::string& color="k") const;
 

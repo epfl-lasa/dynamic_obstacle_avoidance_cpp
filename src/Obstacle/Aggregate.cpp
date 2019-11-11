@@ -72,7 +72,7 @@ namespace DynamicObstacleAvoidance
 		this->update_hull();
 	}
 
-	const Obstacle& Aggregate::get_active_obstacle(const Agent& agent) const
+	/*const Obstacle& Aggregate::get_active_obstacle(const Agent& agent) const
 	{
 		double min_dist = std::numeric_limits<double>::max();
 		int index;
@@ -88,38 +88,16 @@ namespace DynamicObstacleAvoidance
 			++i;
 		}
 		return *(this->primitives[index]);
-	}
+	}*/
 
 	Eigen::Vector3d Aggregate::compute_normal_to_agent(const Agent& agent) const
 	{
-		double min_dist = std::numeric_limits<double>::max();
-		int index;
-		int i = 0;
-		for(auto& o:this->primitives)
-		{
-			double tmp_dist = o->compute_distance_to_agent(agent);
-			if(tmp_dist < min_dist)
-			{
-				min_dist = tmp_dist;
-				index = i;
-			}
-			++i;
-		}
-		// put the normal in the aggregate frame
-		Eigen::Vector3d normal = this->primitives[index]->compute_normal_to_agent(agent);
-		//normal = this->get_pose().inverse() * this->primitives[index]->get_pose() * normal; 
-		return normal;
+		return this->hull.compute_normal_to_agent(agent);
 	}
 
-	double Aggregate::compute_distance_to_agent(const Agent& agent) const
+	double Aggregate::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const
 	{
-		double min_dist = std::numeric_limits<double>::max();
-		for(auto& o:this->primitives)
-		{
-			double tmp_dist = o->compute_distance_to_agent(agent);
-			min_dist = (tmp_dist < min_dist) ? tmp_dist : min_dist;
-		}
-		return min_dist;
+		return this->hull.compute_distance_to_point(point, safety_margin);
 	}
 
 	void Aggregate::draw(const std::string& color) const

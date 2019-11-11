@@ -24,7 +24,7 @@ namespace DynamicObstacleAvoidance
 			return std::make_tuple(modulation_matrix, orthogonal_basis, distance_to_obstacle);
 		}
 
-		Eigen::ArrayXd weight_obstacles(const Eigen::ArrayXd& distances, const double& critical_distance, const double& weight_power)
+		Eigen::ArrayXd weight_obstacles(const Eigen::ArrayXd& distances, double critical_distance, double weight_power)
 		{
 			Eigen::ArrayXd weights(distances.size());
 			Eigen::ArrayXd critical_obstacles(distances.size());
@@ -49,7 +49,7 @@ namespace DynamicObstacleAvoidance
 			return weights;
 		}
 
-		Eigen::DiagonalMatrix<double, 3> compute_diagonal_eigenvalues(const double& distance_to_obstacle, const double& reactivity_factor)
+		Eigen::DiagonalMatrix<double, 3> compute_diagonal_eigenvalues(double distance_to_obstacle, double reactivity_factor)
 		{
 			// check if the point is inside the obstacle
 			double delta_eigenvalue = (distance_to_obstacle <= 1) ? 1.0 : 1.0 / std::pow(distance_to_obstacle, 1.0 / reactivity_factor);
@@ -127,7 +127,7 @@ namespace DynamicObstacleAvoidance
 	  		return acos (x) ;
 	  	}
 
-		Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const bool& is_local, const bool& add_repulsion, const double& critical_distance, const double& weight_power)
+		Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, bool is_local, bool add_repulsion, double critical_distance, double weight_power)
 		{
 			if(obstacles.empty()) return agent.get_linear_velocity();
 
@@ -143,23 +143,11 @@ namespace DynamicObstacleAvoidance
 			int i = 0;
 			for(auto &obs_it : obstacles)
 			{
-				if(obs_it->get_type() == "Aggregate")
-				{
-					const Obstacle& obstacle = static_cast<Aggregate*>(obs_it.get())->get_active_obstacle(agent);
-					auto matrices = Modulation::compute_modulation_matrix(agent, obstacle);
-					// store matrices used later
-					modulation_matrix_list.push_back(std::get<0>(matrices));
-					orthogonal_basis_list.push_back(std::get<1>(matrices));		
-					distances(i) = std::get<2>(matrices);
-				}
-				else
-				{
-					auto matrices = Modulation::compute_modulation_matrix(agent, *obs_it);
-					// store matrices used later
-					modulation_matrix_list.push_back(std::get<0>(matrices));
-					orthogonal_basis_list.push_back(std::get<1>(matrices));		
-					distances(i) = std::get<2>(matrices);
-				}
+				auto matrices = Modulation::compute_modulation_matrix(agent, *obs_it);
+				// store matrices used later
+				modulation_matrix_list.push_back(std::get<0>(matrices));
+				orthogonal_basis_list.push_back(std::get<1>(matrices));		
+				distances(i) = std::get<2>(matrices);
 				++i;
 			}
 
