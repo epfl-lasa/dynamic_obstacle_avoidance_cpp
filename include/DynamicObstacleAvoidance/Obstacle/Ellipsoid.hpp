@@ -35,21 +35,21 @@ namespace DynamicObstacleAvoidance
 
 		explicit Ellipsoid(const Ellipsoid& ellipsoid);
 
-		explicit Ellipsoid(const double& cx, const double& cy, const double& cz, const double& safety_margin=0, const std::string& name="");
+		explicit Ellipsoid(double cx, double cy, double cz, double safety_margin=0, const std::string& name="");
 
-		explicit Ellipsoid(const State& state, const double& safety_margin=0, const std::string& name="");
+		explicit Ellipsoid(const State& state, double safety_margin=0, const std::string& name="");
 
-		explicit Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin=0, const std::string& name="");
+		explicit Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, double safety_margin=0, const std::string& name="");
 		
 		~Ellipsoid();
 
 		const Eigen::Array3d& get_axis_lengths() const;
 
-		double get_axis_lengths(const int& index) const; 
+		double get_axis_lengths(unsigned int index) const; 
 
 		const Eigen::Array3d& get_curvature_factor() const; 
 
-		double get_curvature_factor(const int& index) const ;
+		double get_curvature_factor(unsigned int index) const ;
 
 		void set_axis_lengths(const Eigen::Array3d& axis_lengths);
 
@@ -65,9 +65,9 @@ namespace DynamicObstacleAvoidance
 
 		double get_repulsion_factor(const Agent& agent) const;
 
-		double area(const bool& is_include_safety_margin=true) const;
+		double area(bool is_include_safety_margin=true) const;
 
-		Eigen::MatrixXd sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const;
+		Eigen::MatrixXd sample_from_parameterization(unsigned int nb_samples, bool is_include_safety_margin) const;
 
 		bool is_inside(const Eigen::Vector3d& point) const;
 	};
@@ -77,7 +77,7 @@ namespace DynamicObstacleAvoidance
 		return this->axis_lengths;
 	}
 
-	inline double Ellipsoid::get_axis_lengths(const int& index) const 
+	inline double Ellipsoid::get_axis_lengths(unsigned int index) const 
 	{ 
 		return this->axis_lengths(index);
 	}
@@ -87,7 +87,7 @@ namespace DynamicObstacleAvoidance
 		return this->curvature_factor;
 	}
 
-	inline double Ellipsoid::get_curvature_factor(const int& index) const 
+	inline double Ellipsoid::get_curvature_factor(unsigned int index) const 
 	{ 
 		return this->curvature_factor(index);
 	}

@@ -49,10 +49,10 @@ namespace DynamicObstacleAvoidance
 		virtual Obstacle* implicit_clone() const;
 
 	public:
-		explicit Obstacle(const std::string& name="");
-		explicit Obstacle(const double& cx, const double& cy, const double& cz, const double& safety_margin=0, const std::string& name="");
-		explicit Obstacle(const State& state, const double& safety_margin=0, const std::string& name="");
-		explicit Obstacle(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin=0, const std::string& name="");
+		explicit Obstacle(const std::string& name="", double safety_margin=0);
+		explicit Obstacle(double cx, double cy, double cz, double safety_margin=0, const std::string& name="");
+		explicit Obstacle(const State& state, double safety_margin=0, const std::string& name="");
+		explicit Obstacle(const State& state, const Eigen::Vector3d& reference_position, double safety_margin=0, const std::string& name="");
 		~Obstacle();
 
 		inline const std::string get_type() const 
@@ -120,7 +120,7 @@ namespace DynamicObstacleAvoidance
 			this->state.set_position(position);
 		}
 
-		inline void set_position(const double& x, const double& y, const double& z)
+		inline void set_position(double x, double y, double z)
 		{
 			this->state.set_position(x, y, z);
 		}
@@ -177,7 +177,7 @@ namespace DynamicObstacleAvoidance
 
 		virtual double get_repulsion_factor(const Agent& agent) const;
 
-		virtual Eigen::MatrixXd sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const;
+		virtual Eigen::MatrixXd sample_from_parameterization(unsigned int nb_samples, bool is_include_safety_margin) const;
 	};
 }
 #endif
