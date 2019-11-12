@@ -16,19 +16,19 @@ namespace DynamicObstacleAvoidance
 		this->set_type("Ellipsoid");
 	}
 
-	Ellipsoid::Ellipsoid(const State& state, const double& safety_margin, const std::string& name):
+	Ellipsoid::Ellipsoid(const State& state, double safety_margin, const std::string& name):
 	Obstacle(state, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 	{
 		this->set_type("Ellipsoid");
 	}
 
-	Ellipsoid::Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin, const std::string& name):
+	Ellipsoid::Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, double safety_margin, const std::string& name):
 	Obstacle(state, reference_position, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 	{
 		this->set_type("Ellipsoid");
 	}
 
-	Ellipsoid::Ellipsoid(const double& cx, const double& cy, const double& cz, const double& safety_margin, const std::string& name):
+	Ellipsoid::Ellipsoid(double cx, double cy, double cz, double safety_margin, const std::string& name):
 	Obstacle(cx, cy, cz, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 	{
 		this->set_type("Ellipsoid");
@@ -144,7 +144,7 @@ namespace DynamicObstacleAvoidance
 		return new Ellipsoid(*this);
 	}
 
-	Eigen::MatrixXd Ellipsoid::sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const
+	Eigen::MatrixXd Ellipsoid::sample_from_parameterization(unsigned int nb_samples, bool is_include_safety_margin) const
 	{
 		// convert quaternion to AngleAxis
 		Eigen::AngleAxisd orientation(this->get_orientation());
@@ -174,7 +174,7 @@ namespace DynamicObstacleAvoidance
 		return 1 - eq_value;
 	}
 
-	double Ellipsoid::area(const bool& is_include_safety_margin) const
+	double Ellipsoid::area(bool is_include_safety_margin) const
 	{
 		Eigen::Array3d lengths = (is_include_safety_margin) ? this->get_axis_lengths() + this->get_safety_margin() : this->get_axis_lengths();
 		return 4 * M_PI * (pow((pow(lengths(0), 1.6) + pow(lengths(1), 1.6) + pow(lengths(2), 1.6))/3, 1/1.6));

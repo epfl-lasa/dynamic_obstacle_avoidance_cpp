@@ -5,19 +5,19 @@
 
 namespace DynamicObstacleAvoidance
 {
-	Obstacle::Obstacle(const std::string& name):
-	name(name), state(Eigen::Vector3d(0,0,0))
+	Obstacle::Obstacle(const std::string& name, double safety_margin):
+	name(name), state(Eigen::Vector3d(0,0,0)), safety_margin(safety_margin) 
 	{}
 
-	Obstacle::Obstacle(const State& state, const double& safety_margin, const std::string& name):
+	Obstacle::Obstacle(const State& state, double safety_margin, const std::string& name):
 	name(name), state(state), reference_position(state.get_position()), safety_margin(safety_margin) 
 	{}
 
-	Obstacle::Obstacle(const State& state, const Eigen::Vector3d& reference_position, const double& safety_margin, const std::string& name):
+	Obstacle::Obstacle(const State& state, const Eigen::Vector3d& reference_position, double safety_margin, const std::string& name):
 	name(name), state(state), reference_position(reference_position), safety_margin(safety_margin)
 	{}
 
-	Obstacle::Obstacle(const double& cx, const double& cy, const double& cz, const double& safety_margin, const std::string& name):
+	Obstacle::Obstacle(double cx, double cy, double cz, double safety_margin, const std::string& name):
 	name(name), state(cx, cy, cz), reference_position(cx, cy, cz), safety_margin(safety_margin) 
 	{}
 
@@ -98,7 +98,7 @@ namespace DynamicObstacleAvoidance
 		std::cerr << "Fonction get_repulsion_factor of abstract class obstacle used" << std::endl;
 	}
 
-	Eigen::MatrixXd Obstacle::sample_from_parameterization(const int& nb_samples, const bool& is_include_safety_margin) const
+	Eigen::MatrixXd Obstacle::sample_from_parameterization(unsigned int nb_samples, bool is_include_safety_margin) const
 	{
 		std::cerr << "Fonction sample_from_parameterization of abstract class obstacle used" << std::endl;
 	}
