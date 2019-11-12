@@ -3,7 +3,7 @@
 namespace DynamicObstacleAvoidance
 {
 	StarShapeHull::StarShapeHull(unsigned int resolution, const std::string& name):
-	Obstacle(name), resolution(resolution)
+	Obstacle(name, 0.1), resolution(resolution)
 	{
 		this->set_type("StarShapeHull");
 		this->set_resolution(resolution);
@@ -65,6 +65,7 @@ namespace DynamicObstacleAvoidance
 				double C = (b*b) / r2squared - 1;
 				double delta = B*B - 4*A*C;
 				// solutions
+
 				if(delta >= 0)
 				{
 					double px1 = (-B - sqrt(delta)) / (2*A);
@@ -82,9 +83,10 @@ namespace DynamicObstacleAvoidance
 				// sort the intersection points in descending radius
 				std::sort(std::begin(intersection_points), std::end(intersection_points), [](const Eigen::Vector3d& lhs, const Eigen::Vector3d& rhs){return lhs(0) > rhs(0);});
 				unsigned int k = 0;
-				while(k < intersection_points.size() and (abs(intersection_points[k](2) - phi[i]) > 1e-4)) ++k;
+				while(k < intersection_points.size() and ((abs(intersection_points[k](2) - phi[i]) > 1e-4) and (abs((intersection_points[k](2) - 2*M_PI) - phi[i]) > 1e-4))) ++k;
 				surface_point = (k < intersection_points.size()) ? intersection_points[k] : surface_point;
 			}
+			surface_point += Eigen::Vector3d(this->get_safety_margin(), 0, 0);
 			this->polar_surface_points.col(i) = surface_point;
 			this->cartesian_surface_points.col(i) = this->get_pose() * MathTools::polar_to_cartesian(surface_point);
 		}
@@ -96,7 +98,7 @@ namespace DynamicObstacleAvoidance
 		auto surface_points = MathTools::find_closest_points(this->polar_surface_points, polar_point, 2);
 		Eigen::Vector3d p1 = MathTools::polar_to_cartesian(surface_points.first);
 		Eigen::Vector3d p2 = MathTools::polar_to_cartesian(surface_points.second);
-		return (p2-p1).cross(Eigen::Vector3d::UnitZ());
+		return (p1-p2).cross(Eigen::Vector3d::UnitZ());
 	}
 
 	double StarShapeHull::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const
