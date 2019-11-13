@@ -28,7 +28,7 @@ namespace DynamicObstacleAvoidance
 
     	Eigen::MatrixXd sorted_cols_by_theta(Eigen::MatrixXd A);
 
-    	std::pair<Eigen::Vector3d, Eigen::Vector3d> find_closest_points(Eigen::MatrixXd A, Eigen::Vector3d p, unsigned int index);
+    	std::pair<unsigned int, unsigned int> find_closest_points(Eigen::MatrixXd A, Eigen::Vector3d p, unsigned int index);
 	}
 }
 #endif

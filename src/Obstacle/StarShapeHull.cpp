@@ -41,7 +41,8 @@ namespace DynamicObstacleAvoidance
 		this->set_reference_position(reference_point);
 		this->set_position(reference_point);
 
-		std::vector<double> phi = MathTools::linspace(-M_PI, M_PI, this->resolution);
+		// this -1e-4 trick is to avoid that idx 0 and end represent both the same point
+		std::vector<double> phi = MathTools::linspace(-M_PI, M_PI-1e-4, this->resolution);
 		
 		for(unsigned int i = 0; i < this->resolution; ++i)
 		{
@@ -95,16 +96,17 @@ namespace DynamicObstacleAvoidance
 	Eigen::Vector3d StarShapeHull::compute_normal_to_agent(const Agent& agent) const
 	{
 		Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * agent.get_position());
-		auto surface_points = MathTools::find_closest_points(this->polar_surface_points, polar_point, 2);
-		Eigen::Vector3d p1 = MathTools::polar_to_cartesian(surface_points.first);
-		Eigen::Vector3d p2 = MathTools::polar_to_cartesian(surface_points.second);
+		auto idx = MathTools::find_closest_points(this->polar_surface_points, polar_point, 2);
+		Eigen::Vector3d p1 = this->cartesian_surface_points.col(idx.first);
+		Eigen::Vector3d p2 = this->cartesian_surface_points.col(idx.second);
 		return (p1-p2).cross(Eigen::Vector3d::UnitZ());
 	}
 
 	double StarShapeHull::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const
 	{
 		Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * point);
-		Eigen::Vector3d surface_point = MathTools::find_closest_points(this->polar_surface_points, polar_point, 1).first;
+		unsigned int idx = MathTools::find_closest_points(this->polar_surface_points, polar_point, 1).first;
+		Eigen::Vector3d surface_point = this->polar_surface_points.col(idx);
 		return polar_point(0) - (surface_point(0) + safety_margin);
 	}
 
