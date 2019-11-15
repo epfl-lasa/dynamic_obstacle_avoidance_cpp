@@ -10,3 +10,6 @@
 [submodule "lib/libsvm"]
 	path = lib/libsvm
 	url = git@github.com:buschbapti/libsvm.git
+[submodule "lib/limbo"]
+	path = lib/limbo
+	url = git@github.com:buschbapti/limbo.git

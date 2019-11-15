@@ -22,6 +22,7 @@ endif()
 add_subdirectory(lib/dlib dlib_build)
 add_subdirectory(lib/libsvm libsvm_build)
 add_subdirectory(lib/SVMGrad SVMGrad_build)
+add_subdirectory(lib/limbo limbo_build)
 
 find_package(
 	Eigen3 REQUIRED
@@ -32,10 +33,21 @@ find_package(
 find_package(PythonLibs 3.6)
 find_package(OpenMP)
 
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+find_package(Boost 1.45.0 REQUIRED COMPONENTS system filesystem thread unit_test_framework)
+
+if(Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
+endif()
+
 include_directories(
   	include
   	lib/SVMGrad/include
-  	${Eigen3_INCLUDE_DIRS}
+  	lib/libsvm/include
+  	lib/limbo/src
+  	${EIGEN3_INCLUDE_DIR}
   	${armadillo_INCLUDE_DIRS}
   	${mlpack_INCLUDE_DIRS}
   	${PYTHON_INCLUDE_DIRS}
@@ -59,9 +71,9 @@ set(CORE_SOURCES
 add_library(${PROJECT_NAME} SHARED ${CORE_SOURCES})
 
 if(OpenMP_CXX_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX armadillo mlpack ${PYTHON_LIBRARIES} libsvm svm_grad dlib::dlib)
+    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX armadillo mlpack ${PYTHON_LIBRARIES} ${Boost_LIBRARIES} limbo libsvm svm_grad dlib::dlib)
 else()
-	target_link_libraries(${PROJECT_NAME} armadillo mlpack ${PYTHON_LIBRARIES} libsvm svm_grad dlib::dlib)
+	target_link_libraries(${PROJECT_NAME} armadillo mlpack ${PYTHON_LIBRARIES} ${Boost_LIBRARIES} limbo libsvm svm_grad dlib::dlib)
 endif()
 
 
