@@ -7,6 +7,8 @@ namespace DynamicObstacleAvoidance
 	{
 		this->set_type("StarShapeHull");
 		this->set_resolution(resolution);
+		// set parameters for the regressor
+		this->initialize_regressor_parameters();
 	}
 
 	StarShapeHull::StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, unsigned int resolution, const std::string& name):
@@ -15,7 +17,12 @@ namespace DynamicObstacleAvoidance
 		this->set_type("StarShapeHull");
 		this->set_resolution(resolution);
 		this->compute_from_primitives(primitives);
+		// set parameters for the regressor
+		this->initialize_regressor_parameters();
 	}
+
+	StarShapeHull::~StarShapeHull()
+	{}
 
 	Eigen::Vector3d StarShapeHull::compute_baricenter(const std::deque<std::unique_ptr<Obstacle> >& primitives)
     {
@@ -86,28 +93,32 @@ namespace DynamicObstacleAvoidance
 				unsigned int k = 0;
 				while(k < intersection_points.size() and ((abs(intersection_points[k](2) - phi[i]) > 1e-4) and (abs((intersection_points[k](2) - 2*M_PI) - phi[i]) > 1e-4))) ++k;
 				surface_point = (k < intersection_points.size()) ? intersection_points[k] : surface_point;
+				surface_point(0) = std::max(min_radius, surface_point(0));
 			}
 			surface_point += Eigen::Vector3d(this->get_safety_margin(), 0, 0);
 			this->polar_surface_points.col(i) = surface_point;
 			this->cartesian_surface_points.col(i) = this->get_pose() * MathTools::polar_to_cartesian(surface_point);
 		}
+		// create the regressor model
+		this->train_surface_regressor(polar_surface_points);
 	}
 
 	Eigen::Vector3d StarShapeHull::compute_normal_to_agent(const Agent& agent) const
 	{
 		Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * agent.get_position());
-		auto idx = MathTools::find_closest_points(this->polar_surface_points, polar_point, 2);
-		Eigen::Vector3d p1 = this->cartesian_surface_points.col(idx.first);
-		Eigen::Vector3d p2 = this->cartesian_surface_points.col(idx.second);
+		Eigen::Vector3d surface_point1 = this->predict_surface_point(polar_point(2));
+		Eigen::Vector3d surface_point2 = this->predict_surface_point(polar_point(2)+0.01);
+		Eigen::Vector3d p1 = this->get_pose() * MathTools::polar_to_cartesian(surface_point1);
+		Eigen::Vector3d p2 = this->get_pose() * MathTools::polar_to_cartesian(surface_point2);
 		return (p1-p2).cross(Eigen::Vector3d::UnitZ());
 	}
 
 	double StarShapeHull::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const
 	{
 		Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * point);
-		unsigned int idx = MathTools::find_closest_points(this->polar_surface_points, polar_point, 1).first;
-		Eigen::Vector3d surface_point = this->polar_surface_points.col(idx);
-		return polar_point(0) - (surface_point(0) + safety_margin);
+		Eigen::Vector3d surface_point = this->predict_surface_point(polar_point(2));
+		double distance = (polar_point(0) - (surface_point(0) + safety_margin)) + 1;
+		return distance;
 	}
 
 	void StarShapeHull::draw(const std::string& color) const
@@ -115,11 +126,15 @@ namespace DynamicObstacleAvoidance
 		std::vector<double> x;
 		std::vector<double> y;
 
+		std::vector<double> phi = MathTools::linspace(-M_PI, M_PI-1e-4, this->resolution);
 		for (unsigned int i=0; i<this->resolution; ++i)
 		{
-			x.push_back(this->cartesian_surface_points.col(i)(0));
-			y.push_back(this->cartesian_surface_points.col(i)(1));
+			Eigen::Vector3d polar_point = this->predict_surface_point(phi[i]);
+			Eigen::Vector3d cartesian_point = this->get_pose() * MathTools::polar_to_cartesian(polar_point);
+			x.push_back(cartesian_point(0));
+			y.push_back(cartesian_point(1));
 		}
+
 		plt::plot(x, y, color + "-");
 
 		if(this->get_name() == "")
@@ -131,5 +146,43 @@ namespace DynamicObstacleAvoidance
 			plt::text(this->get_position()(0), this->get_position()(1), this->get_name());
 		}
 		plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, color + "x");
+	}
+
+	void StarShapeHull::initialize_regressor_parameters(double sigma, double epsilon, double constraint_cost)
+	{
+		this->surface_regressor = GP_t(2, 1);
+	}
+
+	std::pair<std::vector<Eigen::VectorXd>, std::vector<Eigen::VectorXd> > StarShapeHull::extract_regressor_data(const Eigen::MatrixXd& surface_points) const
+	{
+		std::vector<Eigen::VectorXd> samples;
+		samples.resize(this->resolution);
+		std::vector<Eigen::VectorXd> observations;
+		observations.resize(this->resolution);
+
+		for(unsigned int i = 0; i < this->resolution; ++i)
+		{
+			samples[i] = Eigen::VectorXd(2);
+			samples[i] << cos(surface_points.col(i)(2)), sin(surface_points.col(i)(2));
+			observations[i] = Eigen::VectorXd(1);
+			observations[i] << surface_points.col(i)(0);
+		}
+		return std::make_pair(samples, observations);
+	}
+
+	void StarShapeHull::train_surface_regressor(const Eigen::MatrixXd& surface_points)
+	{
+		auto data = this->extract_regressor_data(this->polar_surface_points);
+		this->surface_regressor.compute(data.first, data.second);
+	}
+
+	Eigen::Vector3d StarShapeHull::predict_surface_point(double angle) const
+	{
+		Eigen::VectorXd mu;
+		double sigma;
+		Eigen::VectorXd sample(2);
+		sample << cos(angle), sin(angle);
+		std::tie(mu, sigma) = this->surface_regressor.query(sample);
+		return Eigen::Vector3d(mu[0], acos(0), angle);
 	}
 }
