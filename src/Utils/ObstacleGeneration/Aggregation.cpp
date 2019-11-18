@@ -39,10 +39,27 @@ namespace DynamicObstacleAvoidance
 						}
 						else if(aggregate_indexes[i] != aggregate_indexes[j])
 						{
-							std::cerr << i << ", " << j << std::endl;
-							std::cerr << aggregate_indexes[i] << ", " << aggregate_indexes[j] << std::endl;
-							// merge two aggregate scenario
-							std::cerr << "Merging two aggregate not implemented yet" << std::endl;
+							unsigned int old_index;
+							unsigned int new_index;
+							if(aggregate_indexes[i] < aggregate_indexes[j])
+							{
+								old_index = aggregate_indexes[j];
+								new_index = aggregate_indexes[i];
+							}
+							else
+							{
+								old_index = aggregate_indexes[i];
+								new_index = aggregate_indexes[j];
+							}
+							for(unsigned int k=0; k < obstacles.size(); ++k)
+							{
+								if(aggregate_indexes[k] == old_index)
+								{
+									static_cast<Aggregate*>(aggregated_obstacles[new_index].get())->add_primitive(obstacles[k]);
+									aggregate_indexes[k] = new_index;
+								}
+							}
+							aggregated_obstacles.erase(aggregated_obstacles.begin() + old_index);
 						}
 					}
 				}
