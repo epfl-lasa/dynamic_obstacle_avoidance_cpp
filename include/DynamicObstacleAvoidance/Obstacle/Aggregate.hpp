@@ -21,19 +21,13 @@ namespace DynamicObstacleAvoidance
 	class Aggregate: public Obstacle 
 	{
 	private:
-		unsigned int nb_samples;
-		double intersec_factor;
-		double inside_factor;
-		double distance_factor;
-		double area_factor;
-		StarShapeHull hull;
+		StarShapeHull inside_hull;
+		StarShapeHull outside_hull;
 		std::deque<std::unique_ptr<Obstacle> > primitives;
 
 		void update_positions();
 
 		Aggregate* implicit_clone() const override;
-
-		void update_hull();
 
 	public:
 		explicit Aggregate();
@@ -42,11 +36,9 @@ namespace DynamicObstacleAvoidance
 
 		const auto& get_primitives() const;
 
-		void add_primitive(const std::unique_ptr<Obstacle>& primitive);
+		void add_primitive(const std::unique_ptr<Obstacle>& primitive, bool update_hull=true);
 
-		void add_primitive(const Obstacle& primitive);
-
-		//const Obstacle& get_active_obstacle(const Agent& agent) const;
+		void add_primitive(const Obstacle& primitive, bool update_hull=true);
 
 		Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
 		
@@ -55,6 +47,8 @@ namespace DynamicObstacleAvoidance
 		void draw(const std::string& color="k") const;
 
 		std::ostream& print(std::ostream& os) const override;
+
+		void update_hull();
 	};
 
 	inline const auto& Aggregate::get_primitives() const

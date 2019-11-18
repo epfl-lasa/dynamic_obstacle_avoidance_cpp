@@ -52,8 +52,8 @@ namespace DynamicObstacleAvoidance
 	class StarShapeHull: public Obstacle
 	{
 	private:
-		unsigned int resolution; 
-		unsigned int primitives_resolution;
+		bool is_inside;
+		unsigned int resolution;
 		Eigen::MatrixXd cartesian_surface_points;
 		Eigen::MatrixXd polar_surface_points;
 		GP_t surface_regressor;
@@ -69,9 +69,9 @@ namespace DynamicObstacleAvoidance
 		Eigen::Vector3d predict_surface_point(double angle) const;
 
 	public:
-		explicit StarShapeHull(unsigned int resolution=400, const std::string& name="");
+		explicit StarShapeHull(bool is_inside=false, unsigned int resolution=400);
 
-		explicit StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, unsigned int resolution=400, const std::string& name="");
+		explicit StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, bool is_inside=false, unsigned int resolution=400);
 
 		~StarShapeHull();
 
@@ -91,7 +91,6 @@ namespace DynamicObstacleAvoidance
 	inline void StarShapeHull::set_resolution(unsigned int resolution)
 	{
 		this->resolution = resolution;
-		this->primitives_resolution = resolution;
 		this->cartesian_surface_points = Eigen::MatrixXd::Zero(3, resolution);
 		this->polar_surface_points = Eigen::MatrixXd::Zero(3, resolution);
 	}

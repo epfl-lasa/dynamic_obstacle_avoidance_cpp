@@ -6,23 +6,23 @@ namespace DynamicObstacleAvoidance
 	{
 		std::deque<std::unique_ptr<Obstacle> > aggregated_obstacles;
 		std::vector<int> aggregate_indexes(obstacles.size());
-		for(unsigned int i=0; i<obstacles.size(); ++i) aggregate_indexes[i] = -1;
+		for(unsigned int i=0; i < obstacles.size(); ++i) aggregate_indexes[i] = -1;
 
 		// first create all aggregations
-		for(unsigned int i=0; i<obstacles.size(); ++i)
+		for(unsigned int i=0; i < obstacles.size(); ++i)
 		{
-			for(unsigned int j=i+1; j<obstacles.size(); ++j)
+			for(unsigned int j=i+1; j < obstacles.size(); ++j)
 			{
 				if(obstacles[i]->is_intersecting(*obstacles[j]))
 				{	
 					if(aggregate_indexes[i] != -1 && aggregate_indexes[j] == -1)
 					{
-						static_cast<Aggregate*>(aggregated_obstacles[aggregate_indexes[i]].get())->add_primitive(obstacles[j]);
+						static_cast<Aggregate*>(aggregated_obstacles[aggregate_indexes[i]].get())->add_primitive(obstacles[j], false);
 						aggregate_indexes[j] = aggregate_indexes[i];
 					}
 					else if(aggregate_indexes[j] != -1 && aggregate_indexes[i] == -1)
 					{
-						static_cast<Aggregate*>(aggregated_obstacles[aggregate_indexes[j]].get())->add_primitive(obstacles[i]);
+						static_cast<Aggregate*>(aggregated_obstacles[aggregate_indexes[j]].get())->add_primitive(obstacles[i], false);
 						aggregate_indexes[i] = aggregate_indexes[j];
 					}
 					else
@@ -55,7 +55,7 @@ namespace DynamicObstacleAvoidance
 							{
 								if(aggregate_indexes[k] == old_index)
 								{
-									static_cast<Aggregate*>(aggregated_obstacles[new_index].get())->add_primitive(obstacles[k]);
+									static_cast<Aggregate*>(aggregated_obstacles[new_index].get())->add_primitive(obstacles[k], false);
 									aggregate_indexes[k] = new_index;
 								}
 							}
@@ -66,8 +66,11 @@ namespace DynamicObstacleAvoidance
 			}
 		}
 
+		// update all star hulls
+		for(auto &o: aggregated_obstacles) static_cast<Aggregate&>(*o).update_hull();
+
 		// finally add all remaining obstacles
-		for(unsigned int i=0; i<aggregate_indexes.size(); ++i)
+		for(unsigned int i=0; i < aggregate_indexes.size(); ++i)
 		{
 			if(aggregate_indexes[i] == -1) aggregated_obstacles.push_back(obstacles[i]->clone());
 		}

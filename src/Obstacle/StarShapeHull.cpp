@@ -2,8 +2,8 @@
 
 namespace DynamicObstacleAvoidance
 {
-	StarShapeHull::StarShapeHull(unsigned int resolution, const std::string& name):
-	Obstacle(name, 0.1), resolution(resolution)
+	StarShapeHull::StarShapeHull(bool is_inside, unsigned int resolution):
+	Obstacle("", 0.1), is_inside(is_inside)
 	{
 		this->set_type("StarShapeHull");
 		this->set_resolution(resolution);
@@ -11,8 +11,8 @@ namespace DynamicObstacleAvoidance
 		this->initialize_regressor_parameters();
 	}
 
-	StarShapeHull::StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, unsigned int resolution, const std::string& name):
-	Obstacle(name)
+	StarShapeHull::StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, bool is_inside, unsigned int resolution):
+	Obstacle("", 0.1), is_inside(is_inside)
 	{
 		this->set_type("StarShapeHull");
 		this->set_resolution(resolution);
@@ -89,7 +89,16 @@ namespace DynamicObstacleAvoidance
 			if(!intersection_points.empty())
 			{
 				// sort the intersection points in descending radius
-				std::sort(std::begin(intersection_points), std::end(intersection_points), [](const Eigen::Vector3d& lhs, const Eigen::Vector3d& rhs){return lhs(0) > rhs(0);});
+				if(this->is_inside)
+				{
+					// if we are computing the inside hull then we need the closest point
+					std::sort(std::begin(intersection_points), std::end(intersection_points), [](const Eigen::Vector3d& lhs, const Eigen::Vector3d& rhs){return lhs(0) < rhs(0);});
+				}
+				else
+				{
+					// if we are computing the outside hull then we need the furthest one
+					std::sort(std::begin(intersection_points), std::end(intersection_points), [](const Eigen::Vector3d& lhs, const Eigen::Vector3d& rhs){return lhs(0) > rhs(0);});
+				}
 				unsigned int k = 0;
 				while(k < intersection_points.size() and ((abs(intersection_points[k](2) - phi[i]) > 1e-4) and (abs((intersection_points[k](2) - 2*M_PI) - phi[i]) > 1e-4))) ++k;
 				surface_point = (k < intersection_points.size()) ? intersection_points[k] : surface_point;
