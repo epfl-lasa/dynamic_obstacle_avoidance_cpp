@@ -47,6 +47,7 @@ namespace DynamicObstacleAvoidance
 
 	void Aggregate::update_hull()
 	{
+		this->inside_hull.compute_from_primitives(this->primitives, this->get_reference_position());
 		this->outside_hull.compute_from_primitives(this->primitives, this->get_reference_position());
 	}
 
@@ -66,12 +67,26 @@ namespace DynamicObstacleAvoidance
 
 	Eigen::Vector3d Aggregate::compute_normal_to_agent(const Agent& agent) const
 	{
-		return this->outside_hull.compute_normal_to_agent(agent);
+		if(this->outside_hull.point_is_inside(agent.get_position()))
+		{
+			return this->inside_hull.compute_normal_to_agent(agent);
+		}
+		else
+		{
+			return this->outside_hull.compute_normal_to_agent(agent);
+		}
 	}
 
 	double Aggregate::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const
 	{
-		return this->outside_hull.compute_distance_to_point(point, safety_margin);
+		if(this->outside_hull.point_is_inside(point))
+		{
+			return this->inside_hull.compute_distance_to_point(point, safety_margin);
+		}
+		else
+		{
+			return this->outside_hull.compute_distance_to_point(point, safety_margin);
+		}
 	}
 
 	void Aggregate::draw(const std::string& color) const
@@ -82,6 +97,7 @@ namespace DynamicObstacleAvoidance
 		}
 		plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, "bx");
 		this->outside_hull.draw();
+		this->inside_hull.draw();
 	}
 
 	Aggregate* Aggregate::implicit_clone() const

@@ -86,6 +86,8 @@ namespace DynamicObstacleAvoidance
 		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point, double min_radius=0.1);
 
 		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, double min_radius=0.1);
+
+		bool point_is_inside(const Eigen::Vector3d& point) const;
 	};
 
 	inline void StarShapeHull::set_resolution(unsigned int resolution)

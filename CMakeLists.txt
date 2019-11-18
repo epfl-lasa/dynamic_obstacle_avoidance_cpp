@@ -148,6 +148,11 @@ target_link_libraries(runTestSingleConfiguration
 	${PROJECT_NAME}
 )
 
+add_executable(runTestWall tests/testWall.cpp)
+target_link_libraries(runTestWall
+	${PROJECT_NAME}
+)
+
 add_executable(runTestKIT tests/testKIT.cpp)
 target_link_libraries(runTestKIT
 	${PROJECT_NAME}

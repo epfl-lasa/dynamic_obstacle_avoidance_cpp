@@ -126,7 +126,11 @@ namespace DynamicObstacleAvoidance
 	{
 		Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * point);
 		Eigen::Vector3d surface_point = this->predict_surface_point(polar_point(2));
-		double distance = (polar_point(0) - (surface_point(0) + safety_margin)) + 1;
+		double distance;
+		if(this->is_inside)
+			distance = ((surface_point(0) - safety_margin) - polar_point(0)) + 1;
+		else
+			distance = (polar_point(0) - (surface_point(0) + safety_margin)) + 1;
 		return distance;
 	}
 
@@ -193,5 +197,12 @@ namespace DynamicObstacleAvoidance
 		sample << cos(angle), sin(angle);
 		std::tie(mu, sigma) = this->surface_regressor.query(sample);
 		return Eigen::Vector3d(mu[0], acos(0), angle);
+	}
+
+	bool StarShapeHull::point_is_inside(const Eigen::Vector3d& point) const
+	{
+		Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * point);
+		Eigen::Vector3d surface_point = this->predict_surface_point(polar_point(2));
+		return polar_point[0] < surface_point[0];
 	}
 }
