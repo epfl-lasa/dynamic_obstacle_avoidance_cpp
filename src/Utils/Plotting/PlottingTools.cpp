@@ -73,5 +73,6 @@ namespace DynamicObstacleAvoidance
 		{
 			plt::show();
 		}
+		plt::close();
 	}
 }
