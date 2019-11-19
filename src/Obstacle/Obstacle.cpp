@@ -102,4 +102,10 @@ namespace DynamicObstacleAvoidance
 	{
 		std::cerr << "Fonction sample_from_parameterization of abstract class obstacle used" << std::endl;
 	}
+
+	bool Obstacle::point_is_inside(const Eigen::Vector3d& point) const
+	{
+		std::cerr << "Fonction point_is_inside of abstract class obstacle used" << std::endl;
+		return false;
+	}
 }

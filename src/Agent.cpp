@@ -41,4 +41,16 @@ namespace DynamicObstacleAvoidance
 		safety_envelope.set_axis_lengths(Eigen::Vector3d(margin, margin, margin));
 		return safety_envelope.is_intersecting(obstacle);
 	}
+
+	bool Agent::exist_path(const Eigen::Vector3d& target, const std::deque<std::unique_ptr<Obstacle> >& obstacles) const
+	{
+		bool path_exists = true;
+		// loop through all the obstacles until you see an aggregate
+		for(auto& o : obstacles)
+		{
+			// there is no path if either target or agent is inside and the other not
+			path_exists &= ((o->point_is_inside(target) && o->point_is_inside(this->get_position())) || (!o->point_is_inside(target) && !o->point_is_inside(this->get_position())));
+		}
+		return path_exists;
+	}
 }

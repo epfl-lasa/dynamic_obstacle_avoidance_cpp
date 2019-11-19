@@ -178,6 +178,8 @@ namespace DynamicObstacleAvoidance
 		virtual double get_repulsion_factor(const Agent& agent) const;
 
 		virtual Eigen::MatrixXd sample_from_parameterization(unsigned int nb_samples, bool is_include_safety_margin) const;
+
+		virtual bool point_is_inside(const Eigen::Vector3d& point) const;
 	};
 }
 #endif

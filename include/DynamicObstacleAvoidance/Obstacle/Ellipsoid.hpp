@@ -69,7 +69,7 @@ namespace DynamicObstacleAvoidance
 
 		Eigen::MatrixXd sample_from_parameterization(unsigned int nb_samples, bool is_include_safety_margin) const;
 
-		bool is_inside(const Eigen::Vector3d& point) const;
+		bool point_is_inside(const Eigen::Vector3d& point) const;
 	};
 
 	inline const Eigen::Array3d& Ellipsoid::get_axis_lengths() const 

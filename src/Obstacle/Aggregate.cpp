@@ -67,7 +67,7 @@ namespace DynamicObstacleAvoidance
 
 	Eigen::Vector3d Aggregate::compute_normal_to_agent(const Agent& agent) const
 	{
-		if(this->outside_hull.point_is_inside(agent.get_position()))
+		if(this->point_is_inside(agent.get_position()))
 		{
 			return this->inside_hull.compute_normal_to_agent(agent);
 		}
@@ -79,7 +79,7 @@ namespace DynamicObstacleAvoidance
 
 	double Aggregate::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const
 	{
-		if(this->outside_hull.point_is_inside(point))
+		if(this->point_is_inside(point))
 		{
 			return this->inside_hull.compute_distance_to_point(point, safety_margin);
 		}
@@ -101,5 +101,10 @@ namespace DynamicObstacleAvoidance
 	}
 
 	Aggregate* Aggregate::implicit_clone() const
-	{}	
+	{}
+
+	bool Aggregate::point_is_inside(const Eigen::Vector3d& point) const
+	{
+		return this->outside_hull.point_is_inside(point);
+	}
 }

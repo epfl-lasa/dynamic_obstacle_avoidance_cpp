@@ -49,6 +49,8 @@ namespace DynamicObstacleAvoidance
 		std::ostream& print(std::ostream& os) const override;
 
 		void update_hull();
+
+		bool point_is_inside(const Eigen::Vector3d& point) const;
 	};
 
 	inline const auto& Aggregate::get_primitives() const

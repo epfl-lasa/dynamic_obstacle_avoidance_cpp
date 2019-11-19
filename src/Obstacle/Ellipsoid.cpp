@@ -103,7 +103,7 @@ namespace DynamicObstacleAvoidance
 		plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, color + "x");
 	}
 
-	bool Ellipsoid::is_inside(const Eigen::Vector3d& point) const
+	bool Ellipsoid::point_is_inside(const Eigen::Vector3d& point) const
 	{
 		Eigen::Array3d lengths = this->get_axis_lengths() + this->get_safety_margin();
 		Eigen::Vector3d transformed_point = this->get_pose().inverse() * point;
@@ -115,11 +115,11 @@ namespace DynamicObstacleAvoidance
 	{
 		bool intersecting = false;
 		// first check that center points satisfy equations of the other
-		if(this->is_inside(other_obstacle.get_position()))
+		if(this->point_is_inside(other_obstacle.get_position()))
 		{
 			intersecting = true;
 		}
-		else if(other_obstacle.is_inside(this->get_position()))
+		else if(other_obstacle.point_is_inside(this->get_position()))
 		{
 			intersecting = true;
 		}
@@ -132,7 +132,7 @@ namespace DynamicObstacleAvoidance
 			int i = 0;
 			while(!intersecting && i<samples.cols())
 			{
-				intersecting = this->is_inside(samples.col(i));
+				intersecting = this->point_is_inside(samples.col(i));
 				++i;
 			}
 		}

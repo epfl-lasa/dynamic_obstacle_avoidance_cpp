@@ -128,6 +128,8 @@ namespace DynamicObstacleAvoidance
 		}
 
 		bool in_obstacle(const Obstacle& obstacle) const;
+
+		bool exist_path(const Eigen::Vector3d& target, const std::deque<std::unique_ptr<Obstacle> >& obstacles) const;
 	};
 }
 #endif
