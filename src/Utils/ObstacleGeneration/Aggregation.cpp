@@ -39,8 +39,8 @@ namespace DynamicObstacleAvoidance
 						}
 						else if(aggregate_indexes[i] != aggregate_indexes[j])
 						{
-							unsigned int old_index;
-							unsigned int new_index;
+							int old_index;
+							int new_index;
 							if(aggregate_indexes[i] < aggregate_indexes[j])
 							{
 								old_index = aggregate_indexes[j];
@@ -51,12 +51,17 @@ namespace DynamicObstacleAvoidance
 								old_index = aggregate_indexes[i];
 								new_index = aggregate_indexes[j];
 							}
+
 							for(unsigned int k=0; k < obstacles.size(); ++k)
 							{
 								if(aggregate_indexes[k] == old_index)
 								{
 									static_cast<Aggregate*>(aggregated_obstacles[new_index].get())->add_primitive(obstacles[k], false);
 									aggregate_indexes[k] = new_index;
+								}
+								else if(aggregate_indexes[k] > old_index)
+								{
+									aggregate_indexes[k] -= 1;
 								}
 							}
 							aggregated_obstacles.erase(aggregated_obstacles.begin() + old_index);
