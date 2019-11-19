@@ -86,6 +86,7 @@ namespace DynamicObstacleAvoidance
 				}
 			}
 			Eigen::Vector3d surface_point = Eigen::Vector3d(min_radius, acos(0), phi[i]);
+			double safety;
 			if(!intersection_points.empty())
 			{
 				// sort the intersection points in descending radius
@@ -93,18 +94,20 @@ namespace DynamicObstacleAvoidance
 				{
 					// if we are computing the inside hull then we need the closest point
 					std::sort(std::begin(intersection_points), std::end(intersection_points), [](const Eigen::Vector3d& lhs, const Eigen::Vector3d& rhs){return lhs(0) < rhs(0);});
+					safety = -this->get_safety_margin();
 				}
 				else
 				{
 					// if we are computing the outside hull then we need the furthest one
 					std::sort(std::begin(intersection_points), std::end(intersection_points), [](const Eigen::Vector3d& lhs, const Eigen::Vector3d& rhs){return lhs(0) > rhs(0);});
+					safety = this->get_safety_margin();
 				}
 				unsigned int k = 0;
 				while(k < intersection_points.size() and ((abs(intersection_points[k](2) - phi[i]) > 1e-4) and (abs((intersection_points[k](2) - 2*M_PI) - phi[i]) > 1e-4))) ++k;
 				surface_point = (k < intersection_points.size()) ? intersection_points[k] : surface_point;
+				surface_point(0) += safety;
 				surface_point(0) = std::max(min_radius, surface_point(0));
 			}
-			surface_point += Eigen::Vector3d(this->get_safety_margin(), 0, 0);
 			this->polar_surface_points.col(i) = surface_point;
 			this->cartesian_surface_points.col(i) = this->get_pose() * MathTools::polar_to_cartesian(surface_point);
 		}
