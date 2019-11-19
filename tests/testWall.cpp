@@ -29,20 +29,20 @@ int main(int, char*[])
 	srand(seed);
 
 	// generate the list of obstacles
-	Eigen::Vector3d position_o1(0, 8, 0);
-	Eigen::Vector3d position_o2(0, -3, 0);
-	Eigen::Vector3d position_o3(8, 0, 0);
+	Eigen::Vector3d position_o1(-5, 4, 0);
+	Eigen::Vector3d position_o2(-5, -4, 0);
+	Eigen::Vector3d position_o3(-2, 0, 0);
 	Eigen::Vector3d position_o4(-8, 0, 0);
 
-	auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1));
-	auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2));
-	auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3));
-	auto ptrE4 = std::make_unique<Ellipsoid>(State(position_o4));
+	auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1), 0.1, "e1");
+	auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2), 0.1, "e2");
+	auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3), 0.1, "e3");
+	auto ptrE4 = std::make_unique<Ellipsoid>(State(position_o4), 0.1, "e4");
 
-	ptrE1->set_axis_lengths(Eigen::Array3d(10, 1, 0));
-	ptrE2->set_axis_lengths(Eigen::Array3d(10, 1, 0));
-	ptrE3->set_axis_lengths(Eigen::Array3d(1, 10, 0));
-	ptrE4->set_axis_lengths(Eigen::Array3d(1, 10, 0));
+	ptrE1->set_axis_lengths(Eigen::Array3d(3.5, 1, 0));
+	ptrE2->set_axis_lengths(Eigen::Array3d(3.5, 1, 0));
+	ptrE3->set_axis_lengths(Eigen::Array3d(1, 3.5, 0));
+	ptrE4->set_axis_lengths(Eigen::Array3d(1, 3.5, 0));
 
 	std::deque<std::unique_ptr<Obstacle> > obstacle_list;
 	obstacle_list.push_back(std::move(ptrE1));
@@ -54,12 +54,12 @@ int main(int, char*[])
 	std::deque<std::unique_ptr<Obstacle> > aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
 
 	// create the agent
-	Eigen::Vector3d agent_position(MathTools::rand_float(5, -5), 6, 0);
+	Eigen::Vector3d agent_position(-4, 0, 0);
 	State agent_state(agent_position);
 	Agent agent(agent_state, 0.1);
 
 	// create the target
-	Eigen::Vector3d target_position(MathTools::rand_float(5, -5), -6, 0);
+	Eigen::Vector3d target_position(5, MathTools::rand_float(8, -8), 0);
 	std::deque<Eigen::Vector3d> position_history;
 
 	if(debug) 
@@ -76,14 +76,22 @@ int main(int, char*[])
 	for(int i=0; i<nb_steps; ++i)
 	{
 		Eigen::Vector3d current_position = agent.get_position();
-		position_history.push_back(current_position);
 
-		Eigen::Vector3d desired_velocity = -Kp * (current_position - target_position);
-		agent.set_linear_velocity(desired_velocity);
+		if(agent.exist_path(target_position, aggregated_obstacle_list))
+		{
+			position_history.push_back(current_position);
 
-		Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, aggregated_obstacle_list);
-		Eigen::Vector3d modulated_position = current_position + dt * modulated_velocity;
-		agent.set_position(modulated_position);
+			Eigen::Vector3d desired_velocity = -Kp * (current_position - target_position);
+			agent.set_linear_velocity(desired_velocity);
+
+			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, aggregated_obstacle_list);
+			Eigen::Vector3d modulated_position = current_position + dt * modulated_velocity;
+			agent.set_position(modulated_position);
+		}
+		else
+		{
+			std::cout << "No path to target!" << std::endl;
+		}
 
 		if(plot_steps)
 		{	
