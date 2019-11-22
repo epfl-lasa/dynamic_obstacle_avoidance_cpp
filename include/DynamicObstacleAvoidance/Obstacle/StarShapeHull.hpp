@@ -35,25 +35,30 @@ namespace DynamicObstacleAvoidance
 	struct GPParams {
 	    struct kernel_exp {
 	        BO_PARAM(double, sigma_sq, 1.0);
-	        BO_PARAM(double, l, 0.2);
+	        BO_PARAM(double, l, 1.0);
 	    };
 	    struct kernel : public defaults::kernel {
+	    	BO_PARAM(bool, optimize_noise, true);
+	    	// BO_PARAM(double, noise, 0.2);
 	    };
 	    struct kernel_squared_exp_ard : public defaults::kernel_squared_exp_ard {
 	    };
 	    struct opt_rprop : public defaults::opt_rprop {
+	    	BO_PARAM(double, eps_stop, 1e-4);
+	    	BO_PARAM(int, iterations, 20);
 	    };
 	};
 
-	using Kernel_t = kernel::Exp<GPParams>;
+	using Kernel_t = kernel::SquaredExpARD<GPParams>;
     using Mean_t = mean::Data<GPParams>;
-    using GP_t = model::GP<GPParams, Kernel_t, Mean_t>;
+    using GP_t = model::GP<GPParams, Kernel_t, Mean_t, model::gp::KernelLFOpt<GPParams>>;
 
 	class StarShapeHull: public Obstacle
 	{
 	private:
 		bool is_inside;
 		unsigned int resolution;
+		double min_radius;
 		Eigen::MatrixXd cartesian_surface_points;
 		Eigen::MatrixXd polar_surface_points;
 		GP_t surface_regressor;
@@ -69,11 +74,13 @@ namespace DynamicObstacleAvoidance
 		Eigen::Vector3d predict_surface_point(double angle) const;
 
 	public:
-		explicit StarShapeHull(bool is_inside=false, unsigned int resolution=400);
+		explicit StarShapeHull(bool is_inside=false, unsigned int resolution=400, double min_radius=0.5);
 
-		explicit StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, bool is_inside=false, unsigned int resolution=400);
+		explicit StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, bool is_inside=false, unsigned int resolution=400, double min_radius=0.5);
 
 		~StarShapeHull();
+
+		double get_min_radius() const;
 
 		Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
 
@@ -83,12 +90,19 @@ namespace DynamicObstacleAvoidance
 
 		void set_resolution(unsigned int resolution);
 
-		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point, double min_radius=0.1);
+		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point);
 
-		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, double min_radius=0.1);
+		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives);
 
 		bool point_is_inside(const Eigen::Vector3d& point) const;
+
+		bool is_closed() const;
 	};
+
+	inline double StarShapeHull::get_min_radius() const
+	{
+		return this->min_radius;
+	}
 
 	inline void StarShapeHull::set_resolution(unsigned int resolution)
 	{

@@ -26,7 +26,8 @@ int main(int, char*[])
 	bool debug = false;
 	bool plot_steps = false;
 
-	unsigned int nb_obstacles = 10;
+	unsigned int nb_obstacles = 3;
+	bool aggregated = false;
 
 	for(unsigned int k=0; k<nb_simulations; ++k)
 	{
@@ -76,16 +77,17 @@ int main(int, char*[])
 			Eigen::Vector3d desired_velocity = -Kp * (current_position - target_position);
 			agent.set_linear_velocity(desired_velocity);
 
-			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, aggregated_obstacle_list);
+			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, (aggregated ? aggregated_obstacle_list : obstacle_list));
 			Eigen::Vector3d modulated_position = current_position + dt * modulated_velocity;
 			agent.set_position(modulated_position);
 
 			if(plot_steps)
 			{	
-				PlottingTools::plot_configuration(agent, obstacle_list, target_position, position_history, "test_" + std::to_string(k) + "_seed_" + std::to_string(seed) + "_step_" + std::to_string(i), is_show);
+				PlottingTools::plot_configuration(agent, (aggregated ? aggregated_obstacle_list : obstacle_list), target_position, position_history, "test_" + std::to_string(k) + "_seed_" + std::to_string(seed) + "_step_" + std::to_string(i), is_show);
 			}
 		}
 
-		PlottingTools::plot_configuration(agent, aggregated_obstacle_list, target_position, position_history, "test_" + std::to_string(k) + "_seed_" + std::to_string(seed), is_show);
+		//PlottingTools::plot_configuration(agent, (aggregated ? aggregated_obstacle_list : obstacle_list), target_position, position_history, "test_" + std::to_string(k) + "_seed_" + std::to_string(seed), is_show);
+		PlottingTools::plot_configuration((aggregated ? aggregated_obstacle_list : obstacle_list), "test_seed_" + std::to_string(seed), is_show);
 	}
 }	

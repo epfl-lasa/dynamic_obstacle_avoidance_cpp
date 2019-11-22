@@ -25,6 +25,8 @@ namespace DynamicObstacleAvoidance
 		void plot_fitted_clusters(const std::deque<Eigen::MatrixXd>& clusters, const std::deque<std::unique_ptr<Obstacle> >& obstacles, bool is_show=true);
 
 		void plot_configuration(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile="", const bool& is_show=true);
+	
+		void plot_configuration(const std::deque<std::unique_ptr<Obstacle> >& obstacles, const std::string& savefile="", const bool& is_show=true);
 	}
 }
 

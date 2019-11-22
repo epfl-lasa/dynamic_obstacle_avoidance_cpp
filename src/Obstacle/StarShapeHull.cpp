@@ -2,8 +2,8 @@
 
 namespace DynamicObstacleAvoidance
 {
-	StarShapeHull::StarShapeHull(bool is_inside, unsigned int resolution):
-	Obstacle("", 0.1), is_inside(is_inside)
+	StarShapeHull::StarShapeHull(bool is_inside, unsigned int resolution, double min_radius):
+	Obstacle("", 0.2), is_inside(is_inside), min_radius(min_radius)
 	{
 		this->set_type("StarShapeHull");
 		this->set_resolution(resolution);
@@ -11,14 +11,10 @@ namespace DynamicObstacleAvoidance
 		this->initialize_regressor_parameters();
 	}
 
-	StarShapeHull::StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, bool is_inside, unsigned int resolution):
-	Obstacle("", 0.1), is_inside(is_inside)
+	StarShapeHull::StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, bool is_inside, unsigned int resolution, double min_radius):
+	StarShapeHull(is_inside, resolution, min_radius)
 	{
-		this->set_type("StarShapeHull");
-		this->set_resolution(resolution);
 		this->compute_from_primitives(primitives);
-		// set parameters for the regressor
-		this->initialize_regressor_parameters();
 	}
 
 	StarShapeHull::~StarShapeHull()
@@ -35,15 +31,15 @@ namespace DynamicObstacleAvoidance
         return result;
     }
 
-    void StarShapeHull::compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, double min_radius)
+    void StarShapeHull::compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives)
     {
     	// first set the reference point
 		Eigen::Vector3d reference_point = this->compute_baricenter(primitives);
 		// then compute the hull
-		this->compute_from_primitives(primitives, reference_point, min_radius);
+		this->compute_from_primitives(primitives, reference_point);
 	}
 
-	void StarShapeHull::compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point, double min_radius)
+	void StarShapeHull::compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point)
 	{
 		this->set_reference_position(reference_point);
 		this->set_position(reference_point);
@@ -85,7 +81,7 @@ namespace DynamicObstacleAvoidance
 					intersection_points.push_back(MathTools::cartesian_to_polar(this->get_pose().inverse() * o->get_pose() * p2));
 				}
 			}
-			Eigen::Vector3d surface_point = Eigen::Vector3d(min_radius, acos(0), phi[i]);
+			Eigen::Vector3d surface_point = Eigen::Vector3d(this->min_radius, acos(0), phi[i]);
 			double safety;
 			if(!intersection_points.empty())
 			{
@@ -106,7 +102,12 @@ namespace DynamicObstacleAvoidance
 				while(k < intersection_points.size() and ((abs(intersection_points[k](2) - phi[i]) > 1e-4) and (abs((intersection_points[k](2) - 2*M_PI) - phi[i]) > 1e-4))) ++k;
 				surface_point = (k < intersection_points.size()) ? intersection_points[k] : surface_point;
 				surface_point(0) += safety;
-				surface_point(0) = std::max(min_radius, surface_point(0));
+				surface_point(0) = std::max(this->min_radius, surface_point(0));
+
+				if(i > 0)
+				{
+					surface_point(0) = 0.95 * surface_point(0) + 0.05 * this->polar_surface_points.col(i)(0);
+				}
 			}
 			this->polar_surface_points.col(i) = surface_point;
 			this->cartesian_surface_points.col(i) = this->get_pose() * MathTools::polar_to_cartesian(surface_point);
@@ -153,6 +154,16 @@ namespace DynamicObstacleAvoidance
 
 		plt::plot(x, y, color + "-");
 
+		x.clear();
+		y.clear();
+		for (unsigned int i=0; i<this->resolution; ++i)
+		{		
+			x.push_back(this->cartesian_surface_points.col(i)(0));
+			y.push_back(this->cartesian_surface_points.col(i)(1));
+		}
+
+		plt::plot(x, y, color + "--");
+
 		if(this->get_name() == "")
 		{
 			plt::plot({this->get_position()(0)}, {this->get_position()(1)}, color + "o");
@@ -178,8 +189,12 @@ namespace DynamicObstacleAvoidance
 
 		for(unsigned int i = 0; i < this->resolution; ++i)
 		{
-			samples[i] = Eigen::VectorXd(2);
-			samples[i] << cos(surface_points.col(i)(2)), sin(surface_points.col(i)(2));
+			//samples[i] = Eigen::VectorXd(2);
+			//samples[i] << cos(surface_points.col(i)(2)), sin(surface_points.col(i)(2));
+			
+			samples[i] = Eigen::VectorXd(1);
+			samples[i] << surface_points.col(i)(2);
+
 			observations[i] = Eigen::VectorXd(1);
 			observations[i] << surface_points.col(i)(0);
 		}
@@ -189,15 +204,21 @@ namespace DynamicObstacleAvoidance
 	void StarShapeHull::train_surface_regressor(const Eigen::MatrixXd& surface_points)
 	{
 		auto data = this->extract_regressor_data(this->polar_surface_points);
-		this->surface_regressor.compute(data.first, data.second);
+		this->surface_regressor.compute(data.first, data.second, false);
+		this->surface_regressor.optimize_hyperparams();
 	}
 
 	Eigen::Vector3d StarShapeHull::predict_surface_point(double angle) const
 	{
 		Eigen::VectorXd mu;
 		double sigma;
-		Eigen::VectorXd sample(2);
-		sample << cos(angle), sin(angle);
+
+		//Eigen::VectorXd sample(2);
+		//sample << cos(angle), sin(angle);
+		
+		Eigen::VectorXd sample(1);
+		sample << angle;
+
 		std::tie(mu, sigma) = this->surface_regressor.query(sample);
 		return Eigen::Vector3d(mu[0], acos(0), angle);
 	}
@@ -207,5 +228,11 @@ namespace DynamicObstacleAvoidance
 		Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * point);
 		Eigen::Vector3d surface_point = this->predict_surface_point(polar_point(2));
 		return polar_point[0] < surface_point[0];
+	}
+
+	bool StarShapeHull::is_closed() const
+	{
+		double min_radius_point = this->polar_surface_points.row(0).minCoeff();
+		return min_radius_point > (this->min_radius + this->get_safety_margin());
 	}
 }
