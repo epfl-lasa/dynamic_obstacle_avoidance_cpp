@@ -47,7 +47,7 @@ int main(int, char*[])
 	auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2), 0.1, "w2");
 	auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3), 0.1, "w3");
 	auto ptrE4 = std::make_unique<Ellipsoid>(State(position_o4), 0.1, "w4");
-	auto ptrE5 = std::make_unique<Ellipsoid>(State(position_o5), 0.1, "w5");
+	auto ptrE5 = std::make_unique<Ellipsoid>(State(position_o5), 0.5, "w5");
 	auto ptrE6 = std::make_unique<Ellipsoid>(State(position_o6, orientation_o6),  0.1, "desk");
 	auto ptrE7 = std::make_unique<Ellipsoid>(State(position_o7), 0.1, "chair");
 	auto ptrE8 = std::make_unique<Ellipsoid>(State(position_o8), 0.1, "table");
@@ -118,11 +118,13 @@ int main(int, char*[])
 		//aggregated_obstacle_list[0]->set_reference_position(aggregate_reference_position);
 		//static_cast<Aggregate*>(aggregated_obstacle_list[0].get())->update_hull();
 
+		Eigen::Vector3d previous_vel = Eigen::Vector3d::Zero();
 		if(agent.exist_path(target_position, aggregated_obstacle_list))
 		{
 			position_history.push_back(current_position);
 
 			Eigen::Vector3d desired_velocity = -Kp * (current_position - target_position);
+			//agent.set_linear_velocity(0.99 * desired_velocity + 0.1 * previous_vel);
 			agent.set_linear_velocity(desired_velocity);
 
 			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, aggregated_obstacle_list);
@@ -130,10 +132,14 @@ int main(int, char*[])
 
 			Eigen::Vector3d modulated_position = current_position + dt * modulated_velocity;
 			agent.set_position(modulated_position);
+
+			previous_vel = desired_velocity;
 		}
 		else
 		{
 			std::cout << "No path to target!" << std::endl;
+			previous_vel = Eigen::Vector3d::Zero();
+			agent.set_linear_velocity(previous_vel);
 		}
 
 		if(plot_steps)

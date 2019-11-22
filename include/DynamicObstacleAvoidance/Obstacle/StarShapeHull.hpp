@@ -65,13 +65,15 @@ namespace DynamicObstacleAvoidance
 
 		Eigen::Vector3d compute_baricenter(const std::deque<std::unique_ptr<Obstacle> >& primitives);
 
-		void initialize_regressor_parameters(double sigma=0.1, double epsilon=0.1, double constraint_cost=10);
+		void initialize_regressor_parameters();
 
-		std::pair<std::vector<Eigen::VectorXd>, std::vector<Eigen::VectorXd> > extract_regressor_data(const Eigen::MatrixXd& surface_points) const;
+		std::pair<std::vector<Eigen::VectorXd>, std::vector<Eigen::VectorXd> > extract_regressor_data() const;
 
-		void train_surface_regressor(const Eigen::MatrixXd& surface_points);
+		void train_surface_regressor();
 
-		Eigen::Vector3d predict_surface_point(double angle) const;
+		Eigen::Vector3d predict_cartesian_point(double angle) const;
+
+		Eigen::Vector3d predict_polar_point(double angle) const;
 
 	public:
 		explicit StarShapeHull(bool is_inside=false, unsigned int resolution=400, double min_radius=0.5);

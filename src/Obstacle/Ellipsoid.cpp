@@ -90,7 +90,7 @@ namespace DynamicObstacleAvoidance
 			y_safety.at(i) = safety_length(0) * cos(a) * sin(theta) + safety_length(1) * sin(a) * cos(theta) + this->get_position()(1);
 		}
 		plt::plot(x, y, color + "-");
-		plt::plot(x_safety, y_safety, color + "-");
+		plt::plot(x_safety, y_safety, color + "--");
 
 		if(this->get_name() == "")
 		{
