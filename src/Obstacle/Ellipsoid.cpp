@@ -90,7 +90,7 @@ namespace DynamicObstacleAvoidance
 			y_safety.at(i) = safety_length(0) * cos(a) * sin(theta) + safety_length(1) * sin(a) * cos(theta) + this->get_position()(1);
 		}
 		plt::plot(x, y, color + "-");
-		plt::plot(x_safety, y_safety, color + "--");
+		//plt::plot(x_safety, y_safety, color + "--");
 
 		if(this->get_name() == "")
 		{
@@ -166,17 +166,14 @@ namespace DynamicObstacleAvoidance
 		return samples;
 	}
 
-	double Ellipsoid::get_repulsion_factor(const Agent& agent) const
-	{
-		Eigen::Vector3d transformed_point = this->get_pose().inverse() * agent.get_position();
-		Eigen::Array3d lengths = this->get_axis_lengths() + this->get_safety_margin() + agent.get_safety_margin();
-		double eq_value = ((transformed_point(0) * transformed_point(0)) / (lengths(0) * lengths(0))) + ((transformed_point(1) * transformed_point(1)) / (lengths(1) * lengths(1)));
-		return 1 - eq_value;
-	}
-
 	double Ellipsoid::area(bool is_include_safety_margin) const
 	{
 		Eigen::Array3d lengths = (is_include_safety_margin) ? this->get_axis_lengths() + this->get_safety_margin() : this->get_axis_lengths();
 		return 4 * M_PI * (pow((pow(lengths(0), 1.6) + pow(lengths(1), 1.6) + pow(lengths(2), 1.6))/3, 1/1.6));
+	}
+
+	Eigen::Vector3d Ellipsoid::compute_repulsion_vector(const Agent& agent) const
+	{
+		return this->get_repulsion_factor(agent) * (agent.get_position() - this->get_reference_position());
 	}
 }

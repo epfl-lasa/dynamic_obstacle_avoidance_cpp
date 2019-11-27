@@ -3,7 +3,7 @@
 namespace DynamicObstacleAvoidance
 {
 	StarShapeHull::StarShapeHull(bool is_inside, unsigned int resolution, double min_radius):
-	Obstacle("", 0), is_inside(is_inside), min_radius(min_radius)
+	Obstacle("", 0.2), is_inside(is_inside), min_radius(min_radius)
 	{
 		this->set_type("StarShapeHull");
 		this->set_resolution(resolution);
@@ -82,7 +82,7 @@ namespace DynamicObstacleAvoidance
 				}
 			}
 			Eigen::Vector3d surface_point = Eigen::Vector3d(this->min_radius, acos(0), phi[i]);
-			double safety;
+			double safety = this->is_inside ? -this->get_safety_margin() : this->get_safety_margin();
 			if(!intersection_points.empty())
 			{
 				// sort the intersection points in descending radius
@@ -90,49 +90,70 @@ namespace DynamicObstacleAvoidance
 				{
 					// if we are computing the inside hull then we need the closest point
 					std::sort(std::begin(intersection_points), std::end(intersection_points), [](const Eigen::Vector3d& lhs, const Eigen::Vector3d& rhs){return lhs(0) < rhs(0);});
-					safety = -this->get_safety_margin();
 				}
 				else
 				{
 					// if we are computing the outside hull then we need the furthest one
 					std::sort(std::begin(intersection_points), std::end(intersection_points), [](const Eigen::Vector3d& lhs, const Eigen::Vector3d& rhs){return lhs(0) > rhs(0);});
-					safety = this->get_safety_margin();
 				}
 				unsigned int k = 0;
 				while(k < intersection_points.size() and ((abs(intersection_points[k](2) - phi[i]) > 1e-4) and (abs((intersection_points[k](2) - 2*M_PI) - phi[i]) > 1e-4))) ++k;
 				surface_point = (k < intersection_points.size()) ? intersection_points[k] : surface_point;
-				surface_point(0) += safety;
-				surface_point(0) = std::max(this->min_radius, surface_point(0));
-
-				if(i > 0)
-				{
-					surface_point(0) = 0.95 * surface_point(0) + 0.05 * this->polar_surface_points.col(i)(0);
-				}
+			}
+			surface_point(0) += safety;
+			surface_point(0) = std::max(this->min_radius, surface_point(0));
+			// smooth function
+			if(i > 1)
+			{
+				this->polar_surface_points.col(i-1)(0) = 0.9 * this->polar_surface_points.col(i-1)(0) + \
+				                                         0.05 * this->polar_surface_points.col(i-2)(0) + \
+				                                         0.05 * this->polar_surface_points.col(i)(0);
 			}
 			this->polar_surface_points.col(i) = surface_point;
-			this->cartesian_surface_points.col(i) = this->get_pose() * MathTools::polar_to_cartesian(surface_point);
+		}
+		// smooth 0 point with the last one
+		this->polar_surface_points.col(0)(0) = 0.9 * this->polar_surface_points.col(0)(0) + \
+					                           0.05 * this->polar_surface_points.col(this->resolution-1)(0) + \
+					                           0.05 * this->polar_surface_points.col(1)(0);
+		// smooth last point
+		this->polar_surface_points.col(this->resolution-1)(0) = 0.9 * this->polar_surface_points.col(this->resolution-1)(0) + \
+					                           					0.05 * this->polar_surface_points.col(this->resolution-2)(0) + \
+					                           					0.05 * this->polar_surface_points.col(0)(0);
+		 // calculate cartesian coordinates
+		for(unsigned int i = 0; i < this->resolution; ++i)
+		{
+			this->cartesian_surface_points.col(i) = this->get_pose() * MathTools::polar_to_cartesian(this->polar_surface_points.col(i));
 		}
 		// create the regressor model
-		this->train_surface_regressor();
+		//this->train_surface_regressor();
 	}
 
 	Eigen::Vector3d StarShapeHull::compute_normal_to_agent(const Agent& agent) const
 	{
 		Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * agent.get_position());
-		Eigen::Vector3d surface_point1 = this->predict_cartesian_point(polar_point(2));
-		Eigen::Vector3d surface_point2 = this->predict_cartesian_point(polar_point(2)+0.01);
+		//Eigen::Vector3d surface_point1 = this->predict_cartesian_point(polar_point(2));
+		//Eigen::Vector3d surface_point2 = this->predict_cartesian_point(polar_point(2)+0.01);
+		
+		auto idx = MathTools::find_closest_points(this->polar_surface_points, polar_point, 2);
+		Eigen::Vector3d surface_point1 = this->cartesian_surface_points.col(idx.first);
+		Eigen::Vector3d surface_point2 = this->cartesian_surface_points.col(idx.second);
+
 		return (surface_point1-surface_point2).cross(Eigen::Vector3d::UnitZ());
 	}
 
 	double StarShapeHull::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const
 	{
 		Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * point);
-		Eigen::Vector3d surface_point = this->predict_polar_point(polar_point(2));
+		//Eigen::Vector3d surface_point = this->predict_polar_point(polar_point(2));
+		
+		unsigned int idx = MathTools::find_closest_points(this->polar_surface_points, polar_point, 2).first;
+		Eigen::Vector3d surface_point = this->polar_surface_points.col(idx);
+
 		double distance;
 		if(this->is_inside)
-			distance = ((surface_point(0) - safety_margin) - polar_point(0)) + 1;
+			distance = surface_point(0) / polar_point(0);
 		else
-			distance = (polar_point(0) - (surface_point(0) + safety_margin)) + 1;
+			distance = polar_point(0) / surface_point(0);
 		return distance;
 	}
 
@@ -149,7 +170,7 @@ namespace DynamicObstacleAvoidance
 			y.push_back(cartesian_point(1));
 		}
 
-		plt::plot(x, y, color + "-");
+		//plt::plot(x, y, color + "--");
 
 		x.clear();
 		y.clear();
@@ -229,7 +250,11 @@ namespace DynamicObstacleAvoidance
 	bool StarShapeHull::point_is_inside(const Eigen::Vector3d& point) const
 	{
 		Eigen::Vector3d polar_point = MathTools::cartesian_to_polar(this->get_pose().inverse() * point);
-		Eigen::Vector3d surface_point = this->predict_polar_point(polar_point(2));
+		//Eigen::Vector3d surface_point = this->predict_polar_point(polar_point(2));
+		
+		unsigned int idx = MathTools::find_closest_points(this->polar_surface_points, polar_point, 2).first;
+		Eigen::Vector3d surface_point = this->polar_surface_points.col(idx);
+
 		return polar_point[0] < surface_point[0];
 	}
 

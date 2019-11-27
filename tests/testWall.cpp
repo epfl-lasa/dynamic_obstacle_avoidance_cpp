@@ -22,10 +22,9 @@ int main(int, char*[])
 	double Kp = 1;
 	double dt = 0.01;
 
-	int nb_steps = 400;
+	int nb_steps = 700;
 	bool is_show = false;
-	bool debug = false;
-	bool plot_steps = true;
+	bool plot_steps = false;
 	double max_vel = 100;
 
 	unsigned int seed = 679;
@@ -73,43 +72,34 @@ int main(int, char*[])
 	obstacle_list.push_back(std::move(ptrE7));
 	obstacle_list.push_back(std::move(ptrE8));
 
-	// create the agent
-	Eigen::Vector3d agent_position(-5, -5, 0);
-	State agent_state(agent_position);
-	Agent agent(agent_state, 0.1);
-
 	// create the target
 	Eigen::Vector3d target_position(5, -5 , 0);
 	std::deque<Eigen::Vector3d> position_history;
-
-	if(debug) 
-	{
-		for(auto& o:obstacle_list) std::cerr << *o << std::endl;
-		std::cerr << std::endl;
-		std::cerr << agent << std::endl;
-		std::cerr << "target: (" << target_position(0) << ", ";
-		std::cerr << target_position(1) << ", ";
-		std::cerr << target_position(2) << ")" << std::endl;
-	}
 
 	std::deque<std::unique_ptr<Obstacle> > aggregated_obstacle_list;
 
 	// aggregate the obstacles if necessary
 	aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
-	aggregated_obstacle_list[0]->set_reference_position(Eigen::Vector3d(1, 2.5, 0));
+	aggregated_obstacle_list[0]->set_reference_position(Eigen::Vector3d(0, 0, 0));
 	static_cast<Aggregate*>(aggregated_obstacle_list[0].get())->update_hull();
 	
 	//Eigen::Vector3d object_target_position(-2, 8, 0);
 	Eigen::Vector3d object_target_position(1.5, 0, 0);
 
+	// create the agent
+	Eigen::Vector3d agent_position(-5, -5, 0);
+
+	State agent_state(agent_position);
+	Agent agent(agent_state, 0.1);
+
 	// control loop
-	for(int i=0; i<nb_steps; ++i)
+	for(unsigned int i=0; i<nb_steps; ++i)
 	{
 		Eigen::Vector3d current_position = agent.get_position();
 
 		// move object
-		Eigen::Vector3d object_current_position = obstacle_list[2]->get_position();
-		Eigen::Vector3d object_desired_velocity = -Kp * (object_current_position - object_target_position);
+		//Eigen::Vector3d object_current_position = obstacle_list[2]->get_position();
+		//Eigen::Vector3d object_desired_velocity = -Kp * (object_current_position - object_target_position);
 		//obstacle_list[2]->set_position(object_current_position + dt * object_desired_velocity);
 		//obstacle_list[2]->set_reference_position(obstacle_list[2]->get_position());
 
@@ -124,10 +114,10 @@ int main(int, char*[])
 			position_history.push_back(current_position);
 
 			Eigen::Vector3d desired_velocity = -Kp * (current_position - target_position);
-			//agent.set_linear_velocity(0.99 * desired_velocity + 0.1 * previous_vel);
+			//agent.set_linear_velocity(0.9 * desired_velocity + 0.1 * previous_vel);
 			agent.set_linear_velocity(desired_velocity);
 
-			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, aggregated_obstacle_list);
+			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, aggregated_obstacle_list, false, true);
 			if(modulated_velocity.norm() > max_vel) modulated_velocity = max_vel * modulated_velocity.normalized();
 
 			Eigen::Vector3d modulated_position = current_position + dt * modulated_velocity;
@@ -137,7 +127,7 @@ int main(int, char*[])
 		}
 		else
 		{
-			std::cout << "No path to target!" << std::endl;
+			//std::cout << "No path to target!" << std::endl;
 			previous_vel = Eigen::Vector3d::Zero();
 			agent.set_linear_velocity(previous_vel);
 		}
@@ -151,7 +141,6 @@ int main(int, char*[])
 			//PlottingTools::plot_configuration(aggregated_obstacle_list, "image" + s, is_show);
 		}
 	}
-
-	PlottingTools::plot_configuration(agent, aggregated_obstacle_list, target_position, position_history, "test_seed_" + std::to_string(seed), is_show);
-	//PlottingTools::plot_configuration(aggregated_obstacle_list, "test_seed_" + std::to_string(seed), is_show);
+	//PlottingTools::plot_configuration(agent, aggregated_obstacle_list, target_position, position_history, "test_seed" + std::to_string(seed), is_show);
+	PlottingTools::plot_configuration(aggregated_obstacle_list, "test_seed" + std::to_string(seed), is_show);
 }

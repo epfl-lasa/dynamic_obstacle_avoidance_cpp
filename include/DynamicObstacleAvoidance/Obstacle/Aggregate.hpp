@@ -51,6 +51,8 @@ namespace DynamicObstacleAvoidance
 		void update_hull();
 
 		bool point_is_inside(const Eigen::Vector3d& point) const;
+
+		Eigen::Vector3d compute_repulsion_vector(const Agent& agent) const;
 	};
 
 	inline const auto& Aggregate::get_primitives() const

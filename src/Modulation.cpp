@@ -203,10 +203,7 @@ namespace DynamicObstacleAvoidance
 			{
 				for(auto& o:obstacles)
 				{
-					if(agent.in_obstacle(*o))
-					{
-						repulsion_velocity += o->get_repulsion_factor(agent) * (agent.get_position() - o->get_reference_position()).normalized();
-					}
+					repulsion_velocity += o->generate_repulsion(agent, 1.1);
 				}
 
 				if(repulsion_velocity.norm() > 1E-4)

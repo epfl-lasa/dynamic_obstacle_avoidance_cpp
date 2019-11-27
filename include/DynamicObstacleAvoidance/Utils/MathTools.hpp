@@ -10,9 +10,11 @@ namespace DynamicObstacleAvoidance
 {
 	namespace MathTools 
 	{
-		std::vector<double> linspace(const double& start, const double& end, const int& num);
+		std::vector<double> linspace(double start, double end, int num);
 
-		double rand_float(const double& a, const double& b=0);
+		std::vector<Eigen::Vector2d> gridspace(std::pair<double, double> start, std::pair<double, double> end, std::pair<int, int> grid_size);
+
+		double rand_float(double a, double b=0);
 
 		template <typename T> 
 		int sign(T val) 

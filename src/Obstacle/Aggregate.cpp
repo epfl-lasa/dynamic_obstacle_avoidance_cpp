@@ -109,4 +109,10 @@ namespace DynamicObstacleAvoidance
 		if(!inside) for(auto& o:this->primitives) inside |= o->point_is_inside(point);
 		return inside;
 	}
+
+	Eigen::Vector3d Aggregate::compute_repulsion_vector(const Agent& agent) const
+	{
+		Eigen::Vector3d repulsion = this->get_repulsion_factor(agent, 20) * (agent.get_position() - this->get_reference_position());
+		return this->point_is_inside(agent.get_position()) ? -repulsion : repulsion;
+	}
 }

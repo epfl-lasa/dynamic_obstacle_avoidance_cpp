@@ -175,11 +175,15 @@ namespace DynamicObstacleAvoidance
 
 		std::unique_ptr<Obstacle> clone() const;
 
-		virtual double get_repulsion_factor(const Agent& agent) const;
+		double get_repulsion_factor(const Agent& agent, double factor=2) const;
 
 		virtual Eigen::MatrixXd sample_from_parameterization(unsigned int nb_samples, bool is_include_safety_margin) const;
 
 		virtual bool point_is_inside(const Eigen::Vector3d& point) const;
+
+		virtual Eigen::Vector3d compute_repulsion_vector(const Agent& agent) const;
+
+		Eigen::Vector3d generate_repulsion(const Agent& agent, double repulsion_threshold=1.1) const;
 	};
 }
 #endif

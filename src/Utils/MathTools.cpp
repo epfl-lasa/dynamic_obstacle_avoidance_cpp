@@ -2,7 +2,7 @@
 
 namespace DynamicObstacleAvoidance
 {
-    std::vector<double> MathTools::linspace(const double& start, const double& end, const int& num) {
+    std::vector<double> MathTools::linspace(double start, double end, int num) {
         // catch rarely, throw often
         if (num < 2) {
             throw new std::exception();
@@ -21,7 +21,27 @@ namespace DynamicObstacleAvoidance
         return pts;
     }
 
-    double MathTools::rand_float(const double& a, const double& b) 
+    std::vector<Eigen::Vector2d> MathTools::gridspace(std::pair<double, double> start, std::pair<double, double> end, std::pair<int, int> grid_size)
+    {
+        std::vector<double> linspace_x = MathTools::linspace(start.first, end.first, grid_size.first);
+        std::vector<double> linspace_y = MathTools::linspace(start.second, end.second, grid_size.second);
+
+        std::vector<Eigen::Vector2d> grid;
+        grid.resize(grid_size.first * grid_size.second);
+        unsigned int i = 0;
+        for(auto& x:linspace_x)
+        {
+            for(auto& y:linspace_y)
+            {
+                Eigen::Vector2d point;
+                point << x, y;
+                grid[i] = point;
+                ++i;
+            }
+        }
+    }
+
+    double MathTools::rand_float(double a, double b) 
     {
         return ((double)rand() / RAND_MAX) * (a - b) + b;
     }

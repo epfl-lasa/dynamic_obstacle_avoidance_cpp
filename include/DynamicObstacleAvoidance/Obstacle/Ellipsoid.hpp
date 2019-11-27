@@ -63,13 +63,13 @@ namespace DynamicObstacleAvoidance
 
 		std::ostream& print(std::ostream& os) const override;
 
-		double get_repulsion_factor(const Agent& agent) const;
-
 		double area(bool is_include_safety_margin=true) const;
 
 		Eigen::MatrixXd sample_from_parameterization(unsigned int nb_samples, bool is_include_safety_margin) const;
 
 		bool point_is_inside(const Eigen::Vector3d& point) const;
+
+		Eigen::Vector3d compute_repulsion_vector(const Agent& agent) const;
 	};
 
 	inline const Eigen::Array3d& Ellipsoid::get_axis_lengths() const 

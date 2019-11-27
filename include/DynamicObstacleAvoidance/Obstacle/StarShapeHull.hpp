@@ -76,9 +76,9 @@ namespace DynamicObstacleAvoidance
 		Eigen::Vector3d predict_polar_point(double angle) const;
 
 	public:
-		explicit StarShapeHull(bool is_inside=false, unsigned int resolution=400, double min_radius=0.5);
+		explicit StarShapeHull(bool is_inside=false, unsigned int resolution=1000, double min_radius=0.5);
 
-		explicit StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, bool is_inside=false, unsigned int resolution=400, double min_radius=0.5);
+		explicit StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, bool is_inside=false, unsigned int resolution=1000, double min_radius=0.5);
 
 		~StarShapeHull();
 

@@ -24,7 +24,7 @@ int main(int, char*[])
 	bool is_show = true;
 	bool debug = false;
 	bool plot_steps = false;
-	bool aggregated = false;
+	bool aggregated = true;
 
 	unsigned int nb_obstacles = 3;
 

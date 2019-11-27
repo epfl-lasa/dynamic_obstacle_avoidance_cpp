@@ -93,9 +93,9 @@ namespace DynamicObstacleAvoidance
 		std::cerr << "Fonction implicit_clone of abstract class obstacle used" << std::endl;
 	}
 
-	double Obstacle::get_repulsion_factor(const Agent& agent) const
+	double Obstacle::get_repulsion_factor(const Agent& agent, double factor) const
 	{
-		std::cerr << "Fonction get_repulsion_factor of abstract class obstacle used" << std::endl;
+		return factor / this->compute_distance_to_point(agent.get_position(), agent.get_safety_margin());
 	}
 
 	Eigen::MatrixXd Obstacle::sample_from_parameterization(unsigned int nb_samples, bool is_include_safety_margin) const
@@ -107,5 +107,16 @@ namespace DynamicObstacleAvoidance
 	{
 		std::cerr << "Fonction point_is_inside of abstract class obstacle used" << std::endl;
 		return false;
+	}
+
+	Eigen::Vector3d Obstacle::compute_repulsion_vector(const Agent& agent) const
+	{
+		std::cerr << "Fonction compute_repulsion_vector of abstract class obstacle used" << std::endl;
+		return Eigen::Vector3d::Zero();
+	}
+
+	Eigen::Vector3d Obstacle::generate_repulsion(const Agent& agent, double repulsion_threshold) const
+	{
+		return (this->compute_distance_to_agent(agent) < repulsion_threshold) ? compute_repulsion_vector(agent) : Eigen::Vector3d::Zero();
 	}
 }
