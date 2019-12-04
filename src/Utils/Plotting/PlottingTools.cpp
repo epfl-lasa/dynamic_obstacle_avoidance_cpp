@@ -99,6 +99,30 @@ namespace DynamicObstacleAvoidance
 		plt::close();
 	}
 
+	void PlottingTools::plot3D_configuration(const std::deque<std::unique_ptr<Obstacle> >& obstacles, const std::string& savefile, const bool& is_show)
+	{
+		std::vector<std::string> colors = {"b", "g", "r", "c", "m", "y"};
+		plt::figure();
+		unsigned int i = 0;
+		for(auto &o:obstacles)
+		{
+			o->draw(colors[i]);
+			i = (i + 1) % colors.size();
+		}
+		plt::xlim(-10, 10);
+		plt::ylim(-10, 10);
+		if(savefile.compare(""))
+		{
+			std::string path = "./tmp/" + savefile + ".png";
+			plt::save(path);
+		}
+		if(is_show)
+		{
+			plt::show();
+		}
+		plt::close();
+	}
+
 	void PlottingTools::plot_configuration(const std::deque<std::unique_ptr<Obstacle> >& obstacles, const std::vector<Eigen::Array4d> quivers, const Eigen::Vector3d& goal, const std::string& savefile, const bool& is_show)
 	{
 		std::vector<std::string> colors = {"b", "g", "r", "c", "m", "y"};

@@ -153,6 +153,11 @@ target_link_libraries(runTestWall
 	${PROJECT_NAME}
 )
 
+add_executable(runTest3D tests/test3D.cpp)
+target_link_libraries(runTest3D
+	${PROJECT_NAME}
+)
+
 add_executable(runTestKIT tests/testKIT.cpp)
 target_link_libraries(runTestKIT
 	${PROJECT_NAME}

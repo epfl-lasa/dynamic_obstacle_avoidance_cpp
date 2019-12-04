@@ -167,7 +167,7 @@ namespace DynamicObstacleAvoidance
 
 		double compute_distance_to_agent(const Agent& agent) const;
 
-		virtual void draw(const std::string& color="k") const;
+		virtual void draw(const std::string& color="k", bool is3D=false) const;
 
 		bool is_intersecting(const Obstacle& other_obstacle) const;
 

@@ -89,11 +89,11 @@ namespace DynamicObstacleAvoidance
 		}
 	}
 
-	void Aggregate::draw(const std::string& color) const
+	void Aggregate::draw(const std::string& color, bool is3D) const
 	{
 		for(auto& o:this->primitives)
 		{
-			o->draw(color);
+			o->draw(color, is3D);
 		}
 		plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, "bx");
 		this->outside_hull.draw();

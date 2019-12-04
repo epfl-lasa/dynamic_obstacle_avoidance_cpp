@@ -64,33 +64,71 @@ namespace DynamicObstacleAvoidance
 		return tmp_values.sum();
 	}
 
-	void Ellipsoid::draw(const std::string& color) const 
+	void Ellipsoid::draw(const std::string& color, bool is3D) const 
 	{
-		int n = 100;
+		unsigned int n1 = 100;
+		unsigned int n2 = is3D ? n1 : 1;
 		// use a linespace to have a full rotation angle between [-pi, pi]
-		std::vector<double> alpha = MathTools::linspace(0, 2*M_PI, n);
-		// convert quaternion to AngleAxis
-		Eigen::AngleAxisd orientation(this->get_orientation());
-		Eigen::Vector3d axis = orientation.axis();
-		double theta = (axis(2) > 0) ? orientation.angle() :  2*M_PI - orientation.angle();
+		std::vector<double> alpha = MathTools::linspace(-M_PI/2, 3*M_PI/2, n1);
 
 		// use the parametric equation of an ellipse to draw
-		std::vector<double> x(n);
-		std::vector<double> y(n);
-		std::vector<double> x_safety(n);
-		std::vector<double> y_safety(n);
+		std::vector<std::vector<double> > x(n2);
+		std::vector<std::vector<double> > y(n2);
+		std::vector<std::vector<double> > z(n2);
+		std::vector<std::vector<double> > x_safety(n2);
+		std::vector<std::vector<double> > y_safety(n2);
+		std::vector<std::vector<double> > z_safety(n2);
 		Eigen::Array3d safety_length =  this->get_axis_lengths() + this->get_safety_margin();
-		for (int i=0; i<n; ++i)
+		for (unsigned int i=0; i<n2; ++i)
 		{
-			double a = alpha.at(i);
-			x.at(i) = this->get_axis_lengths(0) * cos(a) * cos(theta) - this->get_axis_lengths(1) * sin(a) * sin(theta) + this->get_position()(0);
-			y.at(i) = this->get_axis_lengths(0) * cos(a) * sin(theta) + this->get_axis_lengths(1) * sin(a) * cos(theta) + this->get_position()(1);
+			std::vector<double> xrow(n1);
+			std::vector<double> yrow(n1);
+			std::vector<double> zrow(n1);
+			std::vector<double> xrow_safety(n1);
+			std::vector<double> yrow_safety(n1);
+			std::vector<double> zrow_safety(n1);
+			for (unsigned int j=0; j<n1; ++j)
+			{
+				double phi = alpha.at(j);
+				double theta = alpha.at(i);
+				Eigen::Vector3d point;
+				point(0) = this->get_axis_lengths(0) * sin(theta) * cos(phi);
+				point(1) = this->get_axis_lengths(1) * sin(theta) * sin(phi);
+				point(2) = this->get_axis_lengths(2) * cos(theta);
+				
+				Eigen::Vector3d safety_point;
+				safety_point(0) = safety_length(0) * sin(theta) * cos(phi);
+				safety_point(1) = safety_length(1) * sin(theta) * sin(phi);
+				safety_point(2) = safety_length(2) * cos(theta);
 
-			x_safety.at(i) = safety_length(0) * cos(a) * cos(theta) - safety_length(1) * sin(a) * sin(theta) + this->get_position()(0);
-			y_safety.at(i) = safety_length(0) * cos(a) * sin(theta) + safety_length(1) * sin(a) * cos(theta) + this->get_position()(1);
+				point = this->get_pose() * point;
+				safety_point = this->get_pose() * safety_point;
+
+				xrow.at(j) = point(0);
+				yrow.at(j) = point(1);
+				zrow.at(j) = point(2);
+				xrow_safety.at(j) = point(0);
+				yrow_safety.at(j) = point(1);
+				zrow_safety.at(j) = point(2);
+			}
+			x.at(i) = xrow;
+			y.at(i) = yrow;
+			z.at(i) = zrow;
+			x_safety.at(i) = xrow_safety;
+			y_safety.at(i) = yrow_safety;
+			z_safety.at(i) = zrow_safety;
 		}
-		plt::plot(x, y, color + "-");
-		//plt::plot(x_safety, y_safety, color + "--");
+
+		if (is3D)
+		{
+			plt::plot_surface(x, y, z);
+			plt::plot_surface(x_safety, y_safety, z_safety);
+		}
+		else
+		{
+			plt::plot(x[0], y[0], color + "-");
+			//plt::plot(x_safety[0], y_safety[0], color + "--");
+		}
 
 		if(this->get_name() == "")
 		{

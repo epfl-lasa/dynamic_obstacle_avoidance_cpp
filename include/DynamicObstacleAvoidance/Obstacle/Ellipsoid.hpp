@@ -59,7 +59,7 @@ namespace DynamicObstacleAvoidance
 
 		double compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin=0.) const;
 
-		void draw(const std::string& color="k") const;
+		void draw(const std::string& color="k", bool is3D=false) const;
 
 		std::ostream& print(std::ostream& os) const override;
 
