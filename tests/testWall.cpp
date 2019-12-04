@@ -22,7 +22,7 @@ int main(int, char*[])
 	double Kp = 1;
 	double dt = 0.01;
 
-	int nb_steps = 700;
+	int nb_steps = 400;
 	bool is_show = false;
 	bool plot_steps = false;
 	double max_vel = 100;
@@ -82,6 +82,12 @@ int main(int, char*[])
 	aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
 	aggregated_obstacle_list[0]->set_reference_position(Eigen::Vector3d(0, 0, 0));
 	static_cast<Aggregate*>(aggregated_obstacle_list[0].get())->update_hull();
+
+	/*ptrE5->set_reference_position(Eigen::Vector3d(1,-7.5,0));
+	aggregated_obstacle_list.push_back(std::move(ptrE5));
+
+	ptrE8->set_reference_position(Eigen::Vector3d(7.5,0,0));
+	aggregated_obstacle_list.push_back(std::move(ptrE8));*/
 	
 	//Eigen::Vector3d object_target_position(-2, 8, 0);
 	Eigen::Vector3d object_target_position(1.5, 0, 0);
@@ -138,7 +144,6 @@ int main(int, char*[])
 			ss << std::setw(3) << std::setfill('0') << i;
 			std::string s = ss.str();
 			PlottingTools::plot_configuration(agent, aggregated_obstacle_list, target_position, position_history, "image" + s, is_show);
-			//PlottingTools::plot_configuration(aggregated_obstacle_list, "image" + s, is_show);
 		}
 	}
 	//PlottingTools::plot_configuration(agent, aggregated_obstacle_list, target_position, position_history, "test_seed" + std::to_string(seed), is_show);
