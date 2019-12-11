@@ -19,9 +19,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   	add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-add_subdirectory(lib/dlib dlib_build)
-add_subdirectory(lib/libsvm libsvm_build)
-add_subdirectory(lib/SVMGrad SVMGrad_build)
 add_subdirectory(lib/limbo limbo_build)
 
 find_package(
@@ -71,9 +68,9 @@ set(CORE_SOURCES
 add_library(${PROJECT_NAME} SHARED ${CORE_SOURCES})
 
 if(OpenMP_CXX_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX armadillo mlpack ${PYTHON_LIBRARIES} ${Boost_LIBRARIES} limbo libsvm svm_grad dlib::dlib)
+    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX armadillo mlpack ${PYTHON_LIBRARIES} ${Boost_LIBRARIES} limbo)
 else()
-	target_link_libraries(${PROJECT_NAME} armadillo mlpack ${PYTHON_LIBRARIES} ${Boost_LIBRARIES} limbo libsvm svm_grad dlib::dlib)
+	target_link_libraries(${PROJECT_NAME} armadillo mlpack ${PYTHON_LIBRARIES} ${Boost_LIBRARIES} limbo)
 endif()
 
 
