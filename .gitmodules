@@ -1,15 +1,6 @@
 [submodule "lib/googletest"]
 	path = lib/googletest
 	url = https://github.com/google/googletest.git
-[submodule "lib/dlib"]
-	path = lib/dlib
-	url = https://github.com/davisking/dlib.git
-[submodule "lib/SVMGrad"]
-	path = lib/SVMGrad
-	url = https://github.com/nbfigueroa/SVMGrad.git
-[submodule "lib/libsvm"]
-	path = lib/libsvm
-	url = git@github.com:buschbapti/libsvm.git
 [submodule "lib/limbo"]
 	path = lib/limbo
 	url = git@github.com:buschbapti/limbo.git
