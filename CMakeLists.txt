@@ -162,3 +162,8 @@ add_executable(runTestKIT tests/testKIT.cpp)
 target_link_libraries(runTestKIT
 	${PROJECT_NAME}
 )
+
+add_executable(runTestMovingObstacle tests/testMovingObstacle.cpp)
+target_link_libraries(runTestMovingObstacle
+	${PROJECT_NAME}
+)
