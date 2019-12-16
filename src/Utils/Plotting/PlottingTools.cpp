@@ -61,11 +61,11 @@ namespace DynamicObstacleAvoidance
 			++i;
 		}
 		plt::plot(x, y, "k-");
-		plt::xlim(-10, 10);
-		plt::ylim(-10, 10);
+		plt::xlim(-6, 6);
+		plt::ylim(-6, 6);
 		if(savefile.compare(""))
 		{
-			std::string path = "./tmp/" + savefile + ".png";
+			std::string path = "/tmp/" + savefile + ".png";
 			plt::save(path);
 		}
 		if(is_show)
