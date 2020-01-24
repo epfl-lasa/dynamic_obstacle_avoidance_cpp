@@ -9,7 +9,7 @@ namespace DynamicObstacleAvoidance
 {
 	namespace Aggregation
 	{
-		std::deque<std::unique_ptr<Obstacle> > aggregate_obstacles(const std::deque<std::unique_ptr<Obstacle> >& obstacles);
+		std::deque<std::shared_ptr<Obstacle> > aggregate_obstacles(const std::deque<std::shared_ptr<Obstacle> >& obstacles);
 	}
 }
 #endif

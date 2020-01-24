@@ -46,8 +46,6 @@ namespace DynamicObstacleAvoidance
 
 		bool is_intersecting_aggregate(const Aggregate& other_obstacle) const;
 
-		virtual Obstacle* implicit_clone() const;
-
 	public:
 		explicit Obstacle(const std::string& name="obstacle", double safety_margin=0);
 		explicit Obstacle(double cx, double cy, double cz, double safety_margin=0, const std::string& name="obstacle");
@@ -171,9 +169,7 @@ namespace DynamicObstacleAvoidance
 
 		bool is_intersecting(const Obstacle& other_obstacle) const;
 
-		bool is_intersecting(const std::deque<std::unique_ptr<Obstacle> >& other_obstacles) const;
-
-		std::unique_ptr<Obstacle> clone() const;
+		bool is_intersecting(const std::deque<std::shared_ptr<Obstacle> >& other_obstacles) const;
 
 		double get_repulsion_factor(const Agent& agent, double factor=2) const;
 

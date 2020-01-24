@@ -32,18 +32,18 @@ int main(int, char*[])
 	srand(seed);
 
 	// generate the list of obstacles
-	std::deque<std::unique_ptr<Obstacle> > obstacle_list;
+	std::deque<std::shared_ptr<Obstacle> > obstacle_list;
 	for(unsigned int i=0; i<nb_obstacles; ++i)
 	{
 		Eigen::Vector3d pos(MathTools::rand_float(3,-3), MathTools::rand_float(3,-3), 0);
 		Eigen::Quaterniond rot(Eigen::AngleAxisd(MathTools::rand_float(2)*M_PI, Eigen::Vector3d::UnitZ()));
-		auto ptrE = std::make_unique<Ellipsoid>(State(pos, rot));
+		auto ptrE = std::make_shared<Ellipsoid>(State(pos, rot));
 		ptrE->set_axis_lengths(Eigen::Array3d(MathTools::rand_float(3,0.2), MathTools::rand_float(3,0.2), 0));
-		obstacle_list.push_back(std::move(ptrE));
+		obstacle_list.push_back(ptrE);
 	}
 
 	// aggregate the obstacles if necessary
-	std::deque<std::unique_ptr<Obstacle> > aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
+	std::deque<std::shared_ptr<Obstacle> > aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
 
 	// create the agent
 	Eigen::Vector3d agent_position(MathTools::rand_float(5, -5), 8, 0);

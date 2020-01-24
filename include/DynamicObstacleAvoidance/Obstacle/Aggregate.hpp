@@ -23,22 +23,18 @@ namespace DynamicObstacleAvoidance
 	private:
 		StarShapeHull inside_hull;
 		StarShapeHull outside_hull;
-		std::deque<std::unique_ptr<Obstacle> > primitives;
+		std::deque<std::shared_ptr<Obstacle> > primitives;
 
 		void update_positions();
-
-		Aggregate* implicit_clone() const override;
 
 	public:
 		explicit Aggregate();
 
-		explicit Aggregate(const std::deque<std::unique_ptr<Obstacle> >& primitives);
+		explicit Aggregate(const std::deque<std::shared_ptr<Obstacle> >& primitives);
 
 		const auto& get_primitives() const;
 
-		void add_primitive(const std::unique_ptr<Obstacle>& primitive, bool update_hull=true);
-
-		void add_primitive(const Obstacle& primitive, bool update_hull=true);
+		void add_primitive(const std::shared_ptr<Obstacle>& primitive, bool update_hull=true);
 
 		Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
 		

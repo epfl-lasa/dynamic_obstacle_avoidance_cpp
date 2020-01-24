@@ -33,11 +33,11 @@ int main(int, char*[])
 	// generate the list of obstacles
 	Eigen::Vector3d position_o1(5, 0, 0);
 	Eigen::Quaterniond orientation_o6(Eigen::AngleAxisd(0, Eigen::Vector3d::UnitZ()));
-	auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1), 0.1, "w1");
+	auto ptrE1 = std::make_shared<Ellipsoid>(State(position_o1), 0.1, "w1");
 	ptrE1->set_axis_lengths(Eigen::Array3d(1, 1, 0));
 
-	std::deque<std::unique_ptr<Obstacle> > obstacle_list;
-	obstacle_list.push_back(std::move(ptrE1));
+	std::deque<std::shared_ptr<Obstacle> > obstacle_list;
+	obstacle_list.push_back(ptrE1);
 
 	// create the target for agent
 	Eigen::Vector3d target_position(0, 0.1, 0);
@@ -45,7 +45,7 @@ int main(int, char*[])
 	// create target for obstacle
 	Eigen::Vector3d obstacle_target_position(-5, 0, 0);
 
-	std::deque<std::unique_ptr<Obstacle> > aggregated_obstacle_list;
+	std::deque<std::shared_ptr<Obstacle> > aggregated_obstacle_list;
 	// aggregate the obstacles if necessary
 	aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
 

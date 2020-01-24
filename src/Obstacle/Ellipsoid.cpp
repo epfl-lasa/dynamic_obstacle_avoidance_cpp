@@ -177,11 +177,6 @@ namespace DynamicObstacleAvoidance
 		return intersecting;
 	}
 
-	Ellipsoid* Ellipsoid::implicit_clone() const
-	{
-		return new Ellipsoid(*this);
-	}
-
 	Eigen::MatrixXd Ellipsoid::sample_from_parameterization(unsigned int nb_samples, bool is_include_safety_margin) const
 	{
 		// convert quaternion to AngleAxis

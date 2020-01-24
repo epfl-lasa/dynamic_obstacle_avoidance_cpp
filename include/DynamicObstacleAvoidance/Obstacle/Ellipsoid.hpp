@@ -28,8 +28,6 @@ namespace DynamicObstacleAvoidance
 
 		bool is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const;
 
-		Ellipsoid* implicit_clone() const override;
-
 	public:
 		explicit Ellipsoid(const std::string& name="ellipsoid");
 

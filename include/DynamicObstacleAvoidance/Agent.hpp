@@ -20,7 +20,7 @@ namespace DynamicObstacleAvoidance
 	private:
 		State state;
 		double safety_margin;
-		std::unique_ptr<Obstacle> envelope;
+		std::shared_ptr<Obstacle> envelope;
 		double delta_t;
 
 		void update_envelope();
@@ -129,7 +129,7 @@ namespace DynamicObstacleAvoidance
 
 		bool in_obstacle(const Obstacle& obstacle) const;
 
-		bool exist_path(const Eigen::Vector3d& target, const std::deque<std::unique_ptr<Obstacle> >& obstacles) const;
+		bool exist_path(const Eigen::Vector3d& target, const std::deque<std::shared_ptr<Obstacle> >& obstacles) const;
 	};
 }
 #endif

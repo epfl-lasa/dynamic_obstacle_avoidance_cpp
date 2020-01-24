@@ -88,7 +88,7 @@ namespace DynamicObstacleAvoidance
 			return std::make_pair(reference_basis, orthogonal_basis);
 		}
 
-		std::pair<Eigen::Vector3d, Eigen::Vector3d> compute_relative_velocities(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const Eigen::ArrayXd& distances, const Eigen::ArrayXd& weights, const std::deque<Eigen::Matrix3d>& orthogonal_basis_list)
+		std::pair<Eigen::Vector3d, Eigen::Vector3d> compute_relative_velocities(const Agent& agent, const std::deque<std::shared_ptr<Obstacle> >& obstacles, const Eigen::ArrayXd& distances, const Eigen::ArrayXd& weights, const std::deque<Eigen::Matrix3d>& orthogonal_basis_list)
 		{
 			Eigen::Vector3d obs_velocity(0,0,0);
 			int i = 0;
@@ -127,7 +127,7 @@ namespace DynamicObstacleAvoidance
 	  		return acos (x) ;
 	  	}
 
-		Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, bool is_local, bool add_repulsion, double critical_distance, double weight_power)
+		Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::shared_ptr<Obstacle> >& obstacles, bool is_local, bool add_repulsion, double critical_distance, double weight_power)
 		{
 			if(obstacles.empty()) return agent.get_linear_velocity();
 

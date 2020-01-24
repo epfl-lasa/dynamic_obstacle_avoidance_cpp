@@ -2,9 +2,9 @@
 
 namespace DynamicObstacleAvoidance
 {
-	std::deque<std::unique_ptr<Obstacle> > Aggregation::aggregate_obstacles(const std::deque<std::unique_ptr<Obstacle> >& obstacles)
+	std::deque<std::shared_ptr<Obstacle> > Aggregation::aggregate_obstacles(const std::deque<std::shared_ptr<Obstacle> >& obstacles)
 	{
-		std::deque<std::unique_ptr<Obstacle> > aggregated_obstacles;
+		std::deque<std::shared_ptr<Obstacle> > aggregated_obstacles;
 		std::vector<int> aggregate_indexes(obstacles.size());
 		for(unsigned int i=0; i < obstacles.size(); ++i) aggregate_indexes[i] = -1;
 
@@ -29,13 +29,13 @@ namespace DynamicObstacleAvoidance
 					{
 						if(aggregate_indexes[i] == -1 && aggregate_indexes[j] == -1)
 						{
-							auto ptrAggregate = std::make_unique<Aggregate>();
+							auto ptrAggregate = std::make_shared<Aggregate>();
 							ptrAggregate->add_primitive(obstacles[i]);
 							ptrAggregate->add_primitive(obstacles[j]);
 							int index = aggregated_obstacles.size();
 							aggregate_indexes[i] = index;
 							aggregate_indexes[j] = index;
-							aggregated_obstacles.push_back(std::move(ptrAggregate));
+							aggregated_obstacles.push_back(ptrAggregate);
 						}
 						else if(aggregate_indexes[i] != aggregate_indexes[j])
 						{
@@ -77,7 +77,7 @@ namespace DynamicObstacleAvoidance
 		// finally add all remaining obstacles
 		for(unsigned int i=0; i < aggregate_indexes.size(); ++i)
 		{
-			if(aggregate_indexes[i] == -1) aggregated_obstacles.push_back(obstacles[i]->clone());
+			if(aggregate_indexes[i] == -1) aggregated_obstacles.push_back(obstacles[i]);
 		}
 		return aggregated_obstacles;
 	}

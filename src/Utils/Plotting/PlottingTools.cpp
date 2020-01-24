@@ -23,7 +23,7 @@ namespace DynamicObstacleAvoidance
 		}
 	}
 
-	void PlottingTools::plot_fitted_clusters(const std::deque<Eigen::MatrixXd>& clusters, const std::deque<std::unique_ptr<Obstacle> >& obstacles, bool is_show)
+	void PlottingTools::plot_fitted_clusters(const std::deque<Eigen::MatrixXd>& clusters, const std::deque<std::shared_ptr<Obstacle> >& obstacles, bool is_show)
 	{
 		PlottingTools::plot_clusters(clusters, false);
 		for(auto& o:obstacles)
@@ -38,7 +38,7 @@ namespace DynamicObstacleAvoidance
 		}
 	}
 
-	void PlottingTools::plot_configuration(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile, const bool& is_show)
+	void PlottingTools::plot_configuration(const Agent& agent, const std::deque<std::shared_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile, const bool& is_show)
 	{
 		std::vector<std::string> colors = {"b", "g", "r", "c", "m", "y"};
 		plt::figure();
@@ -75,7 +75,7 @@ namespace DynamicObstacleAvoidance
 		plt::close();
 	}
 
-	void PlottingTools::plot_configuration(const std::deque<std::unique_ptr<Obstacle> >& obstacles, const std::string& savefile, const bool& is_show)
+	void PlottingTools::plot_configuration(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::string& savefile, const bool& is_show)
 	{
 		std::vector<std::string> colors = {"b", "g", "r", "c", "m", "y"};
 		plt::figure();
@@ -99,7 +99,7 @@ namespace DynamicObstacleAvoidance
 		plt::close();
 	}
 
-	void PlottingTools::plot3D_configuration(const std::deque<std::unique_ptr<Obstacle> >& obstacles, const std::string& savefile, const bool& is_show)
+	void PlottingTools::plot3D_configuration(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::string& savefile, const bool& is_show)
 	{
 		std::vector<std::string> colors = {"b", "g", "r", "c", "m", "y"};
 		plt::figure();
@@ -123,7 +123,7 @@ namespace DynamicObstacleAvoidance
 		plt::close();
 	}
 
-	void PlottingTools::plot_configuration(const std::deque<std::unique_ptr<Obstacle> >& obstacles, const std::vector<Eigen::Array4d> quivers, const Eigen::Vector3d& goal, const std::string& savefile, const bool& is_show)
+	void PlottingTools::plot_configuration(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::vector<Eigen::Array4d> quivers, const Eigen::Vector3d& goal, const std::string& savefile, const bool& is_show)
 	{
 		std::vector<std::string> colors = {"b", "g", "r", "c", "m", "y"};
 		plt::figure();

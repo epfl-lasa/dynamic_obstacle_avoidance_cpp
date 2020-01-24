@@ -211,15 +211,15 @@ TEST(ComputeRelativeVelocities, PositiveNos)
 	Eigen::Vector3d position_o3(0.9, 0, 0);
 	Eigen::Quaterniond orientation(1,0,0,0);
 
-	auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation));
-	auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation));
+	auto ptrE1 = std::make_shared<Ellipsoid>(State(position_o1, orientation));
+	auto ptrE2 = std::make_shared<Ellipsoid>(State(position_o2, orientation));
 	ptrE2->set_linear_velocity(Eigen::Vector3d(-0.5,-0.5,0));
-	auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3, orientation));
+	auto ptrE3 = std::make_shared<Ellipsoid>(State(position_o3, orientation));
 
-	std::deque<std::unique_ptr<Obstacle> > obstacle_list;
-	obstacle_list.push_back(std::move(ptrE1));
-	obstacle_list.push_back(std::move(ptrE2));
-	obstacle_list.push_back(std::move(ptrE3));
+	std::deque<std::shared_ptr<Obstacle> > obstacle_list;
+	obstacle_list.push_back(ptrE1);
+	obstacle_list.push_back(ptrE2);
+	obstacle_list.push_back(ptrE3);
 
 	Eigen::Vector3d agent_position(1,0,0);
 	State agent_state(agent_position);
@@ -270,15 +270,15 @@ TEST(ModulateVelocity, PositiveNos)
 	Eigen::Vector3d position_o3(0.9, 0, 0);
 	Eigen::Quaterniond orientation(1,0,0,0);
 
-	auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation));
-	auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation));
+	auto ptrE1 = std::make_shared<Ellipsoid>(State(position_o1, orientation));
+	auto ptrE2 = std::make_shared<Ellipsoid>(State(position_o2, orientation));
 	ptrE2->set_linear_velocity(Eigen::Vector3d(-0.5,-0.5,0));
-	auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3, orientation));
+	auto ptrE3 = std::make_shared<Ellipsoid>(State(position_o3, orientation));
 
-	std::deque<std::unique_ptr<Obstacle> > obstacle_list;
-	obstacle_list.push_back(std::move(ptrE1));
-	obstacle_list.push_back(std::move(ptrE2));
-	obstacle_list.push_back(std::move(ptrE3));
+	std::deque<std::shared_ptr<Obstacle> > obstacle_list;
+	obstacle_list.push_back(ptrE1);
+	obstacle_list.push_back(ptrE2);
+	obstacle_list.push_back(ptrE3);
 
 	Eigen::Vector3d agent_position(1,0,0);
 	State agent_state(agent_position);

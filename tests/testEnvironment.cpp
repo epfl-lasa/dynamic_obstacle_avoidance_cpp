@@ -22,7 +22,7 @@ TEST(AddObstacle, PositiveNos)
 TEST(GetList, PositiveNos)
 {
 	unsigned int nb_obstacles = 3;
-	Environment env;
+	Environment env(false);
 	for(unsigned int i=0; i<nb_obstacles; ++i)
 	{
 		auto ptrE = std::make_shared<Ellipsoid>("e" + std::to_string(i));
@@ -33,6 +33,17 @@ TEST(GetList, PositiveNos)
 	EXPECT_TRUE(obstacle_list.size() == nb_obstacles);
 
 	std::cout << *obstacle_list[0] << std::endl;
+}
+
+TEST(Aggregation, PositiveNos)
+{
+	Environment env;
+	auto e1 = std::make_shared<Ellipsoid>(0.5, 0, 0, 0, "e1");
+	auto e2 = std::make_shared<Ellipsoid>(-0.5, 0, 0, 0, "e2");
+	env.add_obstacle(e1);
+	env.add_obstacle(e2);
+
+	PlottingTools::plot_configuration(env.get_obstacle_list(), "test_aggregate", true);
 }
 
 int main(int argc, char **argv) {

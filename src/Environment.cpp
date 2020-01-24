@@ -2,7 +2,8 @@
 
 namespace DynamicObstacleAvoidance
 {
-	Environment::Environment()
+	Environment::Environment(bool aggregated):
+	aggregated(aggregated)
 	{}
 
 	void Environment::add_obstacle(const std::shared_ptr<Obstacle>& obstacle)
@@ -14,6 +15,10 @@ namespace DynamicObstacleAvoidance
 	{
 		std::deque<std::shared_ptr<Obstacle> > list;
 		transform(this->begin(), this->end(), back_inserter(list), [](const Environment::value_type& val){return val.second;} );
+		if(this->aggregated)
+		{
+			list = Aggregation::aggregate_obstacles(list);
+		}
 		return list;
 	}
 }

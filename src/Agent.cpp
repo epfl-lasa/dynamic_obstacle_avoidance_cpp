@@ -5,17 +5,17 @@ namespace DynamicObstacleAvoidance
 	Agent::Agent(const double& safety_margin):
 	safety_margin(safety_margin), delta_t(0.5)
 	{
-		this->envelope = std::make_unique<Ellipsoid>(State(this->get_position()));
+		this->envelope = std::make_shared<Ellipsoid>(State(this->get_position()));
 	}
 
 	Agent::Agent(const State& state, const double& safety_margin):
 	state(state), safety_margin(safety_margin), delta_t(0.5)
 	{
-		this->envelope = std::make_unique<Ellipsoid>(State(this->get_position()));
+		this->envelope = std::make_shared<Ellipsoid>(State(this->get_position()));
 	}
 
 	Agent::Agent(const Agent& agent):
-	state(agent.state), safety_margin(agent.safety_margin), envelope(agent.get_envelope().clone()), delta_t(agent.delta_t)
+	state(agent.state), safety_margin(agent.safety_margin), delta_t(agent.delta_t)
 	{}
 
 	void Agent::update_envelope()
@@ -42,7 +42,7 @@ namespace DynamicObstacleAvoidance
 		return safety_envelope.is_intersecting(obstacle);
 	}
 
-	bool Agent::exist_path(const Eigen::Vector3d& target, const std::deque<std::unique_ptr<Obstacle> >& obstacles) const
+	bool Agent::exist_path(const Eigen::Vector3d& target, const std::deque<std::shared_ptr<Obstacle> >& obstacles) const
 	{
 		bool path_exists = true;
 		// loop through all the obstacles until you see an aggregate

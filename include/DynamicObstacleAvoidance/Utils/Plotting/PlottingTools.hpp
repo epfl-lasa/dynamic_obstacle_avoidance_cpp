@@ -22,15 +22,15 @@ namespace DynamicObstacleAvoidance
 
 		void plot_clusters(const std::deque<Eigen::MatrixXd>& clusters, bool is_show=true);
 
-		void plot_fitted_clusters(const std::deque<Eigen::MatrixXd>& clusters, const std::deque<std::unique_ptr<Obstacle> >& obstacles, bool is_show=true);
+		void plot_fitted_clusters(const std::deque<Eigen::MatrixXd>& clusters, const std::deque<std::shared_ptr<Obstacle> >& obstacles, bool is_show=true);
 
-		void plot_configuration(const Agent& agent, const std::deque<std::unique_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile="", const bool& is_show=true);
+		void plot_configuration(const Agent& agent, const std::deque<std::shared_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile="", const bool& is_show=true);
 	
-		void plot_configuration(const std::deque<std::unique_ptr<Obstacle> >& obstacles, const std::string& savefile="", const bool& is_show=true);
+		void plot_configuration(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::string& savefile="", const bool& is_show=true);
 	
-		void plot_configuration(const std::deque<std::unique_ptr<Obstacle> >& obstacles, const std::vector<Eigen::Array4d> quivers, const Eigen::Vector3d& goal, const std::string& savefile, const bool& is_show);
+		void plot_configuration(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::vector<Eigen::Array4d> quivers, const Eigen::Vector3d& goal, const std::string& savefile, const bool& is_show);
 	
-		void plot3D_configuration(const std::deque<std::unique_ptr<Obstacle> >& obstacles, const std::string& savefile, const bool& is_show);
+		void plot3D_configuration(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::string& savefile, const bool& is_show);
 	}
 }
 

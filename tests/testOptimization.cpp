@@ -52,14 +52,14 @@ int main(int, char*[])
 	Eigen::Quaterniond orientation_o8(Eigen::AngleAxisd(0, Eigen::Vector3d::UnitZ()));
 
 
-	std::unique_ptr<Ellipsoid> ptrE1 = std::make_unique<Ellipsoid>(State(position_o1, orientation_o1), obstacles_safety_margin, "e1");
-	std::unique_ptr<Ellipsoid> ptrE2 = std::make_unique<Ellipsoid>(State(position_o2, orientation_o2), obstacles_safety_margin, "e2");
-	std::unique_ptr<Ellipsoid> ptrE3 = std::make_unique<Ellipsoid>(State(position_o3, orientation_o3), obstacles_safety_margin, "e3");
-	std::unique_ptr<Ellipsoid> ptrE4 = std::make_unique<Ellipsoid>(State(position_o4, orientation_o4), obstacles_safety_margin, "e4");
-	std::unique_ptr<Ellipsoid> ptrE5 = std::make_unique<Ellipsoid>(State(position_o5, orientation_o5), obstacles_safety_margin, "e5");
-	std::unique_ptr<Ellipsoid> ptrE6 = std::make_unique<Ellipsoid>(State(position_o6, orientation_o6), obstacles_safety_margin, "e6");
-	std::unique_ptr<Ellipsoid> ptrE7 = std::make_unique<Ellipsoid>(State(position_o7, orientation_o7), obstacles_safety_margin, "e7");
-	std::unique_ptr<Ellipsoid> ptrE8 = std::make_unique<Ellipsoid>(State(position_o8, orientation_o8), obstacles_safety_margin, "e8");
+	std::shared_ptr<Ellipsoid> ptrE1 = std::make_shared<Ellipsoid>(State(position_o1, orientation_o1), obstacles_safety_margin, "e1");
+	std::shared_ptr<Ellipsoid> ptrE2 = std::make_shared<Ellipsoid>(State(position_o2, orientation_o2), obstacles_safety_margin, "e2");
+	std::shared_ptr<Ellipsoid> ptrE3 = std::make_shared<Ellipsoid>(State(position_o3, orientation_o3), obstacles_safety_margin, "e3");
+	std::shared_ptr<Ellipsoid> ptrE4 = std::make_shared<Ellipsoid>(State(position_o4, orientation_o4), obstacles_safety_margin, "e4");
+	std::shared_ptr<Ellipsoid> ptrE5 = std::make_shared<Ellipsoid>(State(position_o5, orientation_o5), obstacles_safety_margin, "e5");
+	std::shared_ptr<Ellipsoid> ptrE6 = std::make_shared<Ellipsoid>(State(position_o6, orientation_o6), obstacles_safety_margin, "e6");
+	std::shared_ptr<Ellipsoid> ptrE7 = std::make_shared<Ellipsoid>(State(position_o7, orientation_o7), obstacles_safety_margin, "e7");
+	std::shared_ptr<Ellipsoid> ptrE8 = std::make_shared<Ellipsoid>(State(position_o8, orientation_o8), obstacles_safety_margin, "e8");
 
 	ptrE1->set_axis_lengths(Eigen::Array3d(0.2, 0.75, 0));
 	ptrE2->set_axis_lengths(Eigen::Array3d(1.5, 0.15, 0));
@@ -71,18 +71,18 @@ int main(int, char*[])
 	ptrE8->set_axis_lengths(Eigen::Array3d(0.5, 0.5, 0));
 
 	// add to the list
-	std::deque<std::unique_ptr<Obstacle> > obstacle_list;
-	obstacle_list.push_back(std::move(ptrE1));
-	obstacle_list.push_back(std::move(ptrE2));
-	obstacle_list.push_back(std::move(ptrE3));
-	obstacle_list.push_back(std::move(ptrE4));
-	obstacle_list.push_back(std::move(ptrE5));
-	obstacle_list.push_back(std::move(ptrE6));
-	obstacle_list.push_back(std::move(ptrE7));
-	obstacle_list.push_back(std::move(ptrE8));
+	std::deque<std::shared_ptr<Obstacle> > obstacle_list;
+	obstacle_list.push_back(ptrE1);
+	obstacle_list.push_back(ptrE2);
+	obstacle_list.push_back(ptrE3);
+	obstacle_list.push_back(ptrE4);
+	obstacle_list.push_back(ptrE5);
+	obstacle_list.push_back(ptrE6);
+	obstacle_list.push_back(ptrE7);
+	obstacle_list.push_back(ptrE8);
 
 	// aggregate the obstacles if necessary
-	std::deque<std::unique_ptr<Obstacle> > aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
+	std::deque<std::shared_ptr<Obstacle> > aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
 
 	// plot the configuration
 	std::deque<Eigen::Vector3d> position_history;

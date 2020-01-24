@@ -8,7 +8,7 @@ namespace DynamicObstacleAvoidance
 		this->set_type("Aggregate");
 	}
 
-	Aggregate::Aggregate(const std::deque<std::unique_ptr<Obstacle> >& primitives):
+	Aggregate::Aggregate(const std::deque<std::shared_ptr<Obstacle> >& primitives):
 	inside_hull(true), outside_hull(false)
 	{
 		this->set_type("Aggregate");
@@ -17,7 +17,7 @@ namespace DynamicObstacleAvoidance
 		for(auto& o:primitives)
 		{
 			position += o->get_position();
-			this->primitives.push_back(o->clone());
+			this->primitives.push_back(o);
 		}
 		position /= this->primitives.size();
 		this->set_position(position);
@@ -51,16 +51,9 @@ namespace DynamicObstacleAvoidance
 		this->outside_hull.compute_from_primitives(this->primitives, this->get_reference_position());
 	}
 
-	void Aggregate::add_primitive(const std::unique_ptr<Obstacle>& primitive, bool update_hull)
+	void Aggregate::add_primitive(const std::shared_ptr<Obstacle>& primitive, bool update_hull)
 	{
-		this->primitives.push_back(primitive->clone());
-		this->update_positions();
-		if(update_hull) this->update_hull();
-	}
-
-	void Aggregate::add_primitive(const Obstacle& primitive, bool update_hull)
-	{
-		this->primitives.push_back(primitive.clone());
+		this->primitives.push_back(primitive);
 		this->update_positions();
 		if(update_hull) this->update_hull();
 	}
@@ -99,9 +92,6 @@ namespace DynamicObstacleAvoidance
 		this->outside_hull.draw();
 		this->inside_hull.draw();
 	}
-
-	Aggregate* Aggregate::implicit_clone() const
-	{}
 
 	bool Aggregate::point_is_inside(const Eigen::Vector3d& point) const
 	{

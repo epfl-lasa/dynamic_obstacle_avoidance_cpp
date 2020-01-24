@@ -11,7 +11,7 @@ namespace DynamicObstacleAvoidance
 		this->initialize_regressor_parameters();
 	}
 
-	StarShapeHull::StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, bool is_inside, unsigned int resolution, double min_radius):
+	StarShapeHull::StarShapeHull(const std::deque<std::shared_ptr<Obstacle> >& primitives, bool is_inside, unsigned int resolution, double min_radius):
 	StarShapeHull(is_inside, resolution, min_radius)
 	{
 		this->compute_from_primitives(primitives);
@@ -20,7 +20,7 @@ namespace DynamicObstacleAvoidance
 	StarShapeHull::~StarShapeHull()
 	{}
 
-	Eigen::Vector3d StarShapeHull::compute_baricenter(const std::deque<std::unique_ptr<Obstacle> >& primitives)
+	Eigen::Vector3d StarShapeHull::compute_baricenter(const std::deque<std::shared_ptr<Obstacle> >& primitives)
     {
         Eigen::Vector3d result = Eigen::Vector3d::Zero();
         for(auto& o:primitives)
@@ -31,7 +31,7 @@ namespace DynamicObstacleAvoidance
         return result;
     }
 
-    void StarShapeHull::compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives)
+    void StarShapeHull::compute_from_primitives(const std::deque<std::shared_ptr<Obstacle> >& primitives)
     {
     	// first set the reference point
 		Eigen::Vector3d reference_point = this->compute_baricenter(primitives);
@@ -39,7 +39,7 @@ namespace DynamicObstacleAvoidance
 		this->compute_from_primitives(primitives, reference_point);
 	}
 
-	void StarShapeHull::compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point)
+	void StarShapeHull::compute_from_primitives(const std::deque<std::shared_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point)
 	{
 		this->set_reference_position(reference_point);
 		this->set_position(reference_point);

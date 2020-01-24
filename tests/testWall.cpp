@@ -42,14 +42,14 @@ int main(int, char*[])
 
 	Eigen::Quaterniond orientation_o6(Eigen::AngleAxisd(-0.6, Eigen::Vector3d::UnitZ()));
 
-	auto ptrE1 = std::make_unique<Ellipsoid>(State(position_o1), 0.1, "w1");
-	auto ptrE2 = std::make_unique<Ellipsoid>(State(position_o2), 0.1, "w2");
-	auto ptrE3 = std::make_unique<Ellipsoid>(State(position_o3), 0.1, "w3");
-	auto ptrE4 = std::make_unique<Ellipsoid>(State(position_o4), 0.1, "w4");
-	auto ptrE5 = std::make_unique<Ellipsoid>(State(position_o5), 0.5, "w5");
-	auto ptrE6 = std::make_unique<Ellipsoid>(State(position_o6, orientation_o6),  0.1, "desk");
-	auto ptrE7 = std::make_unique<Ellipsoid>(State(position_o7), 0.1, "chair");
-	auto ptrE8 = std::make_unique<Ellipsoid>(State(position_o8), 0.1, "table");
+	auto ptrE1 = std::make_shared<Ellipsoid>(State(position_o1), 0.1, "w1");
+	auto ptrE2 = std::make_shared<Ellipsoid>(State(position_o2), 0.1, "w2");
+	auto ptrE3 = std::make_shared<Ellipsoid>(State(position_o3), 0.1, "w3");
+	auto ptrE4 = std::make_shared<Ellipsoid>(State(position_o4), 0.1, "w4");
+	auto ptrE5 = std::make_shared<Ellipsoid>(State(position_o5), 0.5, "w5");
+	auto ptrE6 = std::make_shared<Ellipsoid>(State(position_o6, orientation_o6),  0.1, "desk");
+	auto ptrE7 = std::make_shared<Ellipsoid>(State(position_o7), 0.1, "chair");
+	auto ptrE8 = std::make_shared<Ellipsoid>(State(position_o8), 0.1, "table");
 
 	ptrE1->set_axis_lengths(Eigen::Array3d(9, 1, 0));
 	ptrE2->set_axis_lengths(Eigen::Array3d(9, 1, 0));
@@ -62,21 +62,21 @@ int main(int, char*[])
 
 	ptrE8->set_axis_lengths(Eigen::Array3d(2, 2, 0));
 
-	std::deque<std::unique_ptr<Obstacle> > obstacle_list;
-	obstacle_list.push_back(std::move(ptrE1));
-	obstacle_list.push_back(std::move(ptrE2));
-	obstacle_list.push_back(std::move(ptrE3));
-	obstacle_list.push_back(std::move(ptrE4));
-	obstacle_list.push_back(std::move(ptrE5));
-	obstacle_list.push_back(std::move(ptrE6));
-	obstacle_list.push_back(std::move(ptrE7));
-	obstacle_list.push_back(std::move(ptrE8));
+	std::deque<std::shared_ptr<Obstacle> > obstacle_list;
+	obstacle_list.push_back(ptrE1);
+	obstacle_list.push_back(ptrE2);
+	obstacle_list.push_back(ptrE3);
+	obstacle_list.push_back(ptrE4);
+	obstacle_list.push_back(ptrE5);
+	obstacle_list.push_back(ptrE6);
+	obstacle_list.push_back(ptrE7);
+	obstacle_list.push_back(ptrE8);
 
 	// create the target
 	Eigen::Vector3d target_position(5, -5 , 0);
 	std::deque<Eigen::Vector3d> position_history;
 
-	std::deque<std::unique_ptr<Obstacle> > aggregated_obstacle_list;
+	std::deque<std::shared_ptr<Obstacle> > aggregated_obstacle_list;
 
 	// aggregate the obstacles if necessary
 	aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
@@ -84,10 +84,10 @@ int main(int, char*[])
 	static_cast<Aggregate*>(aggregated_obstacle_list[0].get())->update_hull();
 
 	/*ptrE5->set_reference_position(Eigen::Vector3d(1,-7.5,0));
-	aggregated_obstacle_list.push_back(std::move(ptrE5));
+	aggregated_obstacle_list.push_back(ptrE5));
 
 	ptrE8->set_reference_position(Eigen::Vector3d(7.5,0,0));
-	aggregated_obstacle_list.push_back(std::move(ptrE8));*/
+	aggregated_obstacle_list.push_back(ptrE8));*/
 	
 	//Eigen::Vector3d object_target_position(-2, 8, 0);
 	Eigen::Vector3d object_target_position(1.5, 0, 0);

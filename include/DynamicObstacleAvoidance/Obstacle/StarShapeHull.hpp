@@ -63,7 +63,7 @@ namespace DynamicObstacleAvoidance
 		Eigen::MatrixXd polar_surface_points;
 		GP_t surface_regressor;
 
-		Eigen::Vector3d compute_baricenter(const std::deque<std::unique_ptr<Obstacle> >& primitives);
+		Eigen::Vector3d compute_baricenter(const std::deque<std::shared_ptr<Obstacle> >& primitives);
 
 		void initialize_regressor_parameters();
 
@@ -78,7 +78,7 @@ namespace DynamicObstacleAvoidance
 	public:
 		explicit StarShapeHull(bool is_inside=false, unsigned int resolution=1000, double min_radius=0.5);
 
-		explicit StarShapeHull(const std::deque<std::unique_ptr<Obstacle> >& primitives, bool is_inside=false, unsigned int resolution=1000, double min_radius=0.5);
+		explicit StarShapeHull(const std::deque<std::shared_ptr<Obstacle> >& primitives, bool is_inside=false, unsigned int resolution=1000, double min_radius=0.5);
 
 		~StarShapeHull();
 
@@ -92,9 +92,9 @@ namespace DynamicObstacleAvoidance
 
 		void set_resolution(unsigned int resolution);
 
-		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point);
+		void compute_from_primitives(const std::deque<std::shared_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point);
 
-		void compute_from_primitives(const std::deque<std::unique_ptr<Obstacle> >& primitives);
+		void compute_from_primitives(const std::deque<std::shared_ptr<Obstacle> >& primitives);
 
 		bool point_is_inside(const Eigen::Vector3d& point) const;
 

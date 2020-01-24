@@ -63,7 +63,7 @@ namespace DynamicObstacleAvoidance
 		return false;
 	}
 
-	bool Obstacle::is_intersecting(const std::deque<std::unique_ptr<Obstacle> >& other_obstacles) const
+	bool Obstacle::is_intersecting(const std::deque<std::shared_ptr<Obstacle> >& other_obstacles) const
 	{
 		bool intersecting = false;
 		for(auto& o:other_obstacles) intersecting = (intersecting || this->is_intersecting(*o));
@@ -81,16 +81,6 @@ namespace DynamicObstacleAvoidance
 		bool intersecting = false;
 		for(auto& p:other_obstacle.get_primitives()) intersecting = (intersecting || this->is_intersecting(*p));
 		return intersecting;
-	}
-
-	std::unique_ptr<Obstacle> Obstacle::clone() const
-	{
-		return std::unique_ptr<Obstacle>(this->implicit_clone());
-	}
-
-	Obstacle* Obstacle::implicit_clone() const
-	{
-		std::cerr << "Fonction implicit_clone of abstract class obstacle used" << std::endl;
 	}
 
 	double Obstacle::get_repulsion_factor(const Agent& agent, double factor) const
