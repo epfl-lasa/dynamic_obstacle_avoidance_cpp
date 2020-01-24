@@ -49,10 +49,10 @@ namespace DynamicObstacleAvoidance
 		virtual Obstacle* implicit_clone() const;
 
 	public:
-		explicit Obstacle(const std::string& name="", double safety_margin=0);
-		explicit Obstacle(double cx, double cy, double cz, double safety_margin=0, const std::string& name="");
-		explicit Obstacle(const State& state, double safety_margin=0, const std::string& name="");
-		explicit Obstacle(const State& state, const Eigen::Vector3d& reference_position, double safety_margin=0, const std::string& name="");
+		explicit Obstacle(const std::string& name="obstacle", double safety_margin=0);
+		explicit Obstacle(double cx, double cy, double cz, double safety_margin=0, const std::string& name="obstacle");
+		explicit Obstacle(const State& state, double safety_margin=0, const std::string& name="obstacle");
+		explicit Obstacle(const State& state, const Eigen::Vector3d& reference_position, double safety_margin=0, const std::string& name="obstacle");
 		~Obstacle();
 
 		inline const std::string get_type() const 
@@ -152,7 +152,7 @@ namespace DynamicObstacleAvoidance
 
 		virtual inline std::ostream& print(std::ostream& os) const
 		{
-			os << this->type << std::endl;
+			os << this->type << " " << this->name << std::endl;
 			os << this->state << std::endl;
 			os << "reference position: (" << this->reference_position(0) << ", ";
 			os << this->reference_position(1) << ", ";

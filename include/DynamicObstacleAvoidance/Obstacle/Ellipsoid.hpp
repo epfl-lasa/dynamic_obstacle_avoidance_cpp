@@ -31,15 +31,15 @@ namespace DynamicObstacleAvoidance
 		Ellipsoid* implicit_clone() const override;
 
 	public:
-		explicit Ellipsoid(const std::string& name="");
+		explicit Ellipsoid(const std::string& name="ellipsoid");
 
 		explicit Ellipsoid(const Ellipsoid& ellipsoid);
 
-		explicit Ellipsoid(double cx, double cy, double cz, double safety_margin=0, const std::string& name="");
+		explicit Ellipsoid(double cx, double cy, double cz, double safety_margin=0, const std::string& name="ellipsoid");
 
-		explicit Ellipsoid(const State& state, double safety_margin=0, const std::string& name="");
+		explicit Ellipsoid(const State& state, double safety_margin=0, const std::string& name="ellipsoid");
 
-		explicit Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, double safety_margin=0, const std::string& name="");
+		explicit Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, double safety_margin=0, const std::string& name="ellipsoid");
 		
 		~Ellipsoid();
 

@@ -23,12 +23,9 @@ add_subdirectory(lib/limbo limbo_build)
 
 find_package(
 	Eigen3 REQUIRED
-	armadillo REQUIRED
-	mlpack REQUIRED
 )
 
 find_package(PythonLibs 3.6)
-find_package(OpenMP)
 
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
@@ -41,12 +38,8 @@ endif()
 
 include_directories(
   	include
-  	lib/SVMGrad/include
-  	lib/libsvm/include
   	lib/limbo/src
   	${EIGEN3_INCLUDE_DIR}
-  	${armadillo_INCLUDE_DIRS}
-  	${mlpack_INCLUDE_DIRS}
   	${PYTHON_INCLUDE_DIRS}
 )
 
@@ -54,25 +47,19 @@ set(CORE_SOURCES
 	src/Obstacle/Obstacle.cpp
  	src/Obstacle/Ellipsoid.cpp
  	src/Obstacle/Aggregate.cpp
- 	src/Obstacle/PointCloudToObstacle.cpp
  	src/Obstacle/StarShapeHull.cpp
  	src/State/Pose.cpp
  	src/State/State.cpp
 	src/Modulation.cpp
   	src/Agent.cpp
+  	src/Environment.cpp
   	src/Utils/MathTools.cpp
   	src/Utils/Plotting/PlottingTools.cpp
   	src/Utils/ObstacleGeneration/Aggregation.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${CORE_SOURCES})
-
-if(OpenMP_CXX_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX armadillo mlpack ${PYTHON_LIBRARIES} ${Boost_LIBRARIES} limbo)
-else()
-	target_link_libraries(${PROJECT_NAME} armadillo mlpack ${PYTHON_LIBRARIES} ${Boost_LIBRARIES} limbo)
-endif()
-
+target_link_libraries(${PROJECT_NAME} PUBLIC ${PYTHON_LIBRARIES} ${Boost_LIBRARIES} limbo)
 
 install(DIRECTORY include/
   	DESTINATION include)
@@ -117,8 +104,8 @@ if (runtests)
 		${PROJECT_NAME}
 	)
 
-	add_executable(runTestPointCloudToObstacle tests/testPointCloudToObstacle.cpp)
-	target_link_libraries(runTestPointCloudToObstacle
+	add_executable(runTestEnvironment tests/testEnvironment.cpp)
+	target_link_libraries(runTestEnvironment
 		gtest 
 		gtest_main
 		${PROJECT_NAME}
@@ -127,7 +114,7 @@ if (runtests)
 	add_test(NAME runTestModulation COMMAND runTestModulation)
 	add_test(NAME runTestObstacle COMMAND runTestObstacle)
 	add_test(NAME runTestState COMMAND runTestState)
-	add_test(NAME runTestPointCloudToObstacle COMMAND runTestPointCloudToObstacle)
+	add_test(NAME runTestEnvironment COMMAND runTestEnvironment)
 endif()
 
 add_executable(runTestOptimization tests/testOptimization.cpp)
