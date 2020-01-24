@@ -24,13 +24,13 @@ namespace DynamicObstacleAvoidance
 	Obstacle::~Obstacle() 
 	{}
 
-	Eigen::Vector3d Obstacle::compute_normal_to_agent(const Agent& agent) const
+	Eigen::Vector3d Obstacle::compute_normal_to_agent(const Agent&) const
 	{
 		std::cerr << "Fonction compute_normal_to_agent of abstract class obstacle used" << std::endl;
 		return Eigen::Vector3d();
 	}
 
-	double Obstacle::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const
+	double Obstacle::compute_distance_to_point(const Eigen::Vector3d&, double) const
 	{
 		std::cerr << "Fonction compute_distance_to_point of abstract class obstacle used" << std::endl;
 		return 0.0;
@@ -41,7 +41,7 @@ namespace DynamicObstacleAvoidance
 		return this->compute_distance_to_point(agent.get_position(), agent.get_safety_margin());
 	}
 
-	void Obstacle::draw(const std::string& color, bool is3D) const
+	void Obstacle::draw(const std::string&, bool) const
 	{
 		std::cerr << "Fonction draw of abstract class obstacle used" << std::endl;
 	}
@@ -70,7 +70,7 @@ namespace DynamicObstacleAvoidance
 		return intersecting;
 	}
 
-	bool Obstacle::is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const
+	bool Obstacle::is_intersecting_ellipsoid(const Ellipsoid&) const
 	{
 		std::cerr << "Fonction is_intersecting with Ellipsoid of abstract class obstacle used" << std::endl;
 		return false;
@@ -88,18 +88,19 @@ namespace DynamicObstacleAvoidance
 		return factor / this->compute_distance_to_point(agent.get_position(), agent.get_safety_margin());
 	}
 
-	Eigen::MatrixXd Obstacle::sample_from_parameterization(unsigned int nb_samples, bool is_include_safety_margin) const
+	Eigen::MatrixXd Obstacle::sample_from_parameterization(unsigned int, bool) const
 	{
 		std::cerr << "Fonction sample_from_parameterization of abstract class obstacle used" << std::endl;
+		return Eigen::Vector3d::Zero();
 	}
 
-	bool Obstacle::point_is_inside(const Eigen::Vector3d& point) const
+	bool Obstacle::point_is_inside(const Eigen::Vector3d&) const
 	{
 		std::cerr << "Fonction point_is_inside of abstract class obstacle used" << std::endl;
 		return false;
 	}
 
-	Eigen::Vector3d Obstacle::compute_repulsion_vector(const Agent& agent) const
+	Eigen::Vector3d Obstacle::compute_repulsion_vector(const Agent&) const
 	{
 		std::cerr << "Fonction compute_repulsion_vector of abstract class obstacle used" << std::endl;
 		return Eigen::Vector3d::Zero();

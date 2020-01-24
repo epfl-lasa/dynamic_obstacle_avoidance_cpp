@@ -17,42 +17,10 @@
 #define _USE_MATH_DEFINES 
 #include <cmath>
 
-#include <limbo/kernel/exp.hpp>
-#include <limbo/kernel/squared_exp_ard.hpp>
-#include <limbo/mean/data.hpp>
-#include <limbo/model/gp.hpp>
-#include <limbo/model/gp/kernel_lf_opt.hpp>
-#include <limbo/tools.hpp>
-#include <limbo/tools/macros.hpp>
-#include <limbo/serialize/text_archive.hpp>
-
 namespace plt = matplotlibcpp;
-
-using namespace limbo;
 
 namespace DynamicObstacleAvoidance
 {
-	struct GPParams {
-	    struct kernel_exp {
-	        BO_PARAM(double, sigma_sq, 1.0);
-	        BO_PARAM(double, l, 1.0);
-	    };
-	    struct kernel : public defaults::kernel {
-	    	BO_PARAM(bool, optimize_noise, true);
-	    	// BO_PARAM(double, noise, 0.2);
-	    };
-	    struct kernel_squared_exp_ard : public defaults::kernel_squared_exp_ard {
-	    };
-	    struct opt_rprop : public defaults::opt_rprop {
-	    	BO_PARAM(double, eps_stop, 1e-4);
-	    	BO_PARAM(int, iterations, 20);
-	    };
-	};
-
-	using Kernel_t = kernel::SquaredExpARD<GPParams>;
-    using Mean_t = mean::Data<GPParams>;
-    using GP_t = model::GP<GPParams, Kernel_t, Mean_t, model::gp::KernelLFOpt<GPParams>>;
-
 	class StarShapeHull: public Obstacle
 	{
 	private:
@@ -61,22 +29,11 @@ namespace DynamicObstacleAvoidance
 		double min_radius;
 		Eigen::MatrixXd cartesian_surface_points;
 		Eigen::MatrixXd polar_surface_points;
-		GP_t surface_regressor;
 
 		Eigen::Vector3d compute_baricenter(const std::deque<std::shared_ptr<Obstacle> >& primitives);
 
-		void initialize_regressor_parameters();
-
-		std::pair<std::vector<Eigen::VectorXd>, std::vector<Eigen::VectorXd> > extract_regressor_data() const;
-
-		void train_surface_regressor();
-
-		Eigen::Vector3d predict_cartesian_point(double angle) const;
-
-		Eigen::Vector3d predict_polar_point(double angle) const;
-
 	public:
-		explicit StarShapeHull(bool is_inside=false, unsigned int resolution=1000, double min_radius=0.5);
+		explicit StarShapeHull(bool is_inside=false, unsigned int resolution=500, double min_radius=0.5);
 
 		explicit StarShapeHull(const std::deque<std::shared_ptr<Obstacle> >& primitives, bool is_inside=false, unsigned int resolution=1000, double min_radius=0.5);
 

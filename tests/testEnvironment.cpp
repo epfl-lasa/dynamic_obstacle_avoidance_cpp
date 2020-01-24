@@ -43,7 +43,15 @@ TEST(Aggregation, PositiveNos)
 	env.add_obstacle(e1);
 	env.add_obstacle(e2);
 
-	PlottingTools::plot_configuration(env.get_obstacle_list(), "test_aggregate", true);
+	auto obstacle_list = env.get_obstacle_list();
+	EXPECT_TRUE(obstacle_list.size() == 1);
+	PlottingTools::plot_configuration(obstacle_list, "test_aggregate1", true);
+
+	e1->set_position(Eigen::Vector3d(2,0,0));
+	
+	obstacle_list = env.get_obstacle_list();
+	EXPECT_TRUE(obstacle_list.size() == 2);
+	PlottingTools::plot_configuration(obstacle_list, "test_aggregate2", true);
 }
 
 int main(int argc, char **argv) {
