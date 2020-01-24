@@ -89,7 +89,7 @@ namespace DynamicObstacleAvoidance
 		plt::ylim(-10, 10);
 		if(savefile.compare(""))
 		{
-			std::string path = "./tmp/" + savefile + ".png";
+			std::string path = "/tmp/" + savefile + ".png";
 			plt::save(path);
 		}
 		if(is_show)
@@ -113,7 +113,7 @@ namespace DynamicObstacleAvoidance
 		plt::ylim(-10, 10);
 		if(savefile.compare(""))
 		{
-			std::string path = "./tmp/" + savefile + ".png";
+			std::string path = "/tmp/" + savefile + ".png";
 			plt::save(path);
 		}
 		if(is_show)
@@ -153,7 +153,7 @@ namespace DynamicObstacleAvoidance
 		// save the plot
 		if(savefile.compare(""))
 		{
-			std::string path = "./tmp/" + savefile + ".png";
+			std::string path = "/tmp/" + savefile + ".png";
 			plt::save(path);
 		}
 		if(is_show)
