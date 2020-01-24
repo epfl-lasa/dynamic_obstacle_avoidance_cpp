@@ -275,17 +275,17 @@ TEST(ModulateVelocity, PositiveNos)
 	ptrE2->set_linear_velocity(Eigen::Vector3d(-0.5,-0.5,0));
 	auto ptrE3 = std::make_shared<Ellipsoid>(State(position_o3, orientation));
 
-	std::deque<std::shared_ptr<Obstacle> > obstacle_list;
-	obstacle_list.push_back(ptrE1);
-	obstacle_list.push_back(ptrE2);
-	obstacle_list.push_back(ptrE3);
+	Environment env(false);
+	env.add_obstacle(ptrE1);
+	env.add_obstacle(ptrE2);
+	env.add_obstacle(ptrE3);
 
 	Eigen::Vector3d agent_position(1,0,0);
 	State agent_state(agent_position);
 	Agent agent(agent_state);
 	agent.set_linear_velocity(Eigen::Vector3d(0.5,0.5,0));
 
-	Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, obstacle_list);
+	Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, env);
 	Eigen::Vector3d modulated_velocity_truth(-0.25,1.25,0.0);
 
 	std::cerr << "modulated velocity: " << std::endl;

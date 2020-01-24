@@ -62,26 +62,24 @@ int main(int, char*[])
 
 	ptrE8->set_axis_lengths(Eigen::Array3d(2, 2, 0));
 
-	std::deque<std::shared_ptr<Obstacle> > obstacle_list;
-	obstacle_list.push_back(ptrE1);
-	obstacle_list.push_back(ptrE2);
-	obstacle_list.push_back(ptrE3);
-	obstacle_list.push_back(ptrE4);
-	obstacle_list.push_back(ptrE5);
-	obstacle_list.push_back(ptrE6);
-	obstacle_list.push_back(ptrE7);
-	obstacle_list.push_back(ptrE8);
+	Environment env;
+	env.add_obstacle(ptrE1);
+	env.add_obstacle(ptrE2);
+	env.add_obstacle(ptrE3);
+	env.add_obstacle(ptrE4);
+	env.add_obstacle(ptrE5);
+	env.add_obstacle(ptrE6);
+	env.add_obstacle(ptrE7);
+	env.add_obstacle(ptrE8);
 
 	// create the target
 	Eigen::Vector3d target_position(5, -5 , 0);
 	std::deque<Eigen::Vector3d> position_history;
 
-	std::deque<std::shared_ptr<Obstacle> > aggregated_obstacle_list;
-
 	// aggregate the obstacles if necessary
-	aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
+	/*aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
 	aggregated_obstacle_list[0]->set_reference_position(Eigen::Vector3d(0, 0, 0));
-	static_cast<Aggregate*>(aggregated_obstacle_list[0].get())->update_hull();
+	static_cast<Aggregate*>(aggregated_obstacle_list[0].get())->update_hull();*/
 
 	/*ptrE5->set_reference_position(Eigen::Vector3d(1,-7.5,0));
 	aggregated_obstacle_list.push_back(ptrE5));
@@ -115,7 +113,7 @@ int main(int, char*[])
 		//static_cast<Aggregate*>(aggregated_obstacle_list[0].get())->update_hull();
 
 		Eigen::Vector3d previous_vel = Eigen::Vector3d::Zero();
-		if(agent.exist_path(target_position, aggregated_obstacle_list))
+		if(agent.exist_path(target_position, env.get_obstacle_list()))
 		{
 			position_history.push_back(current_position);
 
@@ -123,7 +121,7 @@ int main(int, char*[])
 			//agent.set_linear_velocity(0.9 * desired_velocity + 0.1 * previous_vel);
 			agent.set_linear_velocity(desired_velocity);
 
-			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, aggregated_obstacle_list, false, true);
+			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, env, false, true);
 			if(modulated_velocity.norm() > max_vel) modulated_velocity = max_vel * modulated_velocity.normalized();
 
 			Eigen::Vector3d modulated_position = current_position + dt * modulated_velocity;
@@ -143,9 +141,9 @@ int main(int, char*[])
 			std::stringstream ss;
 			ss << std::setw(3) << std::setfill('0') << i;
 			std::string s = ss.str();
-			PlottingTools::plot_configuration(agent, aggregated_obstacle_list, target_position, position_history, "image" + s, is_show);
+			PlottingTools::plot_configuration(agent, env.get_obstacle_list(), target_position, position_history, "image" + s, is_show);
 		}
 	}
 	//PlottingTools::plot_configuration(agent, aggregated_obstacle_list, target_position, position_history, "test_seed" + std::to_string(seed), is_show);
-	PlottingTools::plot_configuration(aggregated_obstacle_list, "test_seed" + std::to_string(seed), is_show);
+	PlottingTools::plot_configuration(env.get_obstacle_list(), "test_seed" + std::to_string(seed), is_show);
 }

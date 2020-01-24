@@ -127,8 +127,9 @@ namespace DynamicObstacleAvoidance
 	  		return acos (x) ;
 	  	}
 
-		Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::shared_ptr<Obstacle> >& obstacles, bool is_local, bool add_repulsion, double critical_distance, double weight_power)
+		Eigen::Vector3d modulate_velocity(const Agent& agent, const Environment& environment, bool is_local, bool add_repulsion, double critical_distance, double weight_power)
 		{
+			auto obstacles = environment.get_obstacle_list();
 			if(obstacles.empty()) return agent.get_linear_velocity();
 
 			// no modulation if no obstacle in sight

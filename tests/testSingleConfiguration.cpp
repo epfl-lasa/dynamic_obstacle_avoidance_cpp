@@ -32,18 +32,15 @@ int main(int, char*[])
 	srand(seed);
 
 	// generate the list of obstacles
-	std::deque<std::shared_ptr<Obstacle> > obstacle_list;
+	Environment env(aggregated);
 	for(unsigned int i=0; i<nb_obstacles; ++i)
 	{
 		Eigen::Vector3d pos(MathTools::rand_float(3,-3), MathTools::rand_float(3,-3), 0);
 		Eigen::Quaterniond rot(Eigen::AngleAxisd(MathTools::rand_float(2)*M_PI, Eigen::Vector3d::UnitZ()));
 		auto ptrE = std::make_shared<Ellipsoid>(State(pos, rot));
 		ptrE->set_axis_lengths(Eigen::Array3d(MathTools::rand_float(3,0.2), MathTools::rand_float(3,0.2), 0));
-		obstacle_list.push_back(ptrE);
+		env.add_obstacle(ptrE);
 	}
-
-	// aggregate the obstacles if necessary
-	std::deque<std::shared_ptr<Obstacle> > aggregated_obstacle_list = Aggregation::aggregate_obstacles(obstacle_list);
 
 	// create the agent
 	Eigen::Vector3d agent_position(MathTools::rand_float(5, -5), 8, 0);
@@ -56,7 +53,7 @@ int main(int, char*[])
 
 	if(debug) 
 	{
-		for(auto& o:obstacle_list) std::cerr << *o << std::endl;
+		for(auto& o:env.get_obstacle_list()) std::cerr << *o << std::endl;
 		std::cerr << std::endl;
 		std::cerr << agent << std::endl;
 		std::cerr << "target: (" << target_position(0) << ", ";
@@ -74,18 +71,18 @@ int main(int, char*[])
 		Eigen::Vector3d desired_velocity = -Kp * (current_position - target_position);
 		agent.set_linear_velocity(0.8 * desired_velocity + 0.2 * previous_vel);
 
-		Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, (aggregated ? aggregated_obstacle_list : obstacle_list));
+		Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, env);
 		Eigen::Vector3d modulated_position = current_position + dt * modulated_velocity;
 		agent.set_position(modulated_position);
 
 		if(plot_steps)
 		{	
-			PlottingTools::plot_configuration(agent, (aggregated ? aggregated_obstacle_list : obstacle_list), target_position, position_history, "test_seed_" + std::to_string(seed) + "_step_" + std::to_string(i), is_show);
+			PlottingTools::plot_configuration(agent, env.get_obstacle_list(), target_position, position_history, "test_seed_" + std::to_string(seed) + "_step_" + std::to_string(i), is_show);
 		}
 
 		previous_vel = desired_velocity;
 	}
 
-	PlottingTools::plot_configuration(agent, (aggregated ? aggregated_obstacle_list : obstacle_list), target_position, position_history, "test_seed_" + std::to_string(seed), is_show);
+	PlottingTools::plot_configuration(agent, env.get_obstacle_list(), target_position, position_history, "test_seed_" + std::to_string(seed), is_show);
 	//PlottingTools::plot_configuration((aggregated ? aggregated_obstacle_list : obstacle_list), "test_seed_" + std::to_string(seed), is_show);
 }

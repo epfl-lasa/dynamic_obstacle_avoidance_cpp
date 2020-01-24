@@ -67,24 +67,14 @@ int main(int, char*[])
 	ptrE6->set_axis_lengths(Eigen::Array3d(0.55, 0.2, 0));
 	ptrE7->set_axis_lengths(Eigen::Array3d(2, 0.2, 0));
 
-	// set reference points for pairs of ellipses
-	ptrE1->set_reference_position(Eigen::Vector3d(3, 2.05, 0));
-	ptrE2->set_reference_position(Eigen::Vector3d(3, 2.05, 0));
-
-	ptrE3->set_reference_position(Eigen::Vector3d(0.4, 3.55, 0));
-	ptrE4->set_reference_position(Eigen::Vector3d(0.4, 3.55, 0));
-
-	ptrE5->set_reference_position(Eigen::Vector3d(4.15, 5.1, 0));
-	ptrE6->set_reference_position(Eigen::Vector3d(4.15, 5.1, 0));
-
 	// add to the list
-	std::deque<std::shared_ptr<Obstacle> > obstacle_list;
-	obstacle_list.push_back(ptrE1);
-	obstacle_list.push_back(ptrE2);
-	obstacle_list.push_back(ptrE3);
-	obstacle_list.push_back(ptrE4);
-	obstacle_list.push_back(ptrE5);
-	obstacle_list.push_back(ptrE6);
+	Environment env;
+	env.add_obstacle(ptrE1);
+	env.add_obstacle(ptrE2);
+	env.add_obstacle(ptrE3);
+	env.add_obstacle(ptrE4);
+	env.add_obstacle(ptrE5);
+	env.add_obstacle(ptrE6);
 	//obstacle_list.push_back(ptrE7));
 
 	for(int k=0; k<nb_simulations; ++k)
@@ -101,7 +91,7 @@ int main(int, char*[])
 		std::deque<Eigen::Vector3d> position_history;
 		if(debug) 
 		{
-			for(auto& o:obstacle_list) std::cerr << *o << std::endl;
+			for(auto& o:env.get_obstacle_list()) std::cerr << *o << std::endl;
 			std::cerr << std::endl;
 			std::cerr << agent << std::endl;
 			std::cerr << "target: (" << target_position(0) << ", ";
@@ -118,16 +108,16 @@ int main(int, char*[])
 			Eigen::Vector3d desired_velocity = -Kp * (current_position - target_position);
 			agent.set_linear_velocity(desired_velocity);
 
-			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, obstacle_list, true, true);
+			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, env, true, true);
 			Eigen::Vector3d modulated_position = current_position + dt * modulated_velocity;
 			agent.set_position(modulated_position);
 			
 			if(plot_steps)
 			{	
-				PlottingTools::plot_configuration(agent, obstacle_list, target_position, position_history, "test_" + std::to_string(k) + "_seed_" + std::to_string(seed) + "_step_" + std::to_string(i), is_show);
+				PlottingTools::plot_configuration(agent, env.get_obstacle_list(), target_position, position_history, "test_" + std::to_string(k) + "_seed_" + std::to_string(seed) + "_step_" + std::to_string(i), is_show);
 			}
 		}
 
-		PlottingTools::plot_configuration(agent, obstacle_list, target_position, position_history, "test_" + std::to_string(k) + "_seed_" + std::to_string(seed), is_show);
+		PlottingTools::plot_configuration(agent, env.get_obstacle_list(), target_position, position_history, "test_" + std::to_string(k) + "_seed_" + std::to_string(seed), is_show);
 	}
 }

@@ -21,27 +21,23 @@
 #include "DynamicObstacleAvoidance/Obstacle/Aggregate.hpp"
 #include "DynamicObstacleAvoidance/Utils/MathTools.hpp"
 #include "DynamicObstacleAvoidance/Agent.hpp"
+#include "DynamicObstacleAvoidance/Environment.hpp"
 
 namespace DynamicObstacleAvoidance
 {
     namespace Modulation
     {
         Eigen::ArrayXd weight_obstacles(const Eigen::ArrayXd& distances, double critical_distance, double weight_power);
+
         std::pair<Eigen::Matrix3d, Eigen::Matrix3d> compute_basis_matrices(const Eigen::Vector3d& normal_vector, const Agent& agent, const Obstacle& obstacle);
+        
         Eigen::DiagonalMatrix<double, 3> compute_diagonal_eigenvalues(double distance_to_obstacle, double reactivity_factor=1.0);
+        
         std::pair<Eigen::Vector3d, Eigen::Vector3d> compute_relative_velocities(const Agent& agent, const std::deque<std::shared_ptr<Obstacle> >& obstacles, const Eigen::ArrayXd& distances, const Eigen::ArrayXd& weights, const std::deque<Eigen::Matrix3d>& orthogonal_basis_list);
-        /**
-        * @brief The function evaluates the gamma function and all necessary components needed to construct the modulation function, to ensure safe avoidance of the obstacles.
-        * Beware that this function is constructed for ellipsoid only, but the algorithm is applicable to star shapes.
-        * @param[in] robotPos Position of the robot in the obstacle reference frame
-        * @param[in] obstacle Description of the obstacle with parameters
-        * @param[in] rotation Rotation matrix
-        * @param[out] basis Basis matrix with rows the reference and tangent to the obstacles surface
-        * @param[out] basisOrthogonal Orthogonal basis matrix with rows the normal and tangent
-        * @param[out] eigenValues Eigenvalue matrix which is responsible for the modulation
-        */
+        
         std::tuple<Eigen::Matrix3d, Eigen::Matrix3d, double> compute_modulation_matrix(const Agent& agent, const Obstacle& obstacle);
-        Eigen::Vector3d modulate_velocity(const Agent& agent, const std::deque<std::shared_ptr<Obstacle> >& obstacles, bool is_local=false, bool add_repulsion=false, double critical_distance=1.0, double weight_power=2.0);
+        
+        Eigen::Vector3d modulate_velocity(const Agent& agent, const Environment& environment, bool is_local=false, bool add_repulsion=false, double critical_distance=1.0, double weight_power=2.0);
     }
 }
 
