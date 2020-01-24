@@ -19,26 +19,14 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   	add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-add_subdirectory(lib/limbo limbo_build)
-
 find_package(
 	Eigen3 REQUIRED
 )
 
 find_package(PythonLibs 3.6)
 
-set(Boost_USE_STATIC_LIBS OFF)
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.45.0 REQUIRED COMPONENTS system filesystem thread unit_test_framework)
-
-if(Boost_FOUND)
-  include_directories(${Boost_INCLUDE_DIRS})
-endif()
-
 include_directories(
   	include
-  	lib/limbo/src
   	${EIGEN3_INCLUDE_DIR}
   	${PYTHON_INCLUDE_DIRS}
 )
@@ -59,7 +47,7 @@ set(CORE_SOURCES
 )
 
 add_library(${PROJECT_NAME} SHARED ${CORE_SOURCES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${PYTHON_LIBRARIES} ${Boost_LIBRARIES} limbo)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${PYTHON_LIBRARIES})
 
 install(DIRECTORY include/
   	DESTINATION include)
