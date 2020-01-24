@@ -39,6 +39,7 @@ namespace DynamicObstacleAvoidance
                 ++i;
             }
         }
+        return grid;
     }
 
     double MathTools::rand_float(double a, double b) 

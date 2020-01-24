@@ -22,7 +22,7 @@ int main(int, char*[])
 	double Kp = 1;
 	double dt = 0.01;
 
-	int nb_steps = 400;
+	unsigned int nb_steps = 400;
 	bool is_show = false;
 	bool plot_steps = false;
 	double max_vel = 100;

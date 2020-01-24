@@ -164,10 +164,10 @@ namespace DynamicObstacleAvoidance
 		else
 		{
 			// first sample the first ellipsoid
-			int nb_samples = 100;
+			unsigned int nb_samples = 100;
 			Eigen::MatrixXd samples = other_obstacle.sample_from_parameterization(nb_samples, true);
 			// for each points check if at least one of them is inside
-			int i = 0;
+			unsigned int i = 0;
 			while(!intersecting && i<samples.cols())
 			{
 				intersecting = this->point_is_inside(samples.col(i));
@@ -189,7 +189,7 @@ namespace DynamicObstacleAvoidance
 		std::vector<double> alpha = MathTools::linspace(0, 2*M_PI, nb_samples);
 
 		Eigen::MatrixXd samples(3, nb_samples);
-		for(int i=0; i<nb_samples; ++i)
+		for(unsigned int i=0; i<nb_samples; ++i)
 		{
 			double a = alpha.at(i);
 			samples(0, i) = lengths(0) * cos(a) * cos(theta) - lengths(1) * sin(a) * sin(theta) + this->get_position()(0);

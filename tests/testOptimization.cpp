@@ -15,11 +15,7 @@ using namespace DynamicObstacleAvoidance;
 
 int main(int, char*[])
 {
-	int nb_simulations = 1;
-	int nb_steps = 1000;
-	bool debug = false;
 	bool is_show = true;
-	bool plot_steps = true;
 	double obstacles_safety_margin = 0.0;
 	double agent_safety_margin = 0.0;
 
