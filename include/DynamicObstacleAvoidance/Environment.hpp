@@ -33,7 +33,7 @@ namespace DynamicObstacleAvoidance
 
 		void update();
 
-		std::shared_ptr<Obstacle>& operator[] (const std::string& k)
+		std::shared_ptr<Obstacle>& operator[] (const std::string& k);
 	};
 
 	inline bool Environment::is_aggregated() const
