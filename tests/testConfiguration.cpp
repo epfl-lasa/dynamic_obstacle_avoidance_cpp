@@ -41,7 +41,7 @@ int main(int, char*[])
 		{
 			Eigen::Vector3d pos(MathTools::rand_float(3,-3), MathTools::rand_float(3,-3), 0);
 			Eigen::Quaterniond rot(Eigen::AngleAxisd(MathTools::rand_float(2)*M_PI, Eigen::Vector3d::UnitZ()));
-			auto ptrE = std::make_shared<Ellipsoid>(State(pos, rot));
+			auto ptrE = std::make_shared<Ellipsoid>("e" + std::to_string(i), State(pos, rot));
 			ptrE->set_axis_lengths(Eigen::Array3d(MathTools::rand_float(3,0.2), MathTools::rand_float(3,0.2), 0));
 			env.add_obstacle(ptrE);
 		}

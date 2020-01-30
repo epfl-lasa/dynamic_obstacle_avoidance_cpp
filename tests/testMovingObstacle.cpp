@@ -33,7 +33,7 @@ int main(int, char*[])
 	// generate the list of obstacles
 	Eigen::Vector3d position_o1(5, 0, 0);
 	Eigen::Quaterniond orientation_o6(Eigen::AngleAxisd(0, Eigen::Vector3d::UnitZ()));
-	auto ptrE1 = std::make_shared<Ellipsoid>(State(position_o1), 0.1, "w1");
+	auto ptrE1 = std::make_shared<Ellipsoid>("w1", State(position_o1), 0.1);
 	ptrE1->set_axis_lengths(Eigen::Array3d(1, 1, 0));
 
 	Environment env;

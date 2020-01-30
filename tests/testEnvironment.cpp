@@ -11,12 +11,12 @@ TEST(AddObstacle, PositiveNos)
 
 	Eigen::Vector3d pos(MathTools::rand_float(3,-3), MathTools::rand_float(3,-3), 0);
 	Eigen::Quaterniond rot(Eigen::AngleAxisd(MathTools::rand_float(2)*M_PI, Eigen::Vector3d::UnitZ()));
-	auto ptrE = std::make_shared<Ellipsoid>(State(pos, rot));
+	auto ptrE = std::make_shared<Ellipsoid>("e1", State(pos, rot));
 	ptrE->set_axis_lengths(Eigen::Array3d(MathTools::rand_float(3,0.2), MathTools::rand_float(3,0.2), 0));
 
 	env.add_obstacle(ptrE);
 
-	EXPECT_TRUE(env["ellipsoid"]->get_position()(0) == pos(0));
+	EXPECT_TRUE(env["e1"]->get_position()(0) == pos(0));
 }
 
 TEST(GetList, PositiveNos)
@@ -38,20 +38,21 @@ TEST(GetList, PositiveNos)
 TEST(Aggregation, PositiveNos)
 {
 	Environment env;
-	auto e1 = std::make_shared<Ellipsoid>(0.5, 0, 0, 0, "e1");
-	auto e2 = std::make_shared<Ellipsoid>(-0.5, 0, 0, 0, "e2");
+	auto e1 = std::make_shared<Ellipsoid>("e1", 0.5, 0, 0, 0);
+	auto e2 = std::make_shared<Ellipsoid>("e2", -0.5, 0, 0, 0);
 	env.add_obstacle(e1);
 	env.add_obstacle(e2);
 
 	auto obstacle_list = env.get_obstacle_list();
 	EXPECT_TRUE(obstacle_list.size() == 1);
-	PlottingTools::plot_configuration(obstacle_list, "test_aggregate1", true);
+	//PlottingTools::plot_configuration(obstacle_list, "test_aggregate1", true);
 
 	e1->set_position(Eigen::Vector3d(2,0,0));
+	env.update();
 	
 	obstacle_list = env.get_obstacle_list();
 	EXPECT_TRUE(obstacle_list.size() == 2);
-	PlottingTools::plot_configuration(obstacle_list, "test_aggregate2", true);
+	//PlottingTools::plot_configuration(obstacle_list, "test_aggregate2", true);
 }
 
 int main(int argc, char **argv) {

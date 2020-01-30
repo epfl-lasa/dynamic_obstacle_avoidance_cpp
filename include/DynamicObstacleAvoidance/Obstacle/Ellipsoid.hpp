@@ -29,15 +29,15 @@ namespace DynamicObstacleAvoidance
 		bool is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const;
 
 	public:
-		explicit Ellipsoid(const std::string& name="ellipsoid");
+		explicit Ellipsoid(const std::string& name);
 
 		explicit Ellipsoid(const Ellipsoid& ellipsoid);
 
-		explicit Ellipsoid(double cx, double cy, double cz, double safety_margin=0, const std::string& name="ellipsoid");
+		explicit Ellipsoid(const std::string& name, double cx, double cy, double cz, double safety_margin=0);
 
-		explicit Ellipsoid(const State& state, double safety_margin=0, const std::string& name="ellipsoid");
+		explicit Ellipsoid(const std::string& name, const State& state, double safety_margin=0);
 
-		explicit Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, double safety_margin=0, const std::string& name="ellipsoid");
+		explicit Ellipsoid(const std::string& name, const State& state, const Eigen::Vector3d& reference_position, double safety_margin=0);
 		
 		~Ellipsoid();
 

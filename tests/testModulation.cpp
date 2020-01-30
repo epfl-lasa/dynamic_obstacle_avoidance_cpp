@@ -65,7 +65,7 @@ TEST(ComputeBasisMatrices, PositiveNos)
 	Eigen::Vector3d position(2, 1, 0);
 	Eigen::Quaterniond orientation(1, 0, 0, 0);
 	State s(position, orientation);
-	Ellipsoid e(s);
+	Ellipsoid e("e1", s);
 	Eigen::Vector3d agent_position(1, 0, 0);
 	State state(agent_position);
 	Agent agent(state);
@@ -107,7 +107,7 @@ TEST(ComputeBasisMatricesWithRotation, PositiveNos)
 {
 	Eigen::Vector3d position(2, 1, 0);
 	Eigen::Quaterniond orientation(Eigen::AngleAxisd(0.3*M_PI, Eigen::Vector3d::UnitZ()));
-	Ellipsoid e(State(position, orientation));
+	Ellipsoid e("e1", State(position, orientation));
 
 	Eigen::Vector3d agent_position(1, 0, 0);
 	State state(agent_position);
@@ -138,7 +138,7 @@ TEST(ComputeDiagonalEigenvalues, PositiveNos)
 {
 	Eigen::Vector3d position(2, 1, 0);
 	State s(position);
-	Ellipsoid e(s);
+	Ellipsoid e("e1", s);
 
 	Eigen::Vector3d agent_position(1, 0, 0);
 	State state(agent_position);
@@ -162,7 +162,7 @@ TEST(ComputeModulationMatrix, PositiveNos)
 {
 	Eigen::Vector3d position(2, 1, 0);
 	State s(position);
-	Ellipsoid e(s);
+	Ellipsoid e("e1", s);
 
 	Eigen::Vector3d agent_position(1,0,0);
 	State agent_state(agent_position);
@@ -211,10 +211,10 @@ TEST(ComputeRelativeVelocities, PositiveNos)
 	Eigen::Vector3d position_o3(0.9, 0, 0);
 	Eigen::Quaterniond orientation(1,0,0,0);
 
-	auto ptrE1 = std::make_shared<Ellipsoid>(State(position_o1, orientation));
-	auto ptrE2 = std::make_shared<Ellipsoid>(State(position_o2, orientation));
+	auto ptrE1 = std::make_shared<Ellipsoid>("e1", State(position_o1, orientation));
+	auto ptrE2 = std::make_shared<Ellipsoid>("e2", State(position_o2, orientation));
 	ptrE2->set_linear_velocity(Eigen::Vector3d(-0.5,-0.5,0));
-	auto ptrE3 = std::make_shared<Ellipsoid>(State(position_o3, orientation));
+	auto ptrE3 = std::make_shared<Ellipsoid>("e3", State(position_o3, orientation));
 
 	std::deque<std::shared_ptr<Obstacle> > obstacle_list;
 	obstacle_list.push_back(ptrE1);
@@ -270,10 +270,10 @@ TEST(ModulateVelocity, PositiveNos)
 	Eigen::Vector3d position_o3(0.9, 0, 0);
 	Eigen::Quaterniond orientation(1,0,0,0);
 
-	auto ptrE1 = std::make_shared<Ellipsoid>(State(position_o1, orientation));
-	auto ptrE2 = std::make_shared<Ellipsoid>(State(position_o2, orientation));
+	auto ptrE1 = std::make_shared<Ellipsoid>("e1", State(position_o1, orientation));
+	auto ptrE2 = std::make_shared<Ellipsoid>("e2", State(position_o2, orientation));
 	ptrE2->set_linear_velocity(Eigen::Vector3d(-0.5,-0.5,0));
-	auto ptrE3 = std::make_shared<Ellipsoid>(State(position_o3, orientation));
+	auto ptrE3 = std::make_shared<Ellipsoid>("e3", State(position_o3, orientation));
 
 	Environment env(false);
 	env.add_obstacle(ptrE1);

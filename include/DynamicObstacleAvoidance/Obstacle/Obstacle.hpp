@@ -48,9 +48,9 @@ namespace DynamicObstacleAvoidance
 
 	public:
 		explicit Obstacle(const std::string& name="obstacle", double safety_margin=0);
-		explicit Obstacle(double cx, double cy, double cz, double safety_margin=0, const std::string& name="obstacle");
-		explicit Obstacle(const State& state, double safety_margin=0, const std::string& name="obstacle");
-		explicit Obstacle(const State& state, const Eigen::Vector3d& reference_position, double safety_margin=0, const std::string& name="obstacle");
+		explicit Obstacle(const std::string& name, double cx, double cy, double cz, double safety_margin=0);
+		explicit Obstacle(const std::string& name, const State& state, double safety_margin=0);
+		explicit Obstacle(const std::string& name, const State& state, const Eigen::Vector3d& reference_position, double safety_margin=0);
 		~Obstacle();
 
 		inline const std::string get_type() const 

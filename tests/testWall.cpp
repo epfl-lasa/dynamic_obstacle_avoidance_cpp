@@ -42,14 +42,14 @@ int main(int, char*[])
 
 	Eigen::Quaterniond orientation_o6(Eigen::AngleAxisd(-0.6, Eigen::Vector3d::UnitZ()));
 
-	auto ptrE1 = std::make_shared<Ellipsoid>(State(position_o1), 0.1, "w1");
-	auto ptrE2 = std::make_shared<Ellipsoid>(State(position_o2), 0.1, "w2");
-	auto ptrE3 = std::make_shared<Ellipsoid>(State(position_o3), 0.1, "w3");
-	auto ptrE4 = std::make_shared<Ellipsoid>(State(position_o4), 0.1, "w4");
-	auto ptrE5 = std::make_shared<Ellipsoid>(State(position_o5), 0.5, "w5");
-	auto ptrE6 = std::make_shared<Ellipsoid>(State(position_o6, orientation_o6),  0.1, "desk");
-	auto ptrE7 = std::make_shared<Ellipsoid>(State(position_o7), 0.1, "chair");
-	auto ptrE8 = std::make_shared<Ellipsoid>(State(position_o8), 0.1, "table");
+	auto ptrE1 = std::make_shared<Ellipsoid>("w1", State(position_o1), 0.1);
+	auto ptrE2 = std::make_shared<Ellipsoid>("w2", State(position_o2), 0.1);
+	auto ptrE3 = std::make_shared<Ellipsoid>("w3", State(position_o3), 0.1);
+	auto ptrE4 = std::make_shared<Ellipsoid>("w4", State(position_o4), 0.1);
+	auto ptrE5 = std::make_shared<Ellipsoid>("w5", State(position_o5), 0.5);
+	auto ptrE6 = std::make_shared<Ellipsoid>("desk", State(position_o6, orientation_o6),  0.1);
+	auto ptrE7 = std::make_shared<Ellipsoid>("chair", State(position_o7), 0.1);
+	auto ptrE8 = std::make_shared<Ellipsoid>("table", State(position_o8), 0.1);
 
 	ptrE1->set_axis_lengths(Eigen::Array3d(9, 1, 0));
 	ptrE2->set_axis_lengths(Eigen::Array3d(9, 1, 0));

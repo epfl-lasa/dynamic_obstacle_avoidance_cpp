@@ -5,13 +5,13 @@ namespace DynamicObstacleAvoidance
 	Agent::Agent(const double& safety_margin):
 	safety_margin(safety_margin), delta_t(0.5)
 	{
-		this->envelope = std::make_shared<Ellipsoid>(State(this->get_position()));
+		this->envelope = std::make_shared<Ellipsoid>("envelope", State(this->get_position()));
 	}
 
 	Agent::Agent(const State& state, const double& safety_margin):
 	state(state), safety_margin(safety_margin), delta_t(0.5)
 	{
-		this->envelope = std::make_shared<Ellipsoid>(State(this->get_position()));
+		this->envelope = std::make_shared<Ellipsoid>("envelope", State(this->get_position()));
 	}
 
 	Agent::Agent(const Agent& agent):
@@ -37,7 +37,7 @@ namespace DynamicObstacleAvoidance
 	bool Agent::in_obstacle(const Obstacle& obstacle) const
 	{
 		double margin = std::max(0.1, this->safety_margin);
-		Ellipsoid safety_envelope(State(this->get_position()));
+		Ellipsoid safety_envelope("envelope", State(this->get_position()));
 		safety_envelope.set_axis_lengths(Eigen::Vector3d(margin, margin, margin));
 		return safety_envelope.is_intersecting(obstacle);
 	}

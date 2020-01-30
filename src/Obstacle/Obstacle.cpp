@@ -9,15 +9,15 @@ namespace DynamicObstacleAvoidance
 	name(name), state(Eigen::Vector3d(0,0,0)), safety_margin(safety_margin) 
 	{}
 
-	Obstacle::Obstacle(const State& state, double safety_margin, const std::string& name):
+	Obstacle::Obstacle(const std::string& name, const State& state, double safety_margin):
 	name(name), state(state), reference_position(state.get_position()), safety_margin(safety_margin) 
 	{}
 
-	Obstacle::Obstacle(const State& state, const Eigen::Vector3d& reference_position, double safety_margin, const std::string& name):
+	Obstacle::Obstacle(const std::string& name, const State& state, const Eigen::Vector3d& reference_position, double safety_margin):
 	name(name), state(state), reference_position(reference_position), safety_margin(safety_margin)
 	{}
 
-	Obstacle::Obstacle(double cx, double cy, double cz, double safety_margin, const std::string& name):
+	Obstacle::Obstacle(const std::string& name, double cx, double cy, double cz, double safety_margin):
 	name(name), state(cx, cy, cz), reference_position(cx, cy, cz), safety_margin(safety_margin) 
 	{}
 

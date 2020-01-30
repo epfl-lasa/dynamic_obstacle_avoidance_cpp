@@ -10,26 +10,26 @@ namespace DynamicObstacleAvoidance
 	}
 
 	Ellipsoid::Ellipsoid(const Ellipsoid& ellipsoid):
-	Obstacle(ellipsoid.get_state(), ellipsoid.get_reference_position(), ellipsoid.get_safety_margin(), ellipsoid.get_name()),
+	Obstacle(ellipsoid.get_name(), ellipsoid.get_state(), ellipsoid.get_reference_position(), ellipsoid.get_safety_margin()),
 	axis_lengths(ellipsoid.get_axis_lengths()), curvature_factor(ellipsoid.get_curvature_factor()), epsilon(1E-4)
 	{
 		this->set_type("Ellipsoid");
 	}
 
-	Ellipsoid::Ellipsoid(const State& state, double safety_margin, const std::string& name):
-	Obstacle(state, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+	Ellipsoid::Ellipsoid(const std::string& name, const State& state, double safety_margin):
+	Obstacle(name, state, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 	{
 		this->set_type("Ellipsoid");
 	}
 
-	Ellipsoid::Ellipsoid(const State& state, const Eigen::Vector3d& reference_position, double safety_margin, const std::string& name):
-	Obstacle(state, reference_position, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+	Ellipsoid::Ellipsoid(const std::string& name, const State& state, const Eigen::Vector3d& reference_position, double safety_margin):
+	Obstacle(name, state, reference_position, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 	{
 		this->set_type("Ellipsoid");
 	}
 
-	Ellipsoid::Ellipsoid(double cx, double cy, double cz, double safety_margin, const std::string& name):
-	Obstacle(cx, cy, cz, safety_margin, name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+	Ellipsoid::Ellipsoid(const std::string& name, double cx, double cy, double cz, double safety_margin):
+	Obstacle(name, cx, cy, cz, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 	{
 		this->set_type("Ellipsoid");
 	}
