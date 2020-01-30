@@ -6,6 +6,7 @@
 #include "DynamicObstacleAvoidance/Obstacle/Aggregate.hpp"
 #include "DynamicObstacleAvoidance/Utils/Plotting/PlottingTools.hpp"
 #include "DynamicObstacleAvoidance/Utils/ObstacleGeneration/Aggregation.hpp"
+#include "DynamicObstacleAvoidance/Exceptions/ObstacleNotInEnvironmentException.hpp"
 #include <memory>
 #include <deque>
 #include <algorithm>
@@ -17,6 +18,7 @@ namespace DynamicObstacleAvoidance
 	{
 	private:
 		bool aggregated;
+		std::deque<std::shared_ptr<Obstacle> > obstacle_list;
 
 	public:
 		explicit Environment(bool aggregated=true);
@@ -27,17 +29,26 @@ namespace DynamicObstacleAvoidance
 
 		void add_obstacle(const std::shared_ptr<Obstacle>& obstacle);
 
-		const std::deque<std::shared_ptr<Obstacle> > get_obstacle_list() const;
+		const std::deque<std::shared_ptr<Obstacle> >& get_obstacle_list() const;
+
+		void update();
+
+		mapped_type& operator[] (const key_type& k);
 	};
 
 	inline bool Environment::is_aggregated() const
 	{
-		return aggregated;
+		return this->aggregated;
 	}
 
 	inline void Environment::set_aggregated(bool aggregated)
 	{
 		this->aggregated = aggregated;
+	}
+
+	inline const std::deque<std::shared_ptr<Obstacle> >& Environment::get_obstacle_list() const
+	{
+		return this->obstacle_list;
 	}
 }
 #endif

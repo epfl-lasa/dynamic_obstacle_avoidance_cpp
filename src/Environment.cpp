@@ -9,16 +9,23 @@ namespace DynamicObstacleAvoidance
 	void Environment::add_obstacle(const std::shared_ptr<Obstacle>& obstacle)
 	{
 		this->insert({obstacle->get_name(), obstacle});
+		this->update();
 	}
 
-	const std::deque<std::shared_ptr<Obstacle> > Environment::get_obstacle_list() const
+	void Environment::update()
 	{
 		std::deque<std::shared_ptr<Obstacle> > list;
 		transform(this->begin(), this->end(), back_inserter(list), [](const Environment::value_type& val){return val.second;} );
-		if(this->aggregated)
+		this->obstacle_list = this->aggregated ? Aggregation::aggregate_obstacles(list) : list;
+	}
+
+	std::shared_ptr<Obstacle>& Environment::operator[] (const std::string& k)
+	{
+		auto it = this->find(k);
+		if(it == this->end())
 		{
-			list = Aggregation::aggregate_obstacles(list);
+			throw Exceptions::ObstacleNotInEnvironmentException(k);
 		}
-		return list;
+		return it->second;
 	}
 }
