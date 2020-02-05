@@ -6,19 +6,35 @@
 namespace DynamicObstacleAvoidance
 {
 	Obstacle::Obstacle(const std::string& name, double safety_margin):
-	name(name), state(Eigen::Vector3d(0,0,0)), safety_margin(safety_margin) 
+	name(name), state(Eigen::Vector3d::Zero()), safety_margin(Eigen::Array3d(safety_margin, safety_margin, safety_margin))  
 	{}
 
-	Obstacle::Obstacle(const std::string& name, const State& state, double safety_margin):
-	name(name), state(state), reference_position(state.get_position()), safety_margin(safety_margin) 
-	{}
-
-	Obstacle::Obstacle(const std::string& name, const State& state, const Eigen::Vector3d& reference_position, double safety_margin):
-	name(name), state(state), reference_position(reference_position), safety_margin(safety_margin)
+	Obstacle::Obstacle(const std::string& name, const Eigen::Array3d& safety_margin):
+	name(name), state(Eigen::Vector3d::Zero()), safety_margin(safety_margin)
 	{}
 
 	Obstacle::Obstacle(const std::string& name, double cx, double cy, double cz, double safety_margin):
-	name(name), state(cx, cy, cz), reference_position(cx, cy, cz), safety_margin(safety_margin) 
+	name(name), state(cx, cy, cz), reference_position(cx, cy, cz), safety_margin(Eigen::Array3d(safety_margin, safety_margin, safety_margin)) 
+	{}
+
+	Obstacle::Obstacle(const std::string& name, double cx, double cy, double cz, const Eigen::Array3d& safety_margin):
+	name(name), state(state), reference_position(state.get_position()), safety_margin(safety_margin)
+	{}
+
+	Obstacle::Obstacle(const std::string& name, const State& state, double safety_margin):
+	name(name), state(state), reference_position(state.get_position()), safety_margin(Eigen::Array3d(safety_margin, safety_margin, safety_margin))
+	{}
+
+	Obstacle::Obstacle(const std::string& name, const State& state, const Eigen::Array3d& safety_margin):
+	name(name), state(state), reference_position(state.get_position()), safety_margin(safety_margin)
+	{}
+
+	Obstacle::Obstacle(const std::string& name, const State& state, const Eigen::Vector3d& reference_position, double safety_margin):
+	name(name), state(state), reference_position(reference_position), safety_margin(Eigen::Array3d(safety_margin, safety_margin, safety_margin))
+	{}
+
+	Obstacle::Obstacle(const std::string& name, const State& state, const Eigen::Vector3d& reference_position, const Eigen::Array3d& safety_margin):
+	name(name), state(state), reference_position(reference_position), safety_margin(safety_margin)
 	{}
 
 	Obstacle::~Obstacle() 

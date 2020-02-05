@@ -28,12 +28,12 @@ namespace DynamicObstacleAvoidance
 		explicit Pose(const double& px, const double& py, const double& pz, const double& qx, const double& qy, const double& qz, const double& qw);
 		Pose(const Pose& p);
 
-		inline const Eigen::Vector3d get_position() const 
+		inline const Eigen::Vector3d& get_position() const 
 		{ 
 			return this->position;
 		}
 
-		inline const Eigen::Quaterniond get_orientation() const 
+		inline const Eigen::Quaterniond& get_orientation() const 
 		{ 
 			return this->orientation;
 		}

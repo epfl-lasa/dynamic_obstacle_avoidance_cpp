@@ -35,9 +35,15 @@ namespace DynamicObstacleAvoidance
 
 		explicit Ellipsoid(const std::string& name, double cx, double cy, double cz, double safety_margin=0);
 
+		explicit Ellipsoid(const std::string& name, double cx, double cy, double cz, const Eigen::Array3d& safety_margin=Eigen::Array3d::Zero());
+
 		explicit Ellipsoid(const std::string& name, const State& state, double safety_margin=0);
 
+		explicit Ellipsoid(const std::string& name, const State& state, const Eigen::Array3d& safety_margin=Eigen::Array3d::Zero());
+
 		explicit Ellipsoid(const std::string& name, const State& state, const Eigen::Vector3d& reference_position, double safety_margin=0);
+
+		explicit Ellipsoid(const std::string& name, const State& state, const Eigen::Vector3d& reference_position, const Eigen::Array3d& safety_margin=Eigen::Array3d::Zero());
 		
 		~Ellipsoid();
 
@@ -56,6 +62,8 @@ namespace DynamicObstacleAvoidance
 		Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
 
 		double compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin=0.) const;
+
+		double compute_distance_to_point(const Eigen::Vector3d& point, const Eigen::Array3d& safety_margin=Eigen::Array3d::Zero()) const;
 
 		void draw(const std::string& color="k", bool is3D=false) const;
 
