@@ -139,3 +139,8 @@ add_executable(runTestMovingObstacle tests/testMovingObstacle.cpp)
 target_link_libraries(runTestMovingObstacle
 	${PROJECT_NAME}
 )
+
+add_executable(runTestGuardAvoidance tests/testGuardAvoidance.cpp)
+target_link_libraries(runTestGuardAvoidance
+	${PROJECT_NAME}
+)
