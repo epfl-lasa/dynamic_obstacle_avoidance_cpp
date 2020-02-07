@@ -21,33 +21,86 @@ namespace DynamicObstacleAvoidance
 	class Aggregate: public Obstacle 
 	{
 	private:
-		StarShapeHull inside_hull;
-		StarShapeHull outside_hull;
-		std::deque<std::shared_ptr<Obstacle> > primitives;
+		StarShapeHull inside_hull; //< inside hull of the aggregate
+		StarShapeHull outside_hull; //< outside hull of the aggregate
+		std::deque<std::shared_ptr<Obstacle> > primitives; //< list of primitive obstacles
 
-		void update_positions();
+		/**
+		 * @brief Function to update the position of the center of the aggregate
+		 */
+		void update_center_position();
 
 	public:
+		/**
+		 * @brief Empty constructor
+		 */
 		explicit Aggregate();
 
+		/**
+		 * @brief Constructor from a list of primitives
+		 * @param primitives the primitives composing the aggregate
+		 */
 		explicit Aggregate(const std::deque<std::shared_ptr<Obstacle> >& primitives);
 
+		/**
+		 * @brief Getter of the list of primitives
+		 * @return the list of primitives
+		 */
 		const auto& get_primitives() const;
 
+		/**
+		 * @brief Function to add a primitive obstacle to the aggegate
+		 * @param primitive the primitive to add
+		 * @param update_hull if true update the hulls
+		 */
 		void add_primitive(const std::shared_ptr<Obstacle>& primitive, bool update_hull=true);
 
+		/**
+		 * @brief Function to compute the normal on the surface to the agent wrt the reference point 
+		 * @param agent the agent 
+		 * @return the normal vector
+		 */
 		Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
-		
-		double compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const;
 
+		/**
+		 * @brief Function to compute the distance between a point and the surface of the obstacle wrt the reference point 
+		 * @param point the external point
+		 * @param safety_margin the safety margin to add
+		 * @return the distance value (1 if the point is on the surface)
+		 */
+		double compute_distance_to_point(const Eigen::Vector3d& point, const Eigen::Array3d& safety_margin) const;
+
+		/**
+		 * @brief Function to draw an agent
+		 * @param color the color to apply
+		 * @param is3D if true consider a 3d plot
+		 */
 		void draw(const std::string& color="k", bool is3D=false) const;
 
+		/**
+		 * @brief Overload of the print function
+		 * @param os the current stream
+		 * @return the strem appended with the obstacle description
+		 */
 		std::ostream& print(std::ostream& os) const override;
 
+		/**
+		 * @brief Function to update the hulls
+		 */
 		void update_hull();
 
+		/**
+		 * @brief Function to check if a point is inside the obstacle
+		 * @param point the point
+		 * @return true if the point is inside
+		 */
 		bool point_is_inside(const Eigen::Vector3d& point) const;
 
+		/**
+		 * @brief Function to compute the repulsion vector when the agent is inside the obstacle
+		 * @param agent the agent
+		 * @return the repulsion vector
+		 */
 		Eigen::Vector3d compute_repulsion_vector(const Agent& agent) const;
 	};
 

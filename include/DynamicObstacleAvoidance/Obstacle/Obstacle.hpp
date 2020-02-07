@@ -29,11 +29,11 @@ namespace DynamicObstacleAvoidance
 	class Obstacle 
 	{
 	private:
-		std::string name;
-		State state;
-		Eigen::Vector3d reference_position;
-		std::string type;
-		Eigen::Array3d safety_margin;
+		std::string name; //< name of the obstacle
+		State state; //< state of the obstacle (pose + velocities)
+		Eigen::Vector3d reference_position; //< reference position expressed in the same frame than the obstacle
+		std::string type; //< type of obstacle
+		Eigen::Array3d safety_margin; //< array of safety margins in x,y,z directions
 
 	protected:
 		/**
@@ -45,14 +45,14 @@ namespace DynamicObstacleAvoidance
 		/**
 		 * @brief Function to check if the obstacle is intersecting with another ellipsoid
 		 * @param other_obstacle the ellipsoid
-		 * @return bool true if there is intersection
+		 * @return true if there is intersection
 		 */
 		virtual bool is_intersecting_ellipsoid(const Ellipsoid& other_obstacle) const;
 
 		/**
 		 * @brief Function to check if the obstacle is intersecting with another aggregate of obstacles
 		 * @param other_obstacle the aggregate of obstacles
-		 * @return bool true if there is intersection
+		 * @return true if there is intersection
 		 */
 		bool is_intersecting_aggregate(const Aggregate& other_obstacle) const;
 
@@ -72,7 +72,7 @@ namespace DynamicObstacleAvoidance
 		explicit Obstacle(const std::string& name, const Eigen::Array3d& safety_margin);
 
 		/**
-		 * @brief Constructor with a name and center position as double
+		 * @brief Constructor with a name and center position as double values
 		 * @param name the name of the obstacle
 		 * @param cx the x coordinate of the center
 		 * @param cy the y coordinate of the center
@@ -82,7 +82,7 @@ namespace DynamicObstacleAvoidance
 		explicit Obstacle(const std::string& name, double cx, double cy, double cz, double safety_margin=0);
 		
 		/**
-		 * @brief Constructor with a name and center position as double
+		 * @brief Constructor with a name and center position as double values
 		 * @param name the name of the obstacle
 		 * @param cx the x coordinate of the center
 		 * @param cy the y coordinate of the center
@@ -132,61 +132,61 @@ namespace DynamicObstacleAvoidance
 
 		/**
 		 * @brief Getter of the type as const value
-		 * @return string the type
+		 * @return the type
 		 */
 		const std::string& get_type() const;
 
 		/**
 		 * @brief Getter of the type as non const value
-		 * @return string the type
+		 * @return the type
 		 */
-		std::string& get_name() const;
+		const std::string& get_name() const;
 
 		/**
 		 * @brief Getter of the State
-		 * @return State the state
+		 * @return the state
 		 */
 		const State& get_state() const;
 
 		/**
 		 * @brief Getter of the Pose
-		 * @return Pose the pose
+		 * @return the pose
 		 */
 		const Pose& get_pose() const;
 
 		/**
 		 * @brief Getter of the position
-		 * @return Eigen::Vector3d the position
+		 * @return the position
 		 */
 		const Eigen::Vector3d& get_position() const;
 
 		/**
 		 * @brief Getter of the orientation
-		 * @return Eigen::Quaterniond the orientation
+		 * @return the orientation
 		 */
 		const Eigen::Quaterniond& get_orientation() const;
 
 		/**
 		 * @brief Getter of the linear velocity
-		 * @return Eigen::Vector3d the linear velocity
+		 * @return the linear velocity
 		 */
 		const Eigen::Vector3d& get_linear_velocity() const;
 
 		/**
 		 * @brief Getter of the angular velocity
-		 * @return Eigen::Vector3d the angular velocity
+		 * @return the angular velocity
 		 */
 		const Eigen::Vector3d& get_angular_velocity() const;
 
 		/**
 		 * @brief Getter of the reference position
-		 * @return Eigen::Vector3d the reference position
+		 * @return the reference position
 		 */
 		const Eigen::Vector3d& get_reference_position() const;
 
 		/**
 		 * @brief Getter of the safety margin
-		 * @return Eigen::Array3d the safety margin
+		 * @return the safety margin
 		 */
 		const Eigen::Array3d& get_safety_margin() const;
 
@@ -255,29 +255,93 @@ namespace DynamicObstacleAvoidance
 		 */
 		friend std::ostream& operator<<(std::ostream& os, const Obstacle& obstacle) ;
 		
-		
+		/**
+		 * @brief Function to compute the normal on the surface to the agent wrt the reference point 
+		 * @param agent the agent 
+		 * @return the normal vector
+		 */
 		virtual Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
-		
-		virtual double compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin=0.) const;
 
-		virtual double compute_distance_to_point(const Eigen::Vector3d& point, const Eigen::Array3d& safety_margin=Eigen::Array3d::Zero()) const;
+		/**
+		 * @brief Function to compute the distance between a point and the surface of the obstacle wrt the reference point 
+		 * @param point the external point
+		 * @param safety_margin the safety margin to add
+		 * @return the distance value (1 if the point is on the surface)
+		 */
+		virtual double compute_distance_to_point(const Eigen::Vector3d& point, const Eigen::Array3d& safety_margin) const;
 
+		/**
+		 * @brief Function to compute the distance between a point and the surface of the obstacle wrt the reference point 
+		 * @param point the external point
+		 * @param safety_margin the safety margin to add (default is 0 in all directions)
+		 * @return the distance value (1 if the point is on the surface)
+		 */
+		double compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin=0.) const;
+
+		/**
+		 * @brief Function to compute the distance to an agent wrt the safety margin 
+		 * @param agent the agent
+		 * @return the distance value (1 if the agent is on the surface)
+		 */
 		double compute_distance_to_agent(const Agent& agent) const;
 
+		/**
+		 * @brief Function to draw an agent
+		 * @param color the color to apply
+		 * @param is3D if true consider a 3d plot
+		 */
 		virtual void draw(const std::string& color="k", bool is3D=false) const;
 
+		/**
+		 * @brief Function to check if the obstacle is intersecting with another obstacle
+		 * @param other_obstacle the other obstacle
+		 * @return true if there is intersection
+		 */
 		bool is_intersecting(const Obstacle& other_obstacle) const;
 
+		/**
+		 * @brief Function to check if the obstacle is intersecting with another obstacle
+		 * @param other_obstacle the other obstacle as a shared_ptr
+		 * @return true if there is intersection
+		 */
 		bool is_intersecting(const std::deque<std::shared_ptr<Obstacle> >& other_obstacles) const;
 
+		/**
+		 * @brief Function to compute the repulsion factor when the agent is inside the obstacle
+		 * @param agent the agent
+		 * @param factor multiplication factor 
+		 * @return the repulsion factor
+		 */
 		double get_repulsion_factor(const Agent& agent, double factor=2) const;
 
+		/**
+		 * @brief Function to sample an obstacle from its parameterization
+		 * @param nb_samples the number of sample points to generate 
+		 * @param is_include_safety_margin if true should include the safety margin in computation
+		 * @return the matrix of sample points
+		 */
 		virtual Eigen::MatrixXd sample_from_parameterization(unsigned int nb_samples, bool is_include_safety_margin) const;
 
+		/**
+		 * @brief Function to check if a point is inside the obstacle
+		 * @param point the point
+		 * @return true if the point is inside
+		 */
 		virtual bool point_is_inside(const Eigen::Vector3d& point) const;
 
+		/**
+		 * @brief Function to compute the repulsion vector when the agent is inside the obstacle
+		 * @param agent the agent
+		 * @return the repulsion vector
+		 */
 		virtual Eigen::Vector3d compute_repulsion_vector(const Agent& agent) const;
 
+		/**
+		 * Function to generate a repulsion when the agent is inside the obstacle
+		 * @param agent the agent
+		 * @param repulsion_threshold the gamma distance under which a repulsion should be generated
+		 * @return the repulsion velocity
+		 */
 		Eigen::Vector3d generate_repulsion(const Agent& agent, double repulsion_threshold=1.1) const;
 	};
 
@@ -291,7 +355,7 @@ namespace DynamicObstacleAvoidance
 		return this->type;
 	}
 
-	inline std::string& Obstacle::get_name() const
+	inline const std::string& Obstacle::get_name() const
 	{
 		return this->name;
 	}
@@ -376,20 +440,20 @@ namespace DynamicObstacleAvoidance
 		this->reference_position = reference_position;
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const Obstacle& obstacle) 
-	{ 
-		return obstacle.print(os);
-	}
-
-	inline std::ostream& print(std::ostream& os) const
+	inline std::ostream& Obstacle::print(std::ostream& os) const
 	{
 		os << this->type << " " << this->name << std::endl;
 		os << this->state << std::endl;
 		os << "reference position: (" << this->reference_position(0) << ", ";
 		os << this->reference_position(1) << ", ";
 		os << this->reference_position(2) << ")" << std::endl;
-		os << "safety margin: " <<this->safety_margin;
+		os << "safety margin: " << this->safety_margin.transpose();
   		return os;
+	}
+
+	inline std::ostream& operator<<(std::ostream& os, const Obstacle& obstacle) 
+	{ 
+		return obstacle.print(os);
 	}
 }
 #endif

@@ -18,7 +18,7 @@ namespace DynamicObstacleAvoidance
 	{}
 
 	Obstacle::Obstacle(const std::string& name, double cx, double cy, double cz, const Eigen::Array3d& safety_margin):
-	name(name), state(state), reference_position(state.get_position()), safety_margin(safety_margin)
+	name(name), state(cx, cy, cz), reference_position(state.get_position()), safety_margin(safety_margin)
 	{}
 
 	Obstacle::Obstacle(const std::string& name, const State& state, double safety_margin):
@@ -46,10 +46,15 @@ namespace DynamicObstacleAvoidance
 		return Eigen::Vector3d();
 	}
 
-	double Obstacle::compute_distance_to_point(const Eigen::Vector3d&, double) const
+	double Obstacle::compute_distance_to_point(const Eigen::Vector3d&, const Eigen::Array3d&) const
 	{
 		std::cerr << "Fonction compute_distance_to_point of abstract class obstacle used" << std::endl;
 		return 0.0;
+	}
+
+	double Obstacle::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const
+	{
+		return this->compute_distance_to_point(point, Eigen::Array3d(safety_margin, safety_margin, safety_margin));
 	}
 
 	double Obstacle::compute_distance_to_agent(const Agent& agent) const
