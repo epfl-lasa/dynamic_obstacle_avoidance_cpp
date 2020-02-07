@@ -29,27 +29,27 @@ namespace DynamicObstacleAvoidance
 		explicit State(const Eigen::Vector3d& position, const Eigen::Quaterniond& orientation);
 		explicit State(const Eigen::Vector3d& position, const Eigen::Quaterniond& orientation, const Eigen::Vector3d& linear_velocity, const Eigen::Vector3d& angular_velocity);
 
-		inline const Pose get_pose() const 
+		inline const Pose& get_pose() const 
 		{ 
 			return this->pose;
 		}
 
-		inline const Eigen::Vector3d get_position() const 
+		inline const Eigen::Vector3d& get_position() const 
 		{ 
 			return this->pose.get_position();
 		}
 
-		inline const Eigen::Quaterniond get_orientation() const 
+		inline const Eigen::Quaterniond& get_orientation() const 
 		{ 
 			return this->pose.get_orientation();
 		}
 
-		inline const Eigen::Vector3d get_linear_velocity() const
+		inline const Eigen::Vector3d& get_linear_velocity() const
 		{
 			return this->linear_velocity;
 		}
 
-		inline const Eigen::Vector3d get_angular_velocity() const
+		inline const Eigen::Vector3d& get_angular_velocity() const
 		{
 			return this->angular_velocity;
 		}

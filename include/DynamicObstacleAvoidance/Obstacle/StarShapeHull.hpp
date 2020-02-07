@@ -24,44 +24,96 @@ namespace DynamicObstacleAvoidance
 	class StarShapeHull: public Obstacle
 	{
 	private:
-		bool is_inside;
-		unsigned int resolution;
-		double min_radius;
-		Eigen::MatrixXd cartesian_surface_points;
-		Eigen::MatrixXd polar_surface_points;
+		bool is_inside; //< true if the hull is an inside hull
+		unsigned int resolution; //< the number of sample points of the hull 
+		double min_radius; //< the minimum radius when there are no intersection with primitives obstacles
+		Eigen::MatrixXd cartesian_surface_points; //< surface points in cartesian space
+		Eigen::MatrixXd polar_surface_points; //< surface points in polar space
 
+		/**
+		 * @brief Function to compute the baricenter of the hull
+		 * @param primitives the primitives on which the hull is computed
+		 * @return the baricenter position
+		 */
 		Eigen::Vector3d compute_baricenter(const std::deque<std::shared_ptr<Obstacle> >& primitives);
 
 	public:
-		explicit StarShapeHull(bool is_inside=false, unsigned int resolution=500, double min_radius=0.5);
+		/**
+		 * @brief Constructor with default parameters
+		 * @param is_inside true if the hull is an inside hull
+		 * @param resolution the number of sample points of the hull 
+		 * @param min_radius the minimum radius when there are no intersection with primitives obstacles in percent of the maximum distance
+		 */
+		explicit StarShapeHull(bool is_inside=false, unsigned int resolution=500, double min_radius=0.1);
 
-		explicit StarShapeHull(const std::deque<std::shared_ptr<Obstacle> >& primitives, bool is_inside=false, unsigned int resolution=1000, double min_radius=0.5);
+		/**
+		 * @brief Constructor from the list of primitives
+		 * @param primitives the list of primitives
+		 * @param is_inside true if the hull is an inside hull
+		 * @param resolution the number of sample points of the hull 
+		 * @param min_radius the minimum radius when there are no intersection with primitives obstacles in percent of the maximum distance
+		 */
+		explicit StarShapeHull(const std::deque<std::shared_ptr<Obstacle> >& primitives, bool is_inside=false, unsigned int resolution=500, double min_radius=0.1);
 
+		/**
+		 * @brief Destructor
+		 */
 		~StarShapeHull();
 
-		double get_min_radius() const;
-
+		/**
+		 * @brief Function to compute the normal on the surface to the agent wrt the reference point 
+		 * @param agent the agent 
+		 * @return the normal vector
+		 */
 		Eigen::Vector3d compute_normal_to_agent(const Agent& agent) const;
 
-		double compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin=0.) const;
+		/**
+		 * @brief Function to compute the distance between a point and the surface of the obstacle wrt the reference point 
+		 * @param point the external point
+		 * @param safety_margin the safety margin to add
+		 * @return the distance value (1 if the point is on the surface)
+		 */
+		double compute_distance_to_point(const Eigen::Vector3d& point, const Eigen::Array3d& safety_margin) const;
 
+		/**
+		 * @brief Function to draw an agent
+		 * @param color the color to apply
+		 * @param is3D if true consider a 3d plot
+		 */
 		void draw(const std::string& color="k") const;
 
+		/**
+		 * @brief Setter of the resultion attribute
+		 * @param resolution the new value
+		 */
 		void set_resolution(unsigned int resolution);
 
+		/**
+		 * @brief Function to compute the hull from primitives
+		 * @param primitives the list of primitives obstacles
+		 * @param reference_point the reference point of the hull
+		 */
 		void compute_from_primitives(const std::deque<std::shared_ptr<Obstacle> >& primitives, Eigen::Vector3d reference_point);
 
+		/**
+		 * @brief Function to compute the hull from primitives
+		 * @param primitives the list of primitives obstacles
+		 */
 		void compute_from_primitives(const std::deque<std::shared_ptr<Obstacle> >& primitives);
 
+		/**
+		 * @brief Function to check if a point is inside the obstacle
+		 * @param point the point
+		 * @return true if the point is inside
+		 */
 		bool point_is_inside(const Eigen::Vector3d& point) const;
 
+		/**
+		 * @brief Function to check if the hull is closed, i.e. every surface point is farther than the min radius
+		 * @return true if the hull is closed
+		 */
 		bool is_closed() const;
 	};
-
-	inline double StarShapeHull::get_min_radius() const
-	{
-		return this->min_radius;
-	}
 
 	inline void StarShapeHull::set_resolution(unsigned int resolution)
 	{

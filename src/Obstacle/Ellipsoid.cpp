@@ -3,8 +3,14 @@
 
 namespace DynamicObstacleAvoidance
 {
-	Ellipsoid::Ellipsoid(const std::string& name):
-	Obstacle(name), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+	Ellipsoid::Ellipsoid(const std::string& name, double safety_margin):
+	Obstacle(name, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+	{
+		this->set_type("Ellipsoid");
+	}
+
+	Ellipsoid::Ellipsoid(const std::string& name, const Eigen::Array3d& safety_margin):
+	Obstacle(name, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 	{
 		this->set_type("Ellipsoid");
 	}
@@ -22,13 +28,31 @@ namespace DynamicObstacleAvoidance
 		this->set_type("Ellipsoid");
 	}
 
+	Ellipsoid::Ellipsoid(const std::string& name, const State& state, const Eigen::Array3d& safety_margin):
+	Obstacle(name, state, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+	{
+		this->set_type("Ellipsoid");
+	}
+
 	Ellipsoid::Ellipsoid(const std::string& name, const State& state, const Eigen::Vector3d& reference_position, double safety_margin):
 	Obstacle(name, state, reference_position, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 	{
 		this->set_type("Ellipsoid");
 	}
 
+	Ellipsoid::Ellipsoid(const std::string& name, const State& state, const Eigen::Vector3d& reference_position, const Eigen::Array3d& safety_margin):
+	Obstacle(name, state, reference_position, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+	{
+		this->set_type("Ellipsoid");
+	}
+
 	Ellipsoid::Ellipsoid(const std::string& name, double cx, double cy, double cz, double safety_margin):
+	Obstacle(name, cx, cy, cz, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
+	{
+		this->set_type("Ellipsoid");
+	}
+
+	Ellipsoid::Ellipsoid(const std::string& name, double cx, double cy, double cz, const Eigen::Array3d& safety_margin):
 	Obstacle(name, cx, cy, cz, safety_margin), axis_lengths(1,1,1), curvature_factor(1,1,1), epsilon(1E-4)
 	{
 		this->set_type("Ellipsoid");
@@ -51,7 +75,7 @@ namespace DynamicObstacleAvoidance
 		return normal_vector;
 	}
 
-	double Ellipsoid::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const
+	double Ellipsoid::compute_distance_to_point(const Eigen::Vector3d& point, const Eigen::Array3d& safety_margin) const
 	{
 		Eigen::Array3d point_in_frame = this->get_pose().inverse() * point;
 		Eigen::Array3d lengths = this->axis_lengths + this->get_safety_margin() + safety_margin;
@@ -127,7 +151,7 @@ namespace DynamicObstacleAvoidance
 		else
 		{
 			plt::plot(x[0], y[0], color + "-");
-			//plt::plot(x_safety[0], y_safety[0], color + "--");
+			plt::plot(x_safety[0], y_safety[0], color + "--");
 		}
 
 		if(this->get_name() == "")

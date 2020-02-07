@@ -29,7 +29,7 @@ namespace DynamicObstacleAvoidance
 		this->update_hull();
 	}
 
-	void Aggregate::update_positions()
+	void Aggregate::update_center_position()
 	{
 		Eigen::Vector3d position = Eigen::Vector3d::Zero();
 		for(auto& o:this->primitives)
@@ -54,7 +54,7 @@ namespace DynamicObstacleAvoidance
 	void Aggregate::add_primitive(const std::shared_ptr<Obstacle>& primitive, bool update_hull)
 	{
 		this->primitives.push_back(primitive);
-		this->update_positions();
+		this->update_center_position();
 		if(update_hull) this->update_hull();
 	}
 
@@ -70,7 +70,7 @@ namespace DynamicObstacleAvoidance
 		}
 	}
 
-	double Aggregate::compute_distance_to_point(const Eigen::Vector3d& point, double safety_margin) const
+	double Aggregate::compute_distance_to_point(const Eigen::Vector3d& point, const Eigen::Array3d& safety_margin) const
 	{
 		if(this->point_is_inside(point))
 		{
