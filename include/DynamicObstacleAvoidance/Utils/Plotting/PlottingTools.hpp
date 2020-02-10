@@ -18,19 +18,40 @@ namespace DynamicObstacleAvoidance
 {
 	namespace PlottingTools 
 	{
-		std::vector<double> linespace(const double& start, const double& ed, const int& num);
+		/**
+		 * @brief Draw the obstacles on the 2d plane defined by axis
+		 * @param obstacles the list of obstacles to draw
+		 * @param axis the axis ("xy" or "xz")
+		 */
+		void plot_obstacles(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::string& axis);
 
-		void plot_clusters(const std::deque<Eigen::MatrixXd>& clusters, bool is_show=true);
+		/**
+		 * @brief Draw the agent and its trajectory on the 2d plane defined by axis
+		 * @param agent the agent
+		 * @param goal the desired target
+		 * @param position_history the trajectory points
+		 * @param axis the axis ("xy" or "xz")
+		 */
+		void plot_agent_trajectory(const Agent& agent, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& axis);
 
-		void plot_fitted_clusters(const std::deque<Eigen::MatrixXd>& clusters, const std::deque<std::shared_ptr<Obstacle> >& obstacles, bool is_show=true);
-
+		/**
+		 * @brief plot the configuration with agent and obstacles
+		 * @param agent the agent
+		 * @param obstacles the obstacles
+		 * @param goal the desired target
+		 * @param position_history the trajectory points
+		 * @param savefile name of the file to save in tmp folder (if empty the image is not saved)
+		 * @param is_show if true the image is shown as a pop-up
+		 */
 		void plot_configuration(const Agent& agent, const std::deque<std::shared_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile="", const bool& is_show=true);
 	
+		/**
+		 * @brief plot the configuration with only obstacles
+		 * @param obstacles the obstacles
+		 * @param savefile name of the file to save in tmp folder (if empty the image is not saved)
+		 * @param is_show if true the image is shown as a pop-up
+		 */
 		void plot_configuration(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::string& savefile="", const bool& is_show=true);
-	
-		void plot_configuration(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::vector<Eigen::Array4d> quivers, const Eigen::Vector3d& goal, const std::string& savefile, const bool& is_show);
-	
-		void plot3D_configuration(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::string& savefile, const bool& is_show);
 	}
 }
 

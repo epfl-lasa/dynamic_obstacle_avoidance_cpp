@@ -288,9 +288,9 @@ namespace DynamicObstacleAvoidance
 		/**
 		 * @brief Function to draw an agent
 		 * @param color the color to apply
-		 * @param is3D if true consider a 3d plot
+		 * @param axis axis to draw (default = "xy")
 		 */
-		virtual void draw(const std::string& color="k", bool is3D=false) const;
+		virtual void draw(const std::string& color="k", const std::string& axis="xy") const;
 
 		/**
 		 * @brief Function to check if the obstacle is intersecting with another obstacle

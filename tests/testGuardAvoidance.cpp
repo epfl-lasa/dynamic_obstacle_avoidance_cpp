@@ -45,7 +45,7 @@ int main(int, char*[])
 	std::deque<Eigen::Vector3d> position_history;
 
 	// create the agent
-	Eigen::Vector3d agent_position(-5, MathTools::rand_float(4,-4), 0.5);
+	Eigen::Vector3d agent_position(-5, -1, 0.5);
 	State agent_state(agent_position);
 	Agent agent(agent_state);
 

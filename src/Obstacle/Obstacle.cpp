@@ -62,7 +62,7 @@ namespace DynamicObstacleAvoidance
 		return this->compute_distance_to_point(agent.get_position(), agent.get_safety_margin());
 	}
 
-	void Obstacle::draw(const std::string&, bool) const
+	void Obstacle::draw(const std::string&, const std::string&) const
 	{
 		std::cerr << "Fonction draw of abstract class obstacle used" << std::endl;
 	}

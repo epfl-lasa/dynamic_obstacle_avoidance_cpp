@@ -73,9 +73,9 @@ namespace DynamicObstacleAvoidance
 		/**
 		 * @brief Function to draw an agent
 		 * @param color the color to apply
-		 * @param is3D if true consider a 3d plot
+		 * @param axis axis to draw (default = "xy")
 		 */
-		void draw(const std::string& color="k", bool is3D=false) const;
+		void draw(const std::string& color="k", const std::string& axis="xy") const;
 
 		/**
 		 * @brief Overload of the print function

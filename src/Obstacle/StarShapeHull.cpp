@@ -148,7 +148,7 @@ namespace DynamicObstacleAvoidance
 		return distance;
 	}
 
-	void StarShapeHull::draw(const std::string& color) const
+	void StarShapeHull::draw(const std::string& color, const std::string&) const
 	{
 		std::vector<double> x;
 		std::vector<double> y;

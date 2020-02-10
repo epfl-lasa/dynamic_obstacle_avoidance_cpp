@@ -88,10 +88,10 @@ namespace DynamicObstacleAvoidance
 		return tmp_values.sum();
 	}
 
-	void Ellipsoid::draw(const std::string& color, bool is3D) const 
+	void Ellipsoid::draw(const std::string& color, const std::string& axis) const 
 	{
 		unsigned int n1 = 100;
-		unsigned int n2 = is3D ? n1 : 1;
+		unsigned int n2 = 100;
 		// use a linespace to have a full rotation angle between [-pi, pi]
 		std::vector<double> alpha = MathTools::linspace(-M_PI/2, 3*M_PI/2, n1);
 
@@ -143,15 +143,22 @@ namespace DynamicObstacleAvoidance
 			z_safety.at(i) = zrow_safety;
 		}
 
-		if (is3D)
-		{
-			plt::plot_surface(x, y, z);
-			plt::plot_surface(x_safety, y_safety, z_safety);
-		}
-		else
+		if (axis == "xy")
 		{
 			plt::plot(x[0], y[0], color + "-");
 			plt::plot(x_safety[0], y_safety[0], color + "--");
+		}
+		else if (axis == "xz")
+		{
+			std::vector<double> tmp_z(n1);
+			std::vector<double> tmp_z_safety(n1);
+			for (unsigned int i=0; i<n1; ++i)
+			{
+				tmp_z.at(i) = z[i][0];
+				tmp_z_safety.at(i) = z_safety[i][0];
+			}
+			plt::plot(x[0], tmp_z, color + "-");
+			plt::plot(x_safety[0], tmp_z_safety, color + "--");
 		}
 
 		if(this->get_name() == "")

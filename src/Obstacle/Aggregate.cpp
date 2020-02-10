@@ -82,15 +82,15 @@ namespace DynamicObstacleAvoidance
 		}
 	}
 
-	void Aggregate::draw(const std::string& color, bool is3D) const
+	void Aggregate::draw(const std::string& color, const std::string& axis) const
 	{
 		for(auto& o:this->primitives)
 		{
-			o->draw(color, is3D);
+			o->draw(color, axis);
 		}
 		plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, "bx");
-		this->outside_hull.draw();
-		this->inside_hull.draw();
+		this->outside_hull.draw("k", axis);
+		this->inside_hull.draw("k", axis);
 	}
 
 	bool Aggregate::point_is_inside(const Eigen::Vector3d& point) const
