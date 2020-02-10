@@ -147,29 +147,43 @@ namespace DynamicObstacleAvoidance
 		{
 			plt::plot(x[0], y[0], color + "-");
 			plt::plot(x_safety[0], y_safety[0], color + "--");
+
+			if(this->get_name() == "")
+			{
+				plt::plot({this->get_position()(0)}, {this->get_position()(1)}, color + "o");
+			}
+			else
+			{
+				plt::text(this->get_position()(0), this->get_position()(1), this->get_name());
+			}
+			plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, color + "x");
 		}
 		else if (axis == "xz")
 		{
+			std::vector<double> tmp_x(n1);
+			std::vector<double> tmp_x_safety(n1);
 			std::vector<double> tmp_z(n1);
 			std::vector<double> tmp_z_safety(n1);
 			for (unsigned int i=0; i<n1; ++i)
 			{
+				tmp_x.at(i) = x[i][0];
+				tmp_x_safety.at(i) = x_safety[i][0];
 				tmp_z.at(i) = z[i][0];
 				tmp_z_safety.at(i) = z_safety[i][0];
 			}
-			plt::plot(x[0], tmp_z, color + "-");
-			plt::plot(x_safety[0], tmp_z_safety, color + "--");
-		}
+			plt::plot(tmp_x, tmp_z, color + "-");
+			plt::plot(tmp_x_safety, tmp_z_safety, color + "--");
 
-		if(this->get_name() == "")
-		{
-			plt::plot({this->get_position()(0)}, {this->get_position()(1)}, color + "o");
+			if(this->get_name() == "")
+			{
+				plt::plot({this->get_position()(0)}, {this->get_position()(2)}, color + "o");
+			}
+			else
+			{
+				plt::text(this->get_position()(0), this->get_position()(2), this->get_name());
+			}
+			plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(2)}, color + "x");
 		}
-		else
-		{
-			plt::text(this->get_position()(0), this->get_position()(1), this->get_name());
-		}
-		plt::plot({this->get_reference_position()(0)}, {this->get_reference_position()(1)}, color + "x");
 	}
 
 	bool Ellipsoid::point_is_inside(const Eigen::Vector3d& point) const
@@ -239,5 +253,38 @@ namespace DynamicObstacleAvoidance
 	Eigen::Vector3d Ellipsoid::compute_repulsion_vector(const Agent& agent) const
 	{
 		return this->get_repulsion_factor(agent) * (agent.get_position() - this->get_reference_position());
+	}
+
+	std::pair<bool, std::pair<Eigen::Vector3d, Eigen::Vector3d>> Ellipsoid::compute_interesection_points(const Eigen::Vector3d& x1, const Eigen::Vector3d& x2)
+	{
+		// transform both reference points in the object frame
+		Eigen::Vector3d rx1 = this->get_pose().inverse() * x1;
+		Eigen::Vector3d rx2 = this->get_pose().inverse() * x2;
+		// calculate the line passing by the two points
+		double a = (rx2(1) - rx1(1)) / (rx2(0) - rx1(0));
+		double b = rx1(1) - a * rx1(0);
+		// compute the intersection between the ellipsoid and the desired velocity line
+		Eigen::Array3d lengths = this->get_axis_lengths() + this->get_safety_margin();
+		double r1squared = lengths(0) * lengths(0);
+		double r2squared = lengths(1) * lengths(1);
+		double A = 1 / r1squared + (a*a) / r2squared;
+		double B = (2*a*b) / r2squared;
+		double C = (b*b) / r2squared - 1;
+		double delta = B*B - 4*A*C;
+		// solution
+		Eigen::Vector3d p1 = Eigen::Vector3d::Zero();
+		Eigen::Vector3d p2 = Eigen::Vector3d::Zero();
+		bool intersect = false;
+		if(delta >= 0)
+		{
+			double px1 = (-B - sqrt(delta)) / (2*A);
+			p1 << px1, a * px1 + b, 0;
+			double px2 = (-B + sqrt(delta)) / (2*A);
+			p2 << px2, a * px2 + b, 0;
+			p1 = this->get_pose() * p1;
+			p2 = this->get_pose() * p2;
+			intersect = true;
+		}
+		return std::make_pair(intersect, std::make_pair(p1, p2));
 	}
 }

@@ -343,6 +343,10 @@ namespace DynamicObstacleAvoidance
 		 * @return the repulsion velocity
 		 */
 		Eigen::Vector3d generate_repulsion(const Agent& agent, double repulsion_threshold=1.1) const;
+
+		virtual std::pair<bool, std::pair<Eigen::Vector3d, Eigen::Vector3d>> compute_interesection_points(const Eigen::Vector3d& x1, const Eigen::Vector3d& x2);
+
+		void shift_reference_point(const Agent& agent);
 	};
 
 	inline void Obstacle::set_type(const std::string& type)

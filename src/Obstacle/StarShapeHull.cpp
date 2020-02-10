@@ -53,30 +53,14 @@ namespace DynamicObstacleAvoidance
 			for(auto& o:primitives)
 			{
 				// transform both reference points in the object frame
-				Eigen::Vector3d x1 = o->get_pose().inverse() * this->get_reference_position();
-				Eigen::Vector3d x2 = o->get_pose().inverse() * this->get_pose() * ref_point;
-				// calculate the line passing by the two points
-				double a = (x2(1) - x1(1)) / (x2(0) - x1(0));
-				double b = x1(1) - a * x1(0);
-				// set the interesection equation with the ellipsoid and solve it
-				Eigen::Array3d lengths = static_cast<Ellipsoid*>(o.get())->get_axis_lengths() + o->get_safety_margin();
-				double r1squared = lengths(0) * lengths(0);
-				double r2squared = lengths(1) * lengths(1);
-				double A = 1 / r1squared + (a*a) / r2squared;
-				double B = (2*a*b) / r2squared;
-				double C = (b*b) / r2squared - 1;
-				double delta = B*B - 4*A*C;
-				// solutions
-
-				if(delta >= 0)
+				Eigen::Vector3d x1 = this->get_reference_position();
+				Eigen::Vector3d x2 = this->get_pose() * ref_point;
+				auto result = o->compute_interesection_points(x1, x2);
+				if(result.first)
 				{
-					double px1 = (-B - sqrt(delta)) / (2*A);
-					Eigen::Vector3d p1(px1, a * px1 + b, 0);
-					double px2 = (-B + sqrt(delta)) / (2*A);
-					Eigen::Vector3d p2(px2, a * px2 + b, 0);
-					// transform those back to the reference point frame and in polar coordinates
-					intersection_points.push_back(MathTools::cartesian_to_polar(this->get_pose().inverse() * o->get_pose() * p1));
-					intersection_points.push_back(MathTools::cartesian_to_polar(this->get_pose().inverse() * o->get_pose() * p2));
+					auto intersect_points = result.second;
+					intersection_points.push_back(MathTools::cartesian_to_polar(this->get_pose().inverse() * intersect_points.first));
+					intersection_points.push_back(MathTools::cartesian_to_polar(this->get_pose().inverse() * intersect_points.second));
 				}
 			}
 			Eigen::Vector3d surface_point = Eigen::Vector3d(this->min_radius, acos(0), phi[i]);

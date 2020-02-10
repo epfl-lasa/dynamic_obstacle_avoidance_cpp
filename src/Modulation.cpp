@@ -127,7 +127,7 @@ namespace DynamicObstacleAvoidance
 	  		return acos (x) ;
 	  	}
 
-		Eigen::Vector3d modulate_velocity(const Agent& agent, const Environment& environment, bool is_local, bool add_repulsion, double critical_distance, double weight_power)
+		Eigen::Vector3d modulate_velocity(const Agent& agent, const Environment& environment, bool is_local, bool add_repulsion, bool planar_modulation, double critical_distance, double weight_power)
 		{
 			auto obstacles = environment.get_obstacle_list();
 			if(obstacles.empty()) return agent.get_linear_velocity();
@@ -144,6 +144,12 @@ namespace DynamicObstacleAvoidance
 			int i = 0;
 			for(auto &obs_it : obstacles)
 			{
+				// dynamically shift the reference position to enforce z modulation
+				if (planar_modulation)
+				{
+					obs_it->shift_reference_point(agent);
+
+				}
 				auto matrices = Modulation::compute_modulation_matrix(agent, *obs_it);
 				// store matrices used later
 				modulation_matrix_list.push_back(std::get<0>(matrices));

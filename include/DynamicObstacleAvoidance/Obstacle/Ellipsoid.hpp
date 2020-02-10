@@ -208,6 +208,8 @@ namespace DynamicObstacleAvoidance
 		 * @return the repulsion vector
 		 */
 		Eigen::Vector3d compute_repulsion_vector(const Agent& agent) const;
+
+		std::pair<bool, std::pair<Eigen::Vector3d, Eigen::Vector3d>> compute_interesection_points(const Eigen::Vector3d& x1, const Eigen::Vector3d& x2);
 	};
 
 	inline const Eigen::Array3d& Ellipsoid::get_axis_lengths() const 

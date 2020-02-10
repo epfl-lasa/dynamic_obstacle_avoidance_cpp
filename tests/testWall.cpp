@@ -144,6 +144,6 @@ int main(int, char*[])
 			PlottingTools::plot_configuration(agent, env.get_obstacle_list(), target_position, position_history, "image" + s, is_show);
 		}
 	}
-	//PlottingTools::plot_configuration(agent, aggregated_obstacle_list, target_position, position_history, "test_seed" + std::to_string(seed), is_show);
-	PlottingTools::plot_configuration(env.get_obstacle_list(), "test_seed" + std::to_string(seed), is_show);
+	PlottingTools::plot_configuration(agent, env.get_obstacle_list(), target_position, position_history, "test_seed" + std::to_string(seed), is_show);
+	//PlottingTools::plot_configuration(env.get_obstacle_list(), "test_seed" + std::to_string(seed), is_show);
 }

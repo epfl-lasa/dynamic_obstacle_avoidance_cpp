@@ -74,11 +74,12 @@ namespace DynamicObstacleAvoidance
          * @param environment the environment that contains the list of obstacles
          * @param is_local true to turn on the local modulation
          * @param add_repulsion true to add a repulsion when the agent is in the obstacle
+         * @param planar_modulation true to turn on the 2d modulation to enforce modulation in the z direction
          * @param critical_distance critical distance for repulsion (default = 1, i.e. the agent is on the obstacle)
          * @param weight_power power of the weight of the obstacles
          * @return the modulated velocity
          */
-        Eigen::Vector3d modulate_velocity(const Agent& agent, const Environment& environment, bool is_local=false, bool add_repulsion=false, double critical_distance=1.0, double weight_power=2.0);
+        Eigen::Vector3d modulate_velocity(const Agent& agent, const Environment& environment, bool is_local=false, bool add_repulsion=false, bool planar_modulation=false, double critical_distance=1.0, double weight_power=2.0);
     }
 }
 

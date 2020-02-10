@@ -131,4 +131,25 @@ namespace DynamicObstacleAvoidance
 	{
 		return (this->compute_distance_to_agent(agent) < repulsion_threshold) ? compute_repulsion_vector(agent) : Eigen::Vector3d::Zero();
 	}
+
+	std::pair<bool, std::pair<Eigen::Vector3d, Eigen::Vector3d>> Obstacle::compute_interesection_points(const Eigen::Vector3d&, const Eigen::Vector3d&)
+	{
+		std::cerr << "Fonction compute_interesection_points of abstract class obstacle used" << std::endl;
+		return std::make_pair(false, std::make_pair(Eigen::Vector3d::Zero(), Eigen::Vector3d::Zero()));
+	}
+
+	void Obstacle::shift_reference_point(const Agent& agent)
+	{
+		Eigen::Vector3d x1 = agent.get_position();
+		Eigen::Vector3d x2 = x1 + agent.get_linear_velocity();
+		// compute the interesection between the heading direction and the obstacle
+		auto result = compute_interesection_points(x1, x2);
+		// in case of intersection shift the reference point
+		if (result.first)
+		{
+			auto intersect_points = result.second;
+			Eigen::Vector3d new_ref = (intersect_points.first + intersect_points.second) / 2.0;
+			this->set_reference_position(new_ref);
+		}
+	}
 }

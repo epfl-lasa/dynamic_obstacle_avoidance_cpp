@@ -12,12 +12,16 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <random>
 
 using namespace DynamicObstacleAvoidance;
 
 int main(int, char*[])
 {
 	srand(time(0));
+	std::random_device rd{};
+    std::mt19937 gen{rd()};
+    std::normal_distribution<> d{0, 0.01};
 
 	double Kp = 1;
 	double dt = 0.01;
@@ -27,25 +31,26 @@ int main(int, char*[])
 	bool plot_steps = true;
 	double max_vel = 100;
 
-	unsigned int seed = 679;
-	//srand(seed);
+	bool local_modulation = false;
+	bool add_repulsion = true;
+	bool planar_modulation = false;
 
 	// generate the list of obstacles
 	Eigen::Vector3d position_o1(0, 0, 0);
-	Eigen::Quaterniond orientation_o6(Eigen::AngleAxisd(0, Eigen::Vector3d::UnitZ()));
-	auto ptrE1 = std::make_shared<Ellipsoid>("w1", State(position_o1), 0.1);
-	ptrE1->set_axis_lengths(Eigen::Array3d(1, 1, 1.5));
+	Eigen::Quaterniond orientation_o1(Eigen::AngleAxisd(0., Eigen::Vector3d::UnitZ()));
+	auto ptrE1 = std::make_shared<Ellipsoid>("w1", State(position_o1, orientation_o1), 0.5);
+	ptrE1->set_axis_lengths(Eigen::Array3d(1, 4, 2));
 	ptrE1->set_curvature_factor(Eigen::Array3d(2, 2, 2));
 
 	Environment env;
 	env.add_obstacle(ptrE1);
 
 	// create the target for agent
-	Eigen::Vector3d target_position(5, 0.3, 0.5);
+	Eigen::Vector3d target_position(5, -1, 0.4);
 	std::deque<Eigen::Vector3d> position_history;
 
 	// create the agent
-	Eigen::Vector3d agent_position(-5, -1, 0.5);
+	Eigen::Vector3d agent_position(-5, -1.5, 0.6);
 	State agent_state(agent_position);
 	Agent agent(agent_state);
 
@@ -60,10 +65,10 @@ int main(int, char*[])
 		//desired_velocity(1) = 0.0;
 		agent.set_linear_velocity(desired_velocity);
 		// compute modulated velocity
-		Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, env, false, true);
+		Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, env, local_modulation, add_repulsion, planar_modulation);
 		if(modulated_velocity.norm() > max_vel) modulated_velocity = max_vel * modulated_velocity.normalized();
 		// move agent
-		Eigen::Vector3d modulated_position = current_position + dt * modulated_velocity;
+		Eigen::Vector3d modulated_position = current_position + dt * modulated_velocity + Eigen::Vector3d(d(gen), d(gen), d(gen));
 		agent.set_position(modulated_position);
 
 		if(plot_steps)
@@ -73,9 +78,5 @@ int main(int, char*[])
 			std::string s = ss.str();
 			PlottingTools::plot_configuration(agent, env.get_obstacle_list(), target_position, position_history, "image" + s, is_show);
 		}
-
-		std::cout << agent << std::endl;
 	}
-	PlottingTools::plot_configuration(agent, env.get_obstacle_list(), target_position, position_history, "test_seed" + std::to_string(seed), is_show);
-	//PlottingTools::plot_configuration(aggregated_obstacle_list, "test_seed" + std::to_string(seed), is_show);
 }
