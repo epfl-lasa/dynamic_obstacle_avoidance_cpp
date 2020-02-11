@@ -46,7 +46,7 @@ int main(int, char*[])
 	auto ptrE2 = std::make_shared<Ellipsoid>("w2", State(position_o2), 0.1);
 	auto ptrE3 = std::make_shared<Ellipsoid>("w3", State(position_o3), 0.1);
 	auto ptrE4 = std::make_shared<Ellipsoid>("w4", State(position_o4), 0.1);
-	auto ptrE5 = std::make_shared<Ellipsoid>("w5", State(position_o5), 0.5);
+	//auto ptrE5 = std::make_shared<Ellipsoid>("w5", State(position_o5), 0.5);
 	auto ptrE6 = std::make_shared<Ellipsoid>("desk", State(position_o6, orientation_o6),  0.1);
 	auto ptrE7 = std::make_shared<Ellipsoid>("chair", State(position_o7), 0.1);
 	auto ptrE8 = std::make_shared<Ellipsoid>("table", State(position_o8), 0.1);
@@ -55,7 +55,7 @@ int main(int, char*[])
 	ptrE2->set_axis_lengths(Eigen::Array3d(9, 1, 0));
 	ptrE3->set_axis_lengths(Eigen::Array3d(1, 9, 0));
 	ptrE4->set_axis_lengths(Eigen::Array3d(1, 9, 0));
-	ptrE5->set_axis_lengths(Eigen::Array3d(1, 4.5, 0));
+	//ptrE5->set_axis_lengths(Eigen::Array3d(1, 4.5, 0));
 
 	ptrE6->set_axis_lengths(Eigen::Array3d(0.5, 3, 0));
 	ptrE7->set_axis_lengths(Eigen::Array3d(1, 1, 0));
@@ -67,7 +67,7 @@ int main(int, char*[])
 	env.add_obstacle(ptrE2);
 	env.add_obstacle(ptrE3);
 	env.add_obstacle(ptrE4);
-	env.add_obstacle(ptrE5);
+	//env.add_obstacle(ptrE5);
 	env.add_obstacle(ptrE6);
 	env.add_obstacle(ptrE7);
 	env.add_obstacle(ptrE8);
