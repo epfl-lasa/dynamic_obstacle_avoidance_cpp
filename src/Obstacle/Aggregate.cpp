@@ -95,7 +95,7 @@ namespace DynamicObstacleAvoidance
 
 	bool Aggregate::point_is_inside(const Eigen::Vector3d& point) const
 	{
-		bool inside = (this->outside_hull.is_closed() && this->outside_hull.point_is_inside(point));
+		bool inside = this->outside_hull.point_is_inside(point);
 		if(!inside) for(auto& o:this->primitives) inside |= o->point_is_inside(point);
 		return inside;
 	}

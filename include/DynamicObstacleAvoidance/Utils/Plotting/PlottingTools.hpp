@@ -50,7 +50,7 @@ namespace DynamicObstacleAvoidance
 		 * @param savefile name of the file to save in tmp folder (if empty the image is not saved)
 		 * @param is_show if true the image is shown as a pop-up
 		 */
-		void plot_configuration(const Agent& agent, const std::deque<std::shared_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile="", const bool& is_show=true);
+		void plot_configuration(const Agent& agent, const std::deque<std::shared_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile="", bool is_show=true, bool is3D=false);
 	
 		/**
 		 * @brief plot the configuration with only obstacles
@@ -58,7 +58,7 @@ namespace DynamicObstacleAvoidance
 		 * @param savefile name of the file to save in tmp folder (if empty the image is not saved)
 		 * @param is_show if true the image is shown as a pop-up
 		 */
-		void plot_configuration(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::string& savefile="", const bool& is_show=true);
+		void plot_configuration(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::string& savefile="", bool is_show=true, bool is3D=false);
 	
 		/**
 		 * @brief plot the configuration for the guard carrying scenario
@@ -70,7 +70,7 @@ namespace DynamicObstacleAvoidance
 		 * @param savefile name of the file to save in tmp folder (if empty the image is not saved)
 		 * @param is_show if true the image is shown as a pop-up
 		 */
-		void plot_guard_configuration(const Agent& platform, const Agent& guard, const std::deque<std::shared_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile, const bool& is_show);
+		void plot_guard_configuration(const Agent& platform, const Agent& guard, const std::deque<std::shared_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile, bool is_show, bool is3D=false);
 	}
 }
 

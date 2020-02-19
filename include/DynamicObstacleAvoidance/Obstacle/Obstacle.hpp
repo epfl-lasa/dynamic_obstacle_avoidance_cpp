@@ -344,6 +344,12 @@ namespace DynamicObstacleAvoidance
 		 */
 		Eigen::Vector3d generate_repulsion(const Agent& agent, double repulsion_threshold=1.1) const;
 
+		/**
+		 * @brief Function to check if the aggregate is closed, i.e. every surface point is farther than the min radius
+		 * @return true if the aggregate is closed
+		 */
+		virtual bool is_closed() const;
+
 		virtual std::pair<bool, std::pair<Eigen::Vector3d, Eigen::Vector3d>> compute_interesection_points(const Eigen::Vector3d& x1, const Eigen::Vector3d& x2);
 
 		void shift_reference_point(const Agent& agent);
@@ -458,6 +464,11 @@ namespace DynamicObstacleAvoidance
 	inline std::ostream& operator<<(std::ostream& os, const Obstacle& obstacle) 
 	{ 
 		return obstacle.print(os);
+	}
+
+	inline bool Obstacle::is_closed() const
+	{
+		return true;
 	}
 }
 #endif

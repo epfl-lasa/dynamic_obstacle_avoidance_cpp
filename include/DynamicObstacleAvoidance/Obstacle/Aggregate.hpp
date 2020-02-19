@@ -102,6 +102,12 @@ namespace DynamicObstacleAvoidance
 		 * @return the repulsion vector
 		 */
 		Eigen::Vector3d compute_repulsion_vector(const Agent& agent) const;
+
+		/**
+		 * @brief Function to check if the aggregate is closed, i.e. every surface point is farther than the min radius
+		 * @return true if the aggregate is closed
+		 */
+		bool is_closed() const;
 	};
 
 	inline const auto& Aggregate::get_primitives() const
@@ -119,6 +125,11 @@ namespace DynamicObstacleAvoidance
 			os << *p << std::endl;
 		}
   		return os;
+	}
+
+	inline bool Aggregate::is_closed() const
+	{
+		return this->outside_hull.is_closed();
 	}
 }
 #endif

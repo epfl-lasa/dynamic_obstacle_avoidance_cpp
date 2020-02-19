@@ -3,7 +3,7 @@
 namespace DynamicObstacleAvoidance
 {
 	StarShapeHull::StarShapeHull(bool is_inside, unsigned int resolution, double min_radius):
-	Obstacle("", 0.2), is_inside(is_inside), min_radius(min_radius)
+	Obstacle(""), is_inside(is_inside), min_radius(min_radius)
 	{
 		this->set_type("StarShapeHull");
 		this->set_resolution(resolution);
@@ -170,6 +170,6 @@ namespace DynamicObstacleAvoidance
 	bool StarShapeHull::is_closed() const
 	{
 		double min_radius_point = this->polar_surface_points.row(0).minCoeff();
-		return min_radius_point > (this->min_radius + this->get_safety_margin()(0));
+		return min_radius_point > (1.2 * this->min_radius);
 	}
 }

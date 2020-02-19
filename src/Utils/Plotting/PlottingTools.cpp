@@ -50,22 +50,33 @@ namespace DynamicObstacleAvoidance
 		}
 	}
 
-	void PlottingTools::plot_configuration(const Agent& agent, const std::deque<std::shared_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile, const bool& is_show)
+	void PlottingTools::plot_configuration(const Agent& agent, const std::deque<std::shared_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile, bool is_show, bool is3D)
 	{
 		plt::figure();
-		plt::subplot(2, 1, 1);
-		plot_obstacles(obstacles, "xy");
-		plot_agent(agent, "xy");
-		plot_agent_trajectory(goal, position_history, "xy");
-		plt::xlim(-6, 6);
-		plt::ylim(-6, 6);
+		if (is3D)
+		{
+			plt::subplot(2, 1, 1);
+			plot_obstacles(obstacles, "xy");
+			plot_agent(agent, "xy");
+			plot_agent_trajectory(goal, position_history, "xy");
+			plt::xlim(-10, 10);
+			plt::ylim(-10, 10);
 
-		plt::subplot(2, 1, 2);
-		plot_obstacles(obstacles, "xz");
-		plot_agent(agent, "xy");
-		plot_agent_trajectory(goal, position_history, "xz");
-		plt::xlim(-6, 6);
-		plt::ylim(-6, 6);
+			plt::subplot(2, 1, 2);
+			plot_obstacles(obstacles, "xz");
+			plot_agent(agent, "xy");
+			plot_agent_trajectory(goal, position_history, "xz");
+			plt::xlim(-10, 10);
+			plt::ylim(-10, 10);
+		}
+		else
+		{
+			plot_obstacles(obstacles, "xy");
+			plot_agent(agent, "xy");
+			plot_agent_trajectory(goal, position_history, "xy");
+			plt::xlim(-10, 10);
+			plt::ylim(-10, 10);
+		}
 
 		if(savefile.compare(""))
 		{
@@ -79,18 +90,28 @@ namespace DynamicObstacleAvoidance
 		plt::close();
 	}
 
-	void PlottingTools::plot_configuration(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::string& savefile, const bool& is_show)
+	void PlottingTools::plot_configuration(const std::deque<std::shared_ptr<Obstacle> >& obstacles, const std::string& savefile, bool is_show, bool is3D)
 	{
 		plt::figure();
-		plt::subplot(2, 1, 1);
-		plot_obstacles(obstacles, "xy");
-		plt::xlim(-6, 6);
-		plt::ylim(-6, 6);
+		
+		if (is3D)
+		{
+			plt::subplot(2, 1, 1);
+			plot_obstacles(obstacles, "xy");
+			plt::xlim(-10, 10);
+			plt::ylim(-10, 10);
 
-		plt::subplot(2, 1, 2);
-		plot_obstacles(obstacles, "xz");
-		plt::xlim(-6, 6);
-		plt::ylim(-6, 6);
+			plt::subplot(2, 1, 2);
+			plot_obstacles(obstacles, "xz");
+			plt::xlim(-10, 10);
+			plt::ylim(-10, 10);
+		}
+		else
+		{
+			plot_obstacles(obstacles, "xy");
+			plt::xlim(-10, 10);
+			plt::ylim(-10, 10);
+		}
 
 		if(savefile.compare(""))
 		{
@@ -104,24 +125,37 @@ namespace DynamicObstacleAvoidance
 		plt::close();
 	}
 
-	void PlottingTools::plot_guard_configuration(const Agent& platform, const Agent& guard, const std::deque<std::shared_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile, const bool& is_show)
+	void PlottingTools::plot_guard_configuration(const Agent& platform, const Agent& guard, const std::deque<std::shared_ptr<Obstacle> >& obstacles, const Eigen::Vector3d& goal, const std::deque<Eigen::Vector3d>& position_history, const std::string& savefile, bool is_show, bool is3D)
 	{
 		plt::figure();
-		plt::subplot(2, 1, 1);
-		plot_obstacles(obstacles, "xy");
-		plot_agent(platform, "xy");
-		plot_agent(guard, "xy", "g");
-		plot_agent_trajectory(goal, position_history, "xy");
-		plt::xlim(-6, 6);
-		plt::ylim(-6, 6);
 
-		plt::subplot(2, 1, 2);
-		plot_obstacles(obstacles, "xz");
-		plot_agent(platform, "xz");
-		plot_agent(guard, "xz", "g");
-		plot_agent_trajectory(goal, position_history, "xz");
-		plt::xlim(-6, 6);
-		plt::ylim(-6, 6);
+		if (is3D)
+		{
+			plt::subplot(2, 1, 1);
+			plot_obstacles(obstacles, "xy");
+			plot_agent(platform, "xy");
+			plot_agent(guard, "xy", "g");
+			plot_agent_trajectory(goal, position_history, "xy");
+			plt::xlim(-10, 10);
+			plt::ylim(-10, 10);
+
+			plt::subplot(2, 1, 2);
+			plot_obstacles(obstacles, "xz");
+			plot_agent(platform, "xz");
+			plot_agent(guard, "xz", "g");
+			plot_agent_trajectory(goal, position_history, "xz");
+			plt::xlim(-10, 10);
+			plt::ylim(-10, 10);
+		}
+		else
+		{
+			plot_obstacles(obstacles, "xz");
+			plot_agent(platform, "xz");
+			plot_agent(guard, "xz", "g");
+			plot_agent_trajectory(goal, position_history, "xz");
+			plt::xlim(-10, 20);
+			plt::ylim(-10, 10);
+		}
 
 		if(savefile.compare(""))
 		{

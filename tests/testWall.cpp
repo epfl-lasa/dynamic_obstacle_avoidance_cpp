@@ -33,9 +33,9 @@ int main(int, char*[])
 	// generate the list of obstacles
 	Eigen::Vector3d position_o1(0, 8, 0);
 	Eigen::Vector3d position_o2(0, -8, 0);
-	Eigen::Vector3d position_o3(8, 0, 0);
+	Eigen::Vector3d position_o3(4, 0, 0);
 	Eigen::Vector3d position_o4(-8, 0, 0);
-	Eigen::Vector3d position_o5(1, -4, 0);
+	Eigen::Vector3d position_o5(-2, -6, 0);
 	Eigen::Vector3d position_o6(-3.5, 2.5, 0);
 	Eigen::Vector3d position_o7(-3, 1.5, 0);
 	Eigen::Vector3d position_o8(5, 0, 0);
@@ -46,16 +46,16 @@ int main(int, char*[])
 	auto ptrE2 = std::make_shared<Ellipsoid>("w2", State(position_o2), 0.1);
 	auto ptrE3 = std::make_shared<Ellipsoid>("w3", State(position_o3), 0.1);
 	auto ptrE4 = std::make_shared<Ellipsoid>("w4", State(position_o4), 0.1);
-	//auto ptrE5 = std::make_shared<Ellipsoid>("w5", State(position_o5), 0.5);
+	auto ptrE5 = std::make_shared<Ellipsoid>("w5", State(position_o5), 0.1);
 	auto ptrE6 = std::make_shared<Ellipsoid>("desk", State(position_o6, orientation_o6),  0.1);
 	auto ptrE7 = std::make_shared<Ellipsoid>("chair", State(position_o7), 0.1);
 	auto ptrE8 = std::make_shared<Ellipsoid>("table", State(position_o8), 0.1);
 
 	ptrE1->set_axis_lengths(Eigen::Array3d(9, 1, 0));
 	ptrE2->set_axis_lengths(Eigen::Array3d(9, 1, 0));
-	ptrE3->set_axis_lengths(Eigen::Array3d(1, 9, 0));
+	ptrE3->set_axis_lengths(Eigen::Array3d(1, 4, 0));
 	ptrE4->set_axis_lengths(Eigen::Array3d(1, 9, 0));
-	//ptrE5->set_axis_lengths(Eigen::Array3d(1, 4.5, 0));
+	ptrE5->set_axis_lengths(Eigen::Array3d(1, 3, 0));
 
 	ptrE6->set_axis_lengths(Eigen::Array3d(0.5, 3, 0));
 	ptrE7->set_axis_lengths(Eigen::Array3d(1, 1, 0));
@@ -67,13 +67,13 @@ int main(int, char*[])
 	env.add_obstacle(ptrE2);
 	env.add_obstacle(ptrE3);
 	env.add_obstacle(ptrE4);
-	//env.add_obstacle(ptrE5);
+	env.add_obstacle(ptrE5);
 	env.add_obstacle(ptrE6);
 	env.add_obstacle(ptrE7);
 	env.add_obstacle(ptrE8);
 
 	// create the target
-	Eigen::Vector3d target_position(5, -5 , 0);
+	Eigen::Vector3d target_position(5, 8, 0);
 	std::deque<Eigen::Vector3d> position_history;
 
 	// aggregate the obstacles if necessary
@@ -118,7 +118,7 @@ int main(int, char*[])
 			position_history.push_back(current_position);
 
 			Eigen::Vector3d desired_velocity = -Kp * (current_position - target_position);
-			//agent.set_linear_velocity(0.9 * desired_velocity + 0.1 * previous_vel);
+			agent.set_linear_velocity(0.9 * desired_velocity + 0.1 * previous_vel);
 			agent.set_linear_velocity(desired_velocity);
 
 			Eigen::Vector3d modulated_velocity = Modulation::modulate_velocity(agent, env, false, true);

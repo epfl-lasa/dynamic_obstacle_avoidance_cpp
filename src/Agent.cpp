@@ -48,8 +48,9 @@ namespace DynamicObstacleAvoidance
 		// loop through all the obstacles until you see an aggregate
 		for(auto& o : obstacles)
 		{
+			bool target_reachable = ((o->point_is_inside(target) && o->point_is_inside(this->get_position())) || (!o->point_is_inside(target) && !o->point_is_inside(this->get_position())));
 			// there is no path if either target or agent is inside and the other not
-			path_exists &= ((o->point_is_inside(target) && o->point_is_inside(this->get_position())) || (!o->point_is_inside(target) && !o->point_is_inside(this->get_position())));
+			path_exists &= target_reachable || (!o->is_closed());
 		}
 		return path_exists;
 	}

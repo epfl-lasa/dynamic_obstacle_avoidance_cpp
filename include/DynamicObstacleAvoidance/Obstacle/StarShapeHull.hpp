@@ -44,7 +44,7 @@ namespace DynamicObstacleAvoidance
 		 * @param resolution the number of sample points of the hull 
 		 * @param min_radius the minimum radius when there are no intersection with primitives obstacles in percent of the maximum distance
 		 */
-		explicit StarShapeHull(bool is_inside=false, unsigned int resolution=500, double min_radius=0.1);
+		explicit StarShapeHull(bool is_inside=false, unsigned int resolution=500, double min_radius=0.5);
 
 		/**
 		 * @brief Constructor from the list of primitives
@@ -53,7 +53,7 @@ namespace DynamicObstacleAvoidance
 		 * @param resolution the number of sample points of the hull 
 		 * @param min_radius the minimum radius when there are no intersection with primitives obstacles in percent of the maximum distance
 		 */
-		explicit StarShapeHull(const std::deque<std::shared_ptr<Obstacle> >& primitives, bool is_inside=false, unsigned int resolution=500, double min_radius=0.1);
+		explicit StarShapeHull(const std::deque<std::shared_ptr<Obstacle> >& primitives, bool is_inside=false, unsigned int resolution=500, double min_radius=0.5);
 
 		/**
 		 * @brief Destructor
