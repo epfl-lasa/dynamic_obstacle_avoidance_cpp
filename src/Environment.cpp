@@ -9,7 +9,6 @@ namespace DynamicObstacleAvoidance
 	void Environment::add_obstacle(const std::shared_ptr<Obstacle>& obstacle)
 	{
 		this->insert({obstacle->get_name(), obstacle});
-		this->update();
 	}
 
 	void Environment::update()
