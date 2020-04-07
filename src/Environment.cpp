@@ -24,6 +24,14 @@ namespace DynamicObstacleAvoidance
 		auto it = this->find(k);
 		if(it == this->end())
 		{
+			// only check for aggregates
+			if(this->is_aggregated())
+			{
+				for(auto& o:this->obstacle_list)
+				{
+					if(o->get_name() == k) return o;
+				}
+			}
 			throw Exceptions::ObstacleNotInEnvironmentException(k);
 		}
 		return it->second;

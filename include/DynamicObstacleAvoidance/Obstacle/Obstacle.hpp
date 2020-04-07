@@ -238,7 +238,7 @@ namespace DynamicObstacleAvoidance
 		 * @brief Setter of the reference position
 		 * @param reference_position the reference position
 		 */
-		void set_reference_position(const Eigen::Vector3d& reference_position);
+		virtual void set_reference_position(const Eigen::Vector3d& reference_position);
 
 		/**
 		 * @brief Overload of the print function

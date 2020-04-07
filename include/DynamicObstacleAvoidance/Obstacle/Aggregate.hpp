@@ -43,6 +43,12 @@ namespace DynamicObstacleAvoidance
 		explicit Aggregate(const std::deque<std::shared_ptr<Obstacle> >& primitives);
 
 		/**
+		 * @brief Setter of the reference position
+		 * @param reference_position the reference position
+		 */
+		void set_reference_position(const Eigen::Vector3d& reference_position) override;
+
+		/**
 		 * @brief Getter of the list of primitives
 		 * @return the list of primitives
 		 */
@@ -109,6 +115,15 @@ namespace DynamicObstacleAvoidance
 		 */
 		bool is_closed() const;
 	};
+
+	inline void Aggregate::set_reference_position(const Eigen::Vector3d& reference_position)
+	{
+		this->Obstacle::set_reference_position(reference_position);
+		for(auto& o:this->primitives)
+		{
+			o->set_reference_position(reference_position);
+		}
+	}
 
 	inline const auto& Aggregate::get_primitives() const
 	{

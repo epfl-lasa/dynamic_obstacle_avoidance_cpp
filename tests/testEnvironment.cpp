@@ -42,10 +42,16 @@ TEST(Aggregation, PositiveNos)
 	auto e2 = std::make_shared<Ellipsoid>("e2", -0.5, 0, 0, 0);
 	env.add_obstacle(e1);
 	env.add_obstacle(e2);
+	env.update();
 
 	auto obstacle_list = env.get_obstacle_list();
 	EXPECT_TRUE(obstacle_list.size() == 1);
 	//PlottingTools::plot_configuration(obstacle_list, "test_aggregate1", true);
+
+	EXPECT_TRUE(abs(env["aggregate_e1_e2"]->get_reference_position()(0)) < 1e-4);
+	env["aggregate_e1_e2"]->set_reference_position(Eigen::Vector3d(1, 0, 0));
+	EXPECT_TRUE(abs(env["e1"]->get_reference_position()(0) - 1) < 1e-4);
+	EXPECT_TRUE(abs(env["e2"]->get_reference_position()(0) - 1) < 1e-4);
 
 	e1->set_position(Eigen::Vector3d(2,0,0));
 	env.update();

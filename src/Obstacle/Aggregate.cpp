@@ -3,14 +3,15 @@
 namespace DynamicObstacleAvoidance
 {
 	Aggregate::Aggregate():
-	inside_hull(true), outside_hull(false)
+	Obstacle("aggregate"), inside_hull(true), outside_hull(false)
 	{
 		this->set_type("Aggregate");
 	}
 
 	Aggregate::Aggregate(const std::deque<std::shared_ptr<Obstacle> >& primitives):
-	inside_hull(true), outside_hull(false)
+	Obstacle("aggregate"), inside_hull(true), outside_hull(false)
 	{
+		std::string name = "aggregate";
 		this->set_type("Aggregate");
 		// set the center as the baricenter and orientation to identity
 		Eigen::Vector3d position;
@@ -18,14 +19,12 @@ namespace DynamicObstacleAvoidance
 		{
 			position += o->get_position();
 			this->primitives.push_back(o);
+			name += ("_" + o->get_name());
 		}
+		this->set_name(name);
 		position /= this->primitives.size();
 		this->set_position(position);
 		this->set_reference_position(position);
-		for(auto& o:this->primitives)
-		{
-			o->set_reference_position(position);
-		}
 		this->update_hull();
 	}
 
@@ -39,10 +38,6 @@ namespace DynamicObstacleAvoidance
 		position /= this->primitives.size();
 		this->set_position(position);
 		this->set_reference_position(position);
-		for(auto& o:this->primitives)
-		{
-			o->set_reference_position(position);
-		}
 	}
 
 	void Aggregate::update_hull()
@@ -53,6 +48,7 @@ namespace DynamicObstacleAvoidance
 
 	void Aggregate::add_primitive(const std::shared_ptr<Obstacle>& primitive, bool update_hull)
 	{
+		this->set_name(this->get_name() + "_" + primitive->get_name());
 		this->primitives.push_back(primitive);
 		this->update_center_position();
 		if(update_hull) this->update_hull();
