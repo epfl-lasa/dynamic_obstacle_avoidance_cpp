@@ -6,7 +6,6 @@
 #include "DynamicObstacleAvoidance/Obstacle/Aggregate.hpp"
 #include "DynamicObstacleAvoidance/Utils/Plotting/PlottingTools.hpp"
 #include "DynamicObstacleAvoidance/Utils/ObstacleGeneration/Aggregation.hpp"
-#include "DynamicObstacleAvoidance/Exceptions/ObstacleNotInEnvironmentException.hpp"
 #include <memory>
 #include <deque>
 #include <algorithm>

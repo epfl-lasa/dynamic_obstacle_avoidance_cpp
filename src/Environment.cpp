@@ -1,4 +1,6 @@
 #include "DynamicObstacleAvoidance/Environment.hpp"
+#include "DynamicObstacleAvoidance/Exceptions/ObstacleNotInEnvironmentException.hpp"
+#include "DynamicObstacleAvoidance/Exceptions/ObstacleAlreadyExistsException.hpp"
 
 namespace DynamicObstacleAvoidance
 {
@@ -8,6 +10,11 @@ namespace DynamicObstacleAvoidance
 
 	void Environment::add_obstacle(const std::shared_ptr<Obstacle>& obstacle)
 	{
+		auto it = this->obstacle_map.find(obstacle->get_name());
+		if(it != this->obstacle_map.end())
+		{
+			throw Exceptions::ObstacleAlreadyExistsException(obstacle->get_name());
+		}
 		this->obstacle_map.insert({obstacle->get_name(), obstacle});
 	}
 
