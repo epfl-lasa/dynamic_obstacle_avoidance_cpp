@@ -11,12 +11,14 @@
 #include <deque>
 #include <algorithm>
 #include <iterator>
+#include <regex>
 
 namespace DynamicObstacleAvoidance
 {
-	class Environment : public std::map<std::string, std::shared_ptr<Obstacle> >
+	class Environment
 	{
 	private:
+		std::map<std::string, std::shared_ptr<Obstacle> > obstacle_map; ///< map of the obstacles
 		bool aggregated; //< if true, the environment creates aggregates of obstacle at update
 		std::deque<std::shared_ptr<Obstacle> > obstacle_list; //< the list of obstacles, eventually aggragegated
 
@@ -46,6 +48,12 @@ namespace DynamicObstacleAvoidance
 		void add_obstacle(const std::shared_ptr<Obstacle>& obstacle);
 
 		/**
+		 * @brief Remove an obstacle from the environment without deleting the pointer
+		 * @param obstacle_name the name of the obstacle to remove
+		 */
+		void remove_obstacle(const std::string& obstacle_name);
+
+		/**
 		 * @brief Getter of the obstacle list
 		 * @return the list of obstacles
 		 */
@@ -57,7 +65,7 @@ namespace DynamicObstacleAvoidance
 		void update();
 
 		/**
-		 * @brief Overload of the [] operator from the map base class
+		 * @brief Add the [] operator to get the pointer to an obstacle by its name
 		 * @param k the key to look for
 		 * @return the pointer to the obstacle
 		 */
